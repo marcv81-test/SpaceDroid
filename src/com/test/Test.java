@@ -6,12 +6,16 @@ import android.os.Bundle;
 public class Test extends Activity
 {
     protected TestView view;
+    protected TestOrientation orientation;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        view = new TestView(this);
+
+        orientation = new TestOrientation(this);
+
+        view = new TestView(this, orientation);
         setContentView(view);
     }
 
@@ -19,6 +23,7 @@ public class Test extends Activity
     protected void onPause()
     {
         super.onPause();
+        orientation.unregisterListeners();
         view.onPause();
     }
 
@@ -26,6 +31,7 @@ public class Test extends Activity
     protected void onResume()
     {
         super.onResume();
+        orientation.registerListeners();
         view.onResume();
     }
 }
