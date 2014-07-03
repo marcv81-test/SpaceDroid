@@ -5,11 +5,27 @@ import android.os.Bundle;
 
 public class Test extends Activity
 {
-    /** Called when the activity is first created. */
+    protected TestView view;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        view = new TestView(this);
+        setContentView(view);
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        view.onPause();
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        view.onResume();
     }
 }
