@@ -5,9 +5,12 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 
 class TestOrientation
 {
+    protected static final String TAG = "AndroidTest";
+
     protected final Context context;
 
     protected final SensorManager sensorManager;
@@ -53,20 +56,20 @@ class TestOrientation
 
     public void registerListeners()
     {
-        if(accelerometer != null)
-            sensorManager.registerListener(
-                accelerometerEventListener, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-        if(magnetometer != null)
-            sensorManager.registerListener(
-                magnetometerEventListener, magnetometer, SensorManager.SENSOR_DELAY_NORMAL);
+        Log.i(TAG, "registerListeners()");
+
+        sensorManager.registerListener(
+            accelerometerEventListener, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(
+            magnetometerEventListener, magnetometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     public void unregisterListeners()
     {
-        if(accelerometer != null)
-            sensorManager.unregisterListener(accelerometerEventListener);
-        if(magnetometer != null)
-            sensorManager.unregisterListener(magnetometerEventListener);
+        Log.i(TAG, "unregisterListeners()");
+
+        sensorManager.unregisterListener(accelerometerEventListener);
+        sensorManager.unregisterListener(magnetometerEventListener);
     }
 
     public float[] getRotationMatrix()
