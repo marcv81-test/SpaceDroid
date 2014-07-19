@@ -1,8 +1,6 @@
 package com.test;
 
 import javax.microedition.khronos.opengles.GL10;
-import android.content.Context;
-import android.opengl.GLUtils;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
