@@ -15,10 +15,8 @@ class TestOrientation
 
     protected final SensorManager sensorManager;
     protected final Sensor accelerometer;
-    protected final Sensor magnetometer;
 
     protected float[] accelerometerValues = new float[3];
-    protected float[] magnetometerValues = new float[3];
 
     protected final SensorEventListener accelerometerEventListener = new SensorEventListener()
     {
@@ -32,26 +30,12 @@ class TestOrientation
         }
     };
 
-    protected final SensorEventListener magnetometerEventListener = new SensorEventListener()
-    {
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) { }
-
-        @Override
-        public void onSensorChanged(SensorEvent event)
-        {
-            for(int i=0; i<3; i++) magnetometerValues[i] = event.values[i];
-        }
-    };
-
     TestOrientation(Context context)
     {
         this.context = context;
 
         sensorManager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
-
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
     }
 
     public void registerListeners()
@@ -60,8 +44,6 @@ class TestOrientation
 
         sensorManager.registerListener(
             accelerometerEventListener, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(
-            magnetometerEventListener, magnetometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     public void unregisterListeners()
@@ -69,13 +51,13 @@ class TestOrientation
         Log.i(TAG, "unregisterListeners()");
 
         sensorManager.unregisterListener(accelerometerEventListener);
-        sensorManager.unregisterListener(magnetometerEventListener);
     }
 
-    public float[] getRotationMatrix()
+    public float[] getOrientation()
     {
-        float[] rotationMatrix = new float[16];
-        SensorManager.getRotationMatrix(rotationMatrix, null, accelerometerValues, magnetometerValues);
-        return rotationMatrix;
+        float[] result = new float[2];
+        result[0] = accelerometerValues[0];
+        result[1] = -accelerometerValues[1];
+        return result;
     }
 }
