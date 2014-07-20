@@ -10,13 +10,15 @@ class TestRenderer implements GLSurfaceView.Renderer
 {
     protected final Context context;
     protected final TestOrientation orientation;
-    protected final TestShape shape;
+    protected final GfxBlock background;
+    protected final GfxBlock foreground;
 
     TestRenderer(Context context, TestOrientation orientation)
     {
         this.context = context;
         this.orientation = orientation;
-        this.shape = new TestShape();
+        this.background = new GfxBlock(2f, 3f, 0f, 1f, 0f);
+        this.foreground = new GfxBlock(0.5f, 0f, 0f, 0f, 1f);
     }
 
     @Override
@@ -51,6 +53,7 @@ class TestRenderer implements GLSurfaceView.Renderer
             coordinates[0] / 4, coordinates[1] / 4, 0f,
             0f, 1f, 0f);
 
-        shape.draw(gl);
+        background.draw(gl);
+        foreground.draw(gl);
     }
 }

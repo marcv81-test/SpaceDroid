@@ -5,23 +5,26 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-class TestShape {
+class GfxBlock {
 
-    private final FloatBuffer vertexBuffer;
     static final int COORDS_PER_VERTEX = 3;
 
-    static float vertices[] =
-    {
-        -0.5f, -0.5f, 0.0f, // bottom left
-        -0.5f,  0.5f, 0.0f, // top left
-         0.5f, -0.5f, 0.0f, // bottom right
-         0.5f,  0.5f, 0.0f  // top right
-    };
+    private final FloatBuffer vertexBuffer;
+    private final float vertices[];
+    private final float color[];
 
-    float color[] = { 0.2f, 0.709803922f, 0.898039216f, 1.0f };
-
-    public TestShape()
+    public GfxBlock(float size, float depth, float red, float green, float blue)
     {
+        vertices = new float[]
+        {
+            -0.5f*size, -0.5f*size, depth, // bottom left
+            -0.5f*size,  0.5f*size, depth, // top left
+             0.5f*size, -0.5f*size, depth, // bottom right
+             0.5f*size,  0.5f*size, depth  // top right
+        };
+        
+        color = new float[] { red, green, blue, 1.0f };
+        
         ByteBuffer bb = ByteBuffer.allocateDirect(vertices.length * 4);
         bb.order(ByteOrder.nativeOrder());
         vertexBuffer = bb.asFloatBuffer();
