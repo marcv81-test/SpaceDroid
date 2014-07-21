@@ -11,9 +11,9 @@ class GfxBlock {
 
     private final FloatBuffer vertexBuffer;
     private final float vertices[];
-    private final float color[];
+    private Texture texture;
 
-    public GfxBlock(float size, float depth, float red, float green, float blue)
+    public GfxBlock(float size, float depth, Texture texture)
     {
         vertices = new float[]
         {
@@ -23,8 +23,8 @@ class GfxBlock {
              0.5f*size,  0.5f*size, depth  // top right
         };
         
-        color = new float[] { red, green, blue, 1.0f };
-        
+        this.texture = texture;
+
         ByteBuffer bb = ByteBuffer.allocateDirect(vertices.length * 4);
         bb.order(ByteOrder.nativeOrder());
         vertexBuffer = bb.asFloatBuffer();
@@ -35,14 +35,30 @@ class GfxBlock {
     public void draw(GL10 gl, float x, float y)
     {
         gl.glPushMatrix();
+
+        // bind the previously generated texture
+        gl.glBindTexture(GL10.GL_TEXTURE_2D, texture.getTexture());
+
+        // Point to our buffers
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 
         gl.glTranslatef(x, y, 0f);
-        gl.glColor4f(color[0], color[1], color[2], color[3]);
+
+        // Set the face rotation
+        gl.glFrontFace(GL10.GL_CW);
+
+        // Point to our vertex buffer
         gl.glVertexPointer(COORDS_PER_VERTEX, GL10.GL_FLOAT, 0, vertexBuffer);
+        gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, texture.getTextureBuffer());
+
+        // Draw the vertices as triangle strip
         gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 
+        //Disable the client state before leaving
+        gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
         gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+
         gl.glPopMatrix();
     }
 }

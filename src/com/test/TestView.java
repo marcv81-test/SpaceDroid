@@ -11,7 +11,7 @@ class TestView extends GLSurfaceView
     TestView(Context context)
     {
         super(context);
-        renderer = new TestRenderer();
+        renderer = new TestRenderer(context);
         setRenderer(renderer);
     }
 

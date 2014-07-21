@@ -2,21 +2,30 @@ package com.test;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
+import android.util.Log;
 
 class TestRenderer implements GLSurfaceView.Renderer
 {
+    protected final Context context;
+    protected Texture planetTexture;
+
     protected final GfxBlock background;
     protected final GfxBlock foreground;
 
     protected long startTime;
+
     float viewCoordinates[] = {0f, 0f};
 
-    TestRenderer()
+    TestRenderer(Context context)
     {
-        this.background = new GfxBlock(2f, 3f, 0f, 1f, 0f);
-        this.foreground = new GfxBlock(0.5f, 0f, 0f, 0f, 1f);
+        this.context = context;
+        this.planetTexture = new Texture();
+
+        this.background = new GfxBlock(2f, 3f, planetTexture);
+        this.foreground = new GfxBlock(0.5f, 0f, planetTexture);
 
         startTime = System.currentTimeMillis();
     }
@@ -25,6 +34,22 @@ class TestRenderer implements GLSurfaceView.Renderer
     public void onSurfaceCreated(GL10 gl, EGLConfig config)
     {
         gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+        // Enable blending using premultiplied alpha.
+        gl.glEnable(GL10.GL_BLEND);
+        gl.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
+
+        planetTexture.load(gl, context, R.drawable.planet);
+
+        gl.glEnable(GL10.GL_TEXTURE_2D);            //Enable Texture Mapping ( NEW )
+        gl.glShadeModel(GL10.GL_SMOOTH);            //Enable Smooth Shading
+        gl.glClearColor(0.0f, 0.0f, 0.0f, 0.5f);    //Black Background
+        gl.glClearDepthf(1.0f);                     //Depth Buffer Setup
+        gl.glEnable(GL10.GL_DEPTH_TEST);            //Enables Depth Testing
+        gl.glDepthFunc(GL10.GL_LEQUAL);             //The Type Of Depth Testing To Do
+
+        //Really Nice Perspective Calculations
+        gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
     }
 
     @Override
