@@ -12,6 +12,7 @@ class TestRenderer implements GLSurfaceView.Renderer
     protected final TestOrientation orientation;
     protected final GfxBlock background;
     protected final GfxBlock foreground;
+    protected long startTime;
 
     TestRenderer(Context context, TestOrientation orientation)
     {
@@ -19,6 +20,7 @@ class TestRenderer implements GLSurfaceView.Renderer
         this.orientation = orientation;
         this.background = new GfxBlock(2f, 3f, 0f, 1f, 0f);
         this.foreground = new GfxBlock(0.5f, 0f, 0f, 0f, 1f);
+        startTime = System.currentTimeMillis();
     }
 
     @Override
@@ -53,7 +55,9 @@ class TestRenderer implements GLSurfaceView.Renderer
             coordinates[0] / 4, coordinates[1] / 4, 0f,
             0f, 1f, 0f);
 
-        background.draw(gl);
-        foreground.draw(gl);
+        float elapsed = (System.currentTimeMillis() - startTime) / 1000f;
+
+        background.draw(gl, 0f, 0f);
+        foreground.draw(gl, 0.5f*(float)Math.cos(elapsed), 0.5f*(float)Math.sin(elapsed));
     }
 }
