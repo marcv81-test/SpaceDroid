@@ -10,10 +10,12 @@ import android.util.Log;
 class TestRenderer implements GLSurfaceView.Renderer
 {
     protected final Context context;
+    protected Texture galaxyTexture;
     protected Texture planetTexture;
 
-    protected final GfxBlock background;
-    protected final GfxBlock foreground;
+    protected final GfxBlock galaxyBlock;
+    protected final GfxBlock planetBlock;
+    protected final GfxBlock satelliteBlock;
 
     protected long startTime;
 
@@ -22,10 +24,12 @@ class TestRenderer implements GLSurfaceView.Renderer
     TestRenderer(Context context)
     {
         this.context = context;
+        this.galaxyTexture = new Texture();
         this.planetTexture = new Texture();
 
-        this.background = new GfxBlock(2f, 3f, planetTexture);
-        this.foreground = new GfxBlock(0.5f, 0f, planetTexture);
+        this.galaxyBlock = new GfxBlock(10f, 5f, galaxyTexture);
+        this.planetBlock = new GfxBlock(0.5f, 0f, planetTexture);
+        this.satelliteBlock = new GfxBlock(0.1f, 0f, planetTexture);
 
         startTime = System.currentTimeMillis();
     }
@@ -39,14 +43,15 @@ class TestRenderer implements GLSurfaceView.Renderer
         gl.glEnable(GL10.GL_BLEND);
         gl.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
+        galaxyTexture.load(gl, context, R.drawable.galaxy);
         planetTexture.load(gl, context, R.drawable.planet);
 
-        gl.glEnable(GL10.GL_TEXTURE_2D);            //Enable Texture Mapping ( NEW )
-        gl.glShadeModel(GL10.GL_SMOOTH);            //Enable Smooth Shading
-        gl.glClearColor(0.0f, 0.0f, 0.0f, 0.5f);    //Black Background
-        gl.glClearDepthf(1.0f);                     //Depth Buffer Setup
-        gl.glEnable(GL10.GL_DEPTH_TEST);            //Enables Depth Testing
-        gl.glDepthFunc(GL10.GL_LEQUAL);             //The Type Of Depth Testing To Do
+        gl.glEnable(GL10.GL_TEXTURE_2D); // Enable Texture Mapping ( NEW )
+        gl.glShadeModel(GL10.GL_SMOOTH); // Enable Smooth Shading
+        gl.glClearColor(0.0f, 0.0f, 0.0f, 0.5f); // Black Background
+        gl.glClearDepthf(1.0f); // Depth Buffer Setup
+        gl.glEnable(GL10.GL_DEPTH_TEST); // Enables Depth Testing
+        gl.glDepthFunc(GL10.GL_LEQUAL); // The Type Of Depth Testing To Do
 
         //Really Nice Perspective Calculations
         gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
@@ -60,7 +65,7 @@ class TestRenderer implements GLSurfaceView.Renderer
         float ratio = (float) width / height;
         gl.glMatrixMode(GL10.GL_PROJECTION);
         gl.glLoadIdentity();
-        gl.glFrustumf(-ratio, ratio, -1, 1, 3, 7);
+        gl.glFrustumf(-ratio, ratio, -1, 1, 3, 20);
     }
 
     @Override
@@ -78,8 +83,10 @@ class TestRenderer implements GLSurfaceView.Renderer
 
         float elapsed = (System.currentTimeMillis() - startTime) / 1000f;
 
-        background.draw(gl, 0f, 0f);
-        foreground.draw(gl, 0.5f*(float)Math.cos(elapsed), 0.5f*(float)Math.sin(elapsed));
+        galaxyBlock.draw(gl, 0f, 0f);
+        planetBlock.draw(gl, 0f, 0f);
+        satelliteBlock.draw(gl, 0.55f * (float) Math.cos(elapsed),
+                0.65f * (float) Math.sin(elapsed));
     }
 
     void updateView(float dx, float dy)
