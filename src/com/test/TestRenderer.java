@@ -11,6 +11,7 @@ class TestRenderer implements GLSurfaceView.Renderer
     protected final GfxBlock foreground;
 
     protected long startTime;
+    float viewCoordinates[] = {0f, 0f};
 
     TestRenderer()
     {
@@ -45,16 +46,20 @@ class TestRenderer implements GLSurfaceView.Renderer
         gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glLoadIdentity();
 
-        float coordinates[] = {0f, 0f};
-
         GLU.gluLookAt(gl,
-            coordinates[0] / 4, coordinates[1] / 4, -3f,
-            coordinates[0] / 4, coordinates[1] / 4, 0f,
+            viewCoordinates[0] / 4, viewCoordinates[1] / 4, -3f,
+            viewCoordinates[0] / 4, viewCoordinates[1] / 4, 0f,
             0f, 1f, 0f);
 
         float elapsed = (System.currentTimeMillis() - startTime) / 1000f;
 
         background.draw(gl, 0f, 0f);
         foreground.draw(gl, 0.5f*(float)Math.cos(elapsed), 0.5f*(float)Math.sin(elapsed));
+    }
+
+    void updateView(float dx, float dy)
+    {
+        viewCoordinates[0] += dx;
+        viewCoordinates[1] += dy;
     }
 }
