@@ -2,24 +2,21 @@ package com.test;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
-import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 
 class TestRenderer implements GLSurfaceView.Renderer
 {
-    protected final Context context;
-    protected final TestOrientation orientation;
     protected final GfxBlock background;
     protected final GfxBlock foreground;
+
     protected long startTime;
 
-    TestRenderer(Context context, TestOrientation orientation)
+    TestRenderer()
     {
-        this.context = context;
-        this.orientation = orientation;
         this.background = new GfxBlock(2f, 3f, 0f, 1f, 0f);
         this.foreground = new GfxBlock(0.5f, 0f, 0f, 0f, 1f);
+
         startTime = System.currentTimeMillis();
     }
 
@@ -48,7 +45,7 @@ class TestRenderer implements GLSurfaceView.Renderer
         gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glLoadIdentity();
 
-        float coordinates[] = orientation.getOrientation();
+        float coordinates[] = {0f, 0f};
 
         GLU.gluLookAt(gl,
             coordinates[0] / 4, coordinates[1] / 4, -3f,

@@ -7,10 +7,10 @@ class TestView extends GLSurfaceView
 {
     protected final TestRenderer renderer;
 
-    TestView(Context context, TestOrientation orientation)
+    TestView(Context context)
     {
         super(context);
-        renderer = new TestRenderer(context, orientation);
+        renderer = new TestRenderer();
         setRenderer(renderer);
     }
 }
