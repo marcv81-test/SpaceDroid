@@ -32,6 +32,11 @@ class GfxBlock {
         vertexBuffer.position(0);
     }
 
+    public void setTexture(Texture texture)
+    {
+        this.texture = texture;
+    }
+
     public void draw(GL10 gl, float x, float y, float angle)
     {
         gl.glPushMatrix();
