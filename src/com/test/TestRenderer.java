@@ -52,9 +52,6 @@ class TestRenderer implements GLSurfaceView.Renderer
         gl.glClearDepthf(1.0f); // Depth Buffer Setup
         gl.glEnable(GL10.GL_DEPTH_TEST); // Enables Depth Testing
         gl.glDepthFunc(GL10.GL_LEQUAL); // The Type Of Depth Testing To Do
-
-        //Really Nice Perspective Calculations
-        gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
     }
 
     @Override
