@@ -32,7 +32,7 @@ class GfxBlock {
         vertexBuffer.position(0);
     }
 
-    public void draw(GL10 gl, float x, float y)
+    public void draw(GL10 gl, float x, float y, float angle)
     {
         gl.glPushMatrix();
 
@@ -44,6 +44,9 @@ class GfxBlock {
         gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 
         gl.glTranslatef(x, y, 0f);
+
+        if (angle != 0f)
+            gl.glRotatef(angle, 0f, 0f, 1f);
 
         // Set the face rotation
         gl.glFrontFace(GL10.GL_CW);

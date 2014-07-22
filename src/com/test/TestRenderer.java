@@ -83,10 +83,10 @@ class TestRenderer implements GLSurfaceView.Renderer
 
         float elapsed = (System.currentTimeMillis() - startTime) / 1000f;
 
-        galaxyBlock.draw(gl, 0f, 0f);
-        planetBlock.draw(gl, 0f, 0f);
+        galaxyBlock.draw(gl, 0f, 0f, 0f);
+        planetBlock.draw(gl, 0f, 0f, -57.32f * elapsed);
         satelliteBlock.draw(gl, 0.55f * (float) Math.cos(elapsed),
-                0.65f * (float) Math.sin(elapsed));
+                0.65f * (float) Math.sin(elapsed), 0f);
     }
 
     void updateView(float dx, float dy)
