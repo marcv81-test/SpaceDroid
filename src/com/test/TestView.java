@@ -18,7 +18,7 @@ class TestView extends GLSurfaceView
     private float previousX;
     private float previousY;
 
-    private final float SCROLL_DIVIDER = 40f;
+	private final float SCROLL_DIVIDER = 150f;
 
     @Override
     public boolean onTouchEvent(MotionEvent e)
@@ -36,7 +36,7 @@ class TestView extends GLSurfaceView
                 float dx = (x - previousX) / SCROLL_DIVIDER;
                 float dy = (y - previousY) / SCROLL_DIVIDER;
 
-                renderer.updateView(dx, dy);
+			renderer.moveXY(dx, dy);
             break;
         }
 
