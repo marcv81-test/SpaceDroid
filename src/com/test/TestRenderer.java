@@ -18,10 +18,10 @@ class TestRenderer implements GLSurfaceView.Renderer
     protected final float BACKGROUND_PLANE = 2f;
     protected final float INFINITY_PLANE = 8f;
 
-    protected final GfxBlock galaxyBlock;
-    protected final GfxBlock planetBlock;
-    protected final GfxBlock satelliteBlock;
-    protected final GfxBlock fireballBlock;
+	protected final Sprite galaxySprite;
+	protected final Sprite planetSprite;
+	protected final Sprite satelliteSprite;
+	protected final Sprite fireballSprite;
 
     protected long startTime;
 
@@ -30,16 +30,18 @@ class TestRenderer implements GLSurfaceView.Renderer
     TestRenderer(Context context)
     {
         this.context = context;
-	this.galaxyTexture = new Texture(1, 1);
-	this.planetTexture = new Texture(1, 1);
-	this.fireballTexture = new Texture(5, 5);
+		this.galaxyTexture = new Texture(1, 1);
+		this.planetTexture = new Texture(1, 1);
+		this.fireballTexture = new Texture(5, 5);
 
-        this.galaxyBlock = new GfxBlock(16f, INFINITY_PLANE, galaxyTexture);
-        this.planetBlock = new GfxBlock(1f, BACKGROUND_PLANE, planetTexture);
-        this.satelliteBlock = new GfxBlock(0.3f, BACKGROUND_PLANE,
+		this.galaxySprite = new Sprite(0f, 0f, INFINITY_PLANE, 0f, 16f,
+				galaxyTexture);
+		this.planetSprite = new Sprite(0f, 0f, BACKGROUND_PLANE, 0f, 1f,
+				planetTexture);
+		this.satelliteSprite = new Sprite(0f, 0f, BACKGROUND_PLANE, 0f, 0.3f,
                 planetTexture);
-	this.fireballBlock = new GfxBlock(0.3f, FOREGROUND_PLANE,
-		fireballTexture);
+		this.fireballSprite = new Sprite(0f, 0f, FOREGROUND_PLANE, 0f, 0.3f,
+				fireballTexture);
 
         startTime = System.currentTimeMillis();
     }
@@ -55,7 +57,7 @@ class TestRenderer implements GLSurfaceView.Renderer
 
         galaxyTexture.load(gl, context, R.drawable.galaxy);
         planetTexture.load(gl, context, R.drawable.planet);
-	fireballTexture.load(gl, context, R.drawable.fireball);
+		fireballTexture.load(gl, context, R.drawable.fireball);
 
         gl.glEnable(GL10.GL_TEXTURE_2D); // Enable Texture Mapping ( NEW )
         gl.glShadeModel(GL10.GL_SMOOTH); // Enable Smooth Shading
@@ -91,12 +93,15 @@ class TestRenderer implements GLSurfaceView.Renderer
 
         float elapsed = (System.currentTimeMillis() - startTime) / 1000f;
 
-        galaxyBlock.draw(gl, 0f, 0f, 0f);
-        planetBlock.draw(gl, 0f, 0f, -57.32f * elapsed);
-        satelliteBlock.draw(gl, 0.8f * (float) Math.cos(elapsed),
-                1f * (float) Math.sin(elapsed), 0f);
-	fireballBlock.setAnimationId((int) (elapsed * 12 % 25));
-	fireballBlock.draw(gl, 0.5f, 0.5f, 0f);
+		planetSprite.setAngle(-57.32f * elapsed);
+		satelliteSprite.setXY(0.8f * (float) Math.cos(elapsed),
+				1.2f * (float) Math.sin(elapsed));
+		fireballSprite.setAnimation((int) (elapsed * 12 % 25));
+
+		galaxySprite.draw(gl);
+		planetSprite.draw(gl);
+		satelliteSprite.draw(gl);
+		fireballSprite.draw(gl);
     }
 
     void updateView(float dx, float dy)
