@@ -1,58 +1,69 @@
 package com.test;
 
 import javax.microedition.khronos.opengles.GL10;
+import android.opengl.GLUtils;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import java.nio.FloatBuffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.opengl.GLUtils;
 
-class Texture
-{
-    private FloatBuffer textureBuffer;  // buffer holding the texture coordinates
-    private int[] textures = new int[1];
+public class Texture {
 
-    public int getTexture() { return textures[0]; }
-    public FloatBuffer getTextureBuffer() { return textureBuffer; }
+	protected int names[] = new int[1];
+	protected final FloatBuffer[] coordinatesBuffers;
 
-    private float texture[] =
-    {
-        // Mapping coordinates for the vertices
-        0.0f, 1.0f,     // top left     (V2)
-        0.0f, 0.0f,     // bottom left  (V1)
-        1.0f, 1.0f,     // top right    (V4)
-        1.0f, 0.0f      // bottom right (V3)
-    };
+	// Get texture name
+	public int getName() {
+		return names[0];
+	}
 
-    public Texture()
-    {
-        ByteBuffer bb = ByteBuffer.allocateDirect(texture.length * 4);
-        bb.order(ByteOrder.nativeOrder());
-        textureBuffer = bb.asFloatBuffer();
-        textureBuffer.put(texture);
-        textureBuffer.position(0);
-    }
+	// Get texture coordinates buffer
+	// Different coordinates buffers store different sprite animations
+	public FloatBuffer getCoordinatesBuffer(int i) {
+		return coordinatesBuffers[i];
+	}
 
-    public void load(GL10 gl, Context context, int id)
-    {
-        // loading texture
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), id);
+	// Constructor
+	// x and y represent the number of sprite animations on each axis
+	public Texture(int x, int y) {
 
-        // generate one texture pointer
-        gl.glGenTextures(1, textures, 0);
-        // ...and bind it to our array
-        gl.glBindTexture(GL10.GL_TEXTURE_2D, textures[0]);
+		// Create texture coordinates buffers
+		coordinatesBuffers = new FloatBuffer[x * y];
+		for (int j = 0; j < y; j++) {
+			for (int i = 0; i < x; i++) {
+				int index = i + (j * x);
+				// Top left, bottom left, top right, bottom right
+				float coordinates[] = { i / (float) x, (j + 1) / (float) y,
+						i / (float) x, j / (float) y, (i + 1) / (float) x,
+						(j + 1) / (float) y, (i + 1) / (float) x, j / (float) y };
+				ByteBuffer bb = ByteBuffer
+						.allocateDirect(coordinates.length * 4);
+				bb.order(ByteOrder.nativeOrder());
+				coordinatesBuffers[index] = bb.asFloatBuffer();
+				coordinatesBuffers[index].put(coordinates);
+				coordinatesBuffers[index].position(0);
+			}
+		}
+	}
 
-        // create nearest filtered texture
-        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
-        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+	// Create the texture name and load it with a bitmap from a resource
+	public void load(GL10 gl, Context context, int resourceId) {
+		Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),
+				resourceId);
+		loadBitmap(gl, bitmap);
+		bitmap.recycle();
+	}
 
-        // Use Android GLUtils to specify a two-dimensional texture image from our bitmap
-        GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
-
-        // Clean up
-        bitmap.recycle();
-    }
+	// Create the texture name and load it with a bitmap
+	public void loadBitmap(GL10 gl, Bitmap bitmap) {
+		gl.glGenTextures(1, names, 0);
+		gl.glBindTexture(GL10.GL_TEXTURE_2D, names[0]);
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER,
+				GL10.GL_NEAREST);
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER,
+				GL10.GL_LINEAR);
+		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
+	}
 }

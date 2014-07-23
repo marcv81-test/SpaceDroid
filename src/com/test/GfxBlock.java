@@ -12,6 +12,7 @@ class GfxBlock {
     private final FloatBuffer vertexBuffer;
     private final float vertices[];
     private Texture texture;
+    private int animationId;
 
     public GfxBlock(float size, float depth, Texture texture)
     {
@@ -32,9 +33,9 @@ class GfxBlock {
         vertexBuffer.position(0);
     }
 
-    public void setTexture(Texture texture)
+    public void setAnimationId(int animationId)
     {
-        this.texture = texture;
+	this.animationId = animationId;
     }
 
     public void draw(GL10 gl, float x, float y, float angle)
@@ -42,7 +43,7 @@ class GfxBlock {
         gl.glPushMatrix();
 
         // bind the previously generated texture
-        gl.glBindTexture(GL10.GL_TEXTURE_2D, texture.getTexture());
+	gl.glBindTexture(GL10.GL_TEXTURE_2D, texture.getName());
 
         // Point to our buffers
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
@@ -58,7 +59,8 @@ class GfxBlock {
 
         // Point to our vertex buffer
         gl.glVertexPointer(COORDS_PER_VERTEX, GL10.GL_FLOAT, 0, vertexBuffer);
-        gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, texture.getTextureBuffer());
+	gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0,
+		texture.getCoordinatesBuffer(animationId));
 
         // Draw the vertices as triangle strip
         gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
