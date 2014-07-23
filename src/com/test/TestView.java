@@ -4,45 +4,33 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 
-class TestView extends GLSurfaceView
-{
-    protected final TestRenderer renderer;
+class TestView extends GLSurfaceView {
 
-    TestView(Context context)
-    {
-        super(context);
-        renderer = new TestRenderer(context);
-        setRenderer(renderer);
-    }
+	protected final float SCROLL_DIVIDER = 150f;
 
-    private float previousX;
-    private float previousY;
+	protected float previousX, previousY;
 
-	private final float SCROLL_DIVIDER = 150f;
+	protected final TestRenderer renderer;
 
-    @Override
-    public boolean onTouchEvent(MotionEvent e)
-    {
-        // MotionEvent reports input details from the touch screen
-        // and other input controls. In this case, we are only
-        // interested in events where the touch position changed.
+	TestView(Context context) {
+		super(context);
+		renderer = new TestRenderer(context);
+		setRenderer(renderer);
+	}
 
-        float x = e.getX();
-        float y = e.getY();
+	@Override
+	public boolean onTouchEvent(MotionEvent e) {
 
-        switch (e.getAction()) {
-            case MotionEvent.ACTION_MOVE:
-
-                float dx = (x - previousX) / SCROLL_DIVIDER;
-                float dy = (y - previousY) / SCROLL_DIVIDER;
-
-			renderer.moveXY(dx, dy);
-            break;
-        }
-
-        previousX = x;
-        previousY = y;
-
-        return true;
-    }
+		float x = e.getX();
+		float y = e.getY();
+		switch (e.getAction()) {
+		case MotionEvent.ACTION_MOVE:
+			float dx = (x - previousX);
+			float dy = (y - previousY);
+			renderer.moveXY(dx / SCROLL_DIVIDER, dy / SCROLL_DIVIDER);
+		}
+		previousX = x;
+		previousY = y;
+		return true;
+	}
 }
