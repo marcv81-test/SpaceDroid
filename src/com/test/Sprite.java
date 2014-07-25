@@ -12,53 +12,27 @@ class Sprite {
 	protected final Texture texture;
 	protected final FloatBuffer verticesBuffer;
 
-	protected float x, y, z, angle;
-	protected int animation = 0;
-
-	// Set sprite x and y coordinates
-	public void setXY(float x, float y) {
-		this.x = x;
-		this.y = y;
-	}
-
-	// Set sprite angle
-	public void setAngle(float angle) {
-		this.angle = angle;
-	}
-
-	// Set sprite animation
-	public void setAnimation(int animation) {
-		this.animation = animation;
-	}
-
 	// Constructor
-	// There is a single scale parameter because all the sprites are square
-	public Sprite(float x, float y, float z, float angle, float scale,
-			Texture texture) {
+	public Sprite(Texture texture, float scaleX, float scaleY) {
 
-		// Set sprite location and orientation
-		this.x = x;
-		this.y = y;
-		this.z = z;
-		this.angle = angle;
+		// Assign texture
+		this.texture = texture;
 
 		// Create vertices buffer according to scale
 		// Bottom left, top left, bottom right, top right
-		float vertices[] = new float[] { -0.5f * scale, -0.5f * scale, 0f,
-				-0.5f * scale, 0.5f * scale, 0f, 0.5f * scale, -0.5f * scale,
-				0f, 0.5f * scale, 0.5f * scale, 0f };
+		float vertices[] = new float[] { -0.5f * scaleX, -0.5f * scaleY, 0f,
+				-0.5f * scaleX, 0.5f * scaleY, 0f, 0.5f * scaleX,
+				-0.5f * scaleY, 0f, 0.5f * scaleX, 0.5f * scaleY, 0f };
 		ByteBuffer bb = ByteBuffer.allocateDirect(vertices.length * 4);
 		bb.order(ByteOrder.nativeOrder());
 		verticesBuffer = bb.asFloatBuffer();
 		verticesBuffer.put(vertices);
 		verticesBuffer.position(0);
-
-		// Assign texture
-		this.texture = texture;
 	}
 
 	// Draw the sprite
-	public void draw(GL10 gl) {
+	public void draw(GL10 gl, float x, float y, float z, float angle,
+			int animation) {
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 		gl.glPushMatrix();

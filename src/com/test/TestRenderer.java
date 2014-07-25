@@ -3,79 +3,56 @@ package com.test;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import android.content.Context;
+import java.util.Random;
 
 class TestRenderer extends SpritesRenderer {
 
-	protected final float FOREGROUND_PLANE = 0f;
-	protected final float BACKGROUND_PLANE = 8f;
+	protected final Random random = new Random();
+
+	protected final int MAX_TIME_BETWEEN_FIREBALLS = 250;
+
+	protected long nextFireball = 0;
 
 	// Textures
-	protected Texture galaxyTexture;
-	protected Texture planetTexture;
-	protected Texture fireballTexture;
+	protected final Texture backgroundTexture;
+	protected final Texture fireballTexture;
 
-	// Sprites
-	protected final Sprite galaxySprite;
-	protected final Sprite planetSprite;
-	protected final Sprite satelliteSprite;
-	protected final Sprite fireballSprite;
-
-	protected long startTime;
+	// Scene objects
+	protected final Background background;
+	protected final Fireballs fireballs;
 
 	// Constructor
 	public TestRenderer(Context context) {
 
 		super(context);
 
-		// Create textures
-		this.galaxyTexture = new Texture(1, 1);
-		this.planetTexture = new Texture(1, 1);
-		this.fireballTexture = new Texture(5, 5);
+		backgroundTexture = new Texture(1, 1);
+		this.background = new Background(backgroundTexture);
 
-		// Create sprites
-		this.galaxySprite = new Sprite(0f, 0f, BACKGROUND_PLANE, 0f, 10f,
-				galaxyTexture);
-		this.planetSprite = new Sprite(0f, 0f, FOREGROUND_PLANE, 0f, 0.7f,
-				planetTexture);
-		this.satelliteSprite = new Sprite(0f, 0f, FOREGROUND_PLANE, 0f, 0.2f,
-				planetTexture);
-		this.fireballSprite = new Sprite(0f, 0f, FOREGROUND_PLANE, 0f, 0.3f,
-				fireballTexture);
-
-		startTime = System.currentTimeMillis();
+		fireballTexture = new Texture(5, 5);
+		this.fireballs = new Fireballs(fireballTexture);
 	}
 
 	@Override
 	protected void loadTextures(GL10 gl) {
-		galaxyTexture.load(gl, context, R.drawable.galaxy);
-		planetTexture.load(gl, context, R.drawable.planet);
+		backgroundTexture.load(gl, context, R.drawable.stars);
 		fireballTexture.load(gl, context, R.drawable.fireball);
 	}
 
 	@Override
 	protected void drawSprites(GL10 gl) {
 
-		float elapsed = (System.currentTimeMillis() - startTime) / 1000f;
+		// Add random fireballs
+		long currentTime = System.currentTimeMillis();
+		if (currentTime > nextFireball) {
+			fireballs.add(this.x + 2f * (random.nextFloat() - 0.5f), this.y
+					+ 2f * (random.nextFloat() - 0.5f));
+			nextFireball = currentTime
+					+ random.nextInt(MAX_TIME_BETWEEN_FIREBALLS);
+		}
 
-		// Adjust sprites angle
-		float angle = 57.32f * elapsed;
-		planetSprite.setAngle(angle);
-		satelliteSprite.setAngle(angle);
-		fireballSprite.setAngle(-angle);
-
-		// Adjust sprites position
-		satelliteSprite.setXY(0.5f * (float) Math.cos(elapsed),
-				0.7f * (float) Math.sin(elapsed));
-		fireballSprite.setXY(0.5f * (float) Math.cos(elapsed - 0.2),
-				0.7f * (float) Math.sin(elapsed - 0.2));
-
-		// Adjust sprites animation
-		fireballSprite.setAnimation((int) (elapsed * 25) % 25);
-
-		// Draw sprites
-		galaxySprite.draw(gl);
-		planetSprite.draw(gl);
-		satelliteSprite.draw(gl);
-		fireballSprite.draw(gl);
+		// Draw the scene objects
+		background.draw(gl, this.x, this.y);
+		fireballs.draw(gl);
 	}
 }
