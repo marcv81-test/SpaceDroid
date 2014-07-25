@@ -11,18 +11,17 @@ import java.nio.FloatBuffer;
 
 public class Sprite {
 
-	protected static final int COORDINATES_PER_VERTEX = 3;
+	private static final int COORDINATES_PER_VERTEX = 3;
 
-	protected final FloatBuffer verticesBuffer;
-	protected final FloatBuffer[] textureCoordsBuffers;
+	private final FloatBuffer verticesBuffer;
+	private final FloatBuffer[] textureCoordsBuffers;
 
-	protected final Context context;
-	protected final int resourceId;
+	private final Context context;
+	private final int resourceId;
 
-	protected int textureName;
+	private int textureName;
 
 	// Constructor
-	// Child classes shall define a public constructor
 	protected Sprite(Context context, int resourceId, int gfxX, int gfxY,
 			float sizeX, float sizeY) {
 
@@ -79,7 +78,6 @@ public class Sprite {
 	}
 
 	// Draw the sprite
-	// Child classes shall define a public draw method
 	protected void draw(GL10 gl, float x, float y, float z, float angle,
 			int gfxId) {
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);

@@ -7,36 +7,36 @@ import java.util.Random;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class Fireballs extends Sprite {
+class Fireballs extends Sprite {
 
-	protected static final float FIREBALL_DEPTH = 0f;
-	protected static final float FIREBALL_SCALE = 0.3f;
+	private static final float FIREBALL_DEPTH = 0f;
+	private static final float FIREBALL_SCALE = 0.3f;
 
-	protected static final int FIREBALL_RESOURCE = R.drawable.fireball;
-	protected static final int FIREBALL_GFX_X = 5;
-	protected static final int FIREBALL_GFX_Y = 5;
+	private static final int FIREBALL_RESOURCE = R.drawable.fireball;
+	private static final int FIREBALL_GFX_X = 5;
+	private static final int FIREBALL_GFX_Y = 5;
 
-	protected static final long FIREBALL_LIFESPAN = 1000; // 1 second
-	protected static final long FIREBALL_ANIMATIONS = 25;
+	private static final long FIREBALL_LIFESPAN = 1000; // 1 second
+	private static final long FIREBALL_ANIMATIONS = 25;
 
-	protected final ArrayList<Fireball> fireballs = new ArrayList<Fireball>();
+	private final ArrayList<Fireball> fireballs = new ArrayList<Fireball>();
 
 	// Random numbers generator for the fireballs angles
-	protected final Random random = new Random();
+	private final Random random = new Random();
 
 	// Add a new fireball
-	public void add(float x, float y) {
+	void add(float x, float y) {
 		fireballs.add(new Fireball(x, y));
 	}
 
 	// Constructor
-	public Fireballs(Context context) {
+	Fireballs(Context context) {
 		super(context, FIREBALL_RESOURCE, FIREBALL_GFX_X, FIREBALL_GFX_Y,
 				FIREBALL_SCALE, FIREBALL_SCALE);
 	}
 
 	// Draw the fireballs
-	public void draw(GL10 gl) {
+	void draw(GL10 gl) {
 
 		long currentTime = System.currentTimeMillis();
 
@@ -53,40 +53,30 @@ public class Fireballs extends Sprite {
 
 			// Draw the remaining fireballs
 			else {
-				draw(gl, fireball.getX(), fireball.getY(), FIREBALL_DEPTH,
+				draw(gl, fireball.x, fireball.y, FIREBALL_DEPTH,
 						fireball.getAngle(currentTime),
 						fireball.getAnimation(currentTime));
 			}
 		}
 	}
 
-	protected class Fireball {
+	private class Fireball {
 
-		protected final float x, y, startAngle, angleRate;
-		protected final long startTime;
-
-		// Get the fireball x coordinate
-		public float getX() {
-			return x;
-		}
-
-		// Get the fireball y coordinate
-		public float getY() {
-			return y;
-		}
+		private final float x, y, startAngle, angleRate;
+		private final long startTime;
 
 		// Return whether the fireball has gone past its lifespan or not
-		public boolean isExpired(long currentTime) {
+		private boolean isExpired(long currentTime) {
 			return (currentTime - startTime) >= FIREBALL_LIFESPAN;
 		}
 
 		// Return the fireball drawing angle
-		public float getAngle(long currentTime) {
+		private float getAngle(long currentTime) {
 			return startAngle + angleRate * (currentTime - startTime) / 1000;
 		}
 
 		// Return the fireball animation
-		public int getAnimation(long currentTime) {
+		private int getAnimation(long currentTime) {
 			long animation = (currentTime - startTime) * FIREBALL_ANIMATIONS
 					/ FIREBALL_LIFESPAN;
 			return (int) animation;
@@ -94,7 +84,7 @@ public class Fireballs extends Sprite {
 
 		// Constructor
 		// The fireball angles are set randomly
-		public Fireball(float x, float y) {
+		private Fireball(float x, float y) {
 			this.x = x;
 			this.y = y;
 			this.startAngle = 360f * random.nextFloat();

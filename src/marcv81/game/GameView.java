@@ -6,11 +6,11 @@ import android.view.MotionEvent;
 
 class GameView extends GLSurfaceView {
 
-	protected final float SCROLL_DIVIDER = 150f;
+	private final float SCROLL_DIVIDER = 150f;
 
-	protected float previousX, previousY;
+	private float previousX, previousY;
 
-	protected final GameRenderer renderer;
+	private final GameRenderer renderer;
 
 	GameView(Context context) {
 		super(context);

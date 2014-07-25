@@ -7,9 +7,9 @@ import java.lang.Thread.UncaughtExceptionHandler;
 
 public class GameActivity extends Activity implements UncaughtExceptionHandler {
 
-	protected static final String TAG = "AndroidTest";
+	private static final String TAG = "AndroidTest";
 
-	protected GameView view;
+	private GameView view;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -43,11 +43,3 @@ public class GameActivity extends Activity implements UncaughtExceptionHandler {
 	}
 }
 
-class TestException extends RuntimeException {
-
-	protected static final long serialVersionUID = 1L;
-
-	public TestException(String s) {
-		super(s);
-	}
-}

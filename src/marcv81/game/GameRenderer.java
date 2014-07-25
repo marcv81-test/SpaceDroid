@@ -7,17 +7,17 @@ import java.util.Random;
 
 class GameRenderer extends Renderer {
 
-	protected static final int MAX_TIME_BETWEEN_FIREBALLS = 250;
+	private static final int MAX_TIME_BETWEEN_FIREBALLS = 250;
 
-	protected final Random random = new Random();
-	protected long nextFireball = 0;
+	private final Random random = new Random();
+	private long nextFireball = 0;
 
-	// Scene objects
-	protected final Background background;
-	protected final Fireballs fireballs;
+	// Scene sprites
+	private final Background background;
+	private final Fireballs fireballs;
 
 	// Constructor
-	public GameRenderer(Context context) {
+	GameRenderer(Context context) {
 		background = new Background(context);
 		fireballs = new Fireballs(context);
 	}
