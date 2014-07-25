@@ -1,12 +1,11 @@
-package com.test;
+package marcv81.gfx2d;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
-import android.content.Context;
 
-abstract class SpritesRenderer implements GLSurfaceView.Renderer {
+public abstract class Renderer implements GLSurfaceView.Renderer {
 
 	// Load the textures
 	protected abstract void loadTextures(GL10 gl);
@@ -14,7 +13,6 @@ abstract class SpritesRenderer implements GLSurfaceView.Renderer {
 	// Draw the sprites
 	protected abstract void drawSprites(GL10 gl);
 
-	protected final Context context;
 	protected float x = 0f, y = 0f;
 
 	// Set the x and y camera coordinates
@@ -27,11 +25,6 @@ abstract class SpritesRenderer implements GLSurfaceView.Renderer {
 	public void moveXY(float dx, float dy) {
 		this.x += dx;
 		this.y += dy;
-	}
-
-	// Constructor
-	public SpritesRenderer(Context context) {
-		this.context = context;
 	}
 
 	@Override
@@ -47,7 +40,7 @@ abstract class SpritesRenderer implements GLSurfaceView.Renderer {
 		gl.glEnable(GL10.GL_DEPTH_TEST);
 		gl.glDepthFunc(GL10.GL_LEQUAL);
 
-		// Abstract method to load the textures
+		// Call the abstract method to load the textures
 		loadTextures(gl);
 	}
 
@@ -71,7 +64,7 @@ abstract class SpritesRenderer implements GLSurfaceView.Renderer {
 		gl.glLoadIdentity();
 		GLU.gluLookAt(gl, x, y, -3f, x, y, 0f, 0f, 1f, 0f);
 
-		// Abstract method to draw the sprites
+		// Call the abstract method to draw the sprites
 		drawSprites(gl);
 	}
 }

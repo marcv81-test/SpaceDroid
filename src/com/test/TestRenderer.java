@@ -2,30 +2,33 @@ package com.test;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+
+import marcv81.gfx2d.Renderer;
+
 import android.content.Context;
 import java.util.Random;
 
-class TestRenderer extends SpritesRenderer {
+class TestRenderer extends Renderer {
+
+	protected static final int MAX_TIME_BETWEEN_FIREBALLS = 250;
 
 	protected final Random random = new Random();
-
-	protected final int MAX_TIME_BETWEEN_FIREBALLS = 250;
-
 	protected long nextFireball = 0;
 
 	// Scene objects
-	protected final Background background = new Background();
-	protected final Fireballs fireballs = new Fireballs();
+	protected final Background background;
+	protected final Fireballs fireballs;
 
 	// Constructor
 	public TestRenderer(Context context) {
-		super(context);
+		background = new Background(context);
+		fireballs = new Fireballs(context);
 	}
 
 	@Override
 	protected void loadTextures(GL10 gl) {
-		background.loadTexture(gl, context);
-		fireballs.loadTexture(gl, context);
+		background.loadTexture(gl);
+		fireballs.loadTexture(gl);
 	}
 
 	@Override

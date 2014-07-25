@@ -1,4 +1,4 @@
-package com.test;
+package marcv81.gfx2d;
 
 import javax.microedition.khronos.opengles.GL10;
 import android.opengl.GLUtils;
@@ -15,11 +15,16 @@ public class Sprite {
 
 	protected final FloatBuffer verticesBuffer;
 	protected final FloatBuffer[] textureCoordsBuffers;
+
+	protected final Context context;
 	protected final int resourceId;
+
 	protected int textureName;
 
 	// Constructor
-	public Sprite(float sizeX, float sizeY, int resourceId, int gfxX, int gfxY) {
+	// Child classes shall define a public constructor
+	protected Sprite(Context context, int resourceId, int gfxX, int gfxY,
+			float sizeX, float sizeY) {
 
 		// Create vertices buffer according to the sprite size
 		// Bottom left, top left, bottom right, top right
@@ -52,12 +57,13 @@ public class Sprite {
 			}
 		}
 
-		// Store the texture bitmap resource id
+		// Store the context and resource id to load the texture bitmap
+		this.context = context;
 		this.resourceId = resourceId;
 	}
 
 	// Load the texture from the bitmap resource
-	public void loadTexture(GL10 gl, Context context) {
+	public void loadTexture(GL10 gl) {
 		Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),
 				resourceId);
 		int names[] = new int[1];
@@ -73,7 +79,9 @@ public class Sprite {
 	}
 
 	// Draw the sprite
-	public void draw(GL10 gl, float x, float y, float z, float angle, int gfxId) {
+	// Child classes shall define a public draw method
+	protected void draw(GL10 gl, float x, float y, float z, float angle,
+			int gfxId) {
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 		gl.glPushMatrix();
