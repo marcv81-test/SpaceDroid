@@ -1,17 +1,23 @@
 package com.test;
 
 import javax.microedition.khronos.opengles.GL10;
+import android.content.Context;
 
 public class Background {
 
-	protected final float BACKGROUND_DEPTH = 8f;
-	protected final float BACKGROUND_SCALE = 8f;
+	protected static final float BACKGROUND_DEPTH = 8f;
+	protected static final float BACKGROUND_SCALE = 8f;
+
+	protected static final int BACKGROUND_RESOURCE = R.drawable.stars;
+	protected static final int BACKGROUND_GFX_X = 1;
+	protected static final int BACKGROUND_GFX_Y = 1;
 
 	protected final Sprite sprite;
 
 	// Constructor
-	public Background(Texture texture) {
-		this.sprite = new Sprite(texture, BACKGROUND_SCALE, BACKGROUND_SCALE);
+	public Background() {
+		this.sprite = new Sprite(BACKGROUND_SCALE, BACKGROUND_SCALE,
+				BACKGROUND_RESOURCE, BACKGROUND_GFX_X, BACKGROUND_GFX_Y);
 	}
 
 	// Draw the background
@@ -26,5 +32,10 @@ public class Background {
 						* j, BACKGROUND_DEPTH, 0f, 0);
 			}
 		}
+	}
+	
+	// Load the sprite texture
+	public void loadTexture(GL10 gl, Context context) {
+		sprite.loadTexture(gl, context);
 	}
 }

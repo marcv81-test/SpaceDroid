@@ -13,30 +13,19 @@ class TestRenderer extends SpritesRenderer {
 
 	protected long nextFireball = 0;
 
-	// Textures
-	protected final Texture backgroundTexture;
-	protected final Texture fireballTexture;
-
 	// Scene objects
-	protected final Background background;
-	protected final Fireballs fireballs;
+	protected final Background background = new Background();
+	protected final Fireballs fireballs = new Fireballs();
 
 	// Constructor
 	public TestRenderer(Context context) {
-
 		super(context);
-
-		backgroundTexture = new Texture(1, 1);
-		this.background = new Background(backgroundTexture);
-
-		fireballTexture = new Texture(5, 5);
-		this.fireballs = new Fireballs(fireballTexture);
 	}
 
 	@Override
 	protected void loadTextures(GL10 gl) {
-		backgroundTexture.load(gl, context, R.drawable.stars);
-		fireballTexture.load(gl, context, R.drawable.fireball);
+		background.loadTexture(gl, context);
+		fireballs.loadTexture(gl, context);
 	}
 
 	@Override

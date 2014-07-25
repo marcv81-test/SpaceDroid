@@ -1,6 +1,7 @@
 package com.test;
 
 import javax.microedition.khronos.opengles.GL10;
+import android.content.Context;
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -9,8 +10,13 @@ public class Fireballs {
 
 	protected final float FIREBALL_DEPTH = 0f;
 	protected final float FIREBALL_SCALE = 0.3f;
-	protected final long FIREBALL_LIFESPAN = 1000; // 1 second
-	protected final long FIREBALL_ANIMATIONS = 25;
+
+	protected static final int FIREBALL_RESOURCE = R.drawable.fireball;
+	protected static final int FIREBALL_GFX_X = 5;
+	protected static final int FIREBALL_GFX_Y = 5;
+
+	protected static final long FIREBALL_LIFESPAN = 1000; // 1 second
+	protected static final long FIREBALL_ANIMATIONS = 25;
 
 	protected final Sprite sprite;
 	protected final ArrayList<Fireball> fireballs = new ArrayList<Fireball>();
@@ -24,8 +30,9 @@ public class Fireballs {
 	}
 
 	// Constructor
-	public Fireballs(Texture texture) {
-		this.sprite = new Sprite(texture, FIREBALL_SCALE, FIREBALL_SCALE);
+	public Fireballs() {
+		this.sprite = new Sprite(FIREBALL_SCALE, FIREBALL_SCALE,
+				FIREBALL_RESOURCE, FIREBALL_GFX_X, FIREBALL_GFX_Y);
 	}
 
 	// Draw the fireballs
@@ -51,6 +58,11 @@ public class Fireballs {
 						fireball.getAnimation(currentTime));
 			}
 		}
+	}
+
+	// Load the sprite texture
+	public void loadTexture(GL10 gl, Context context) {
+		sprite.loadTexture(gl, context);
 	}
 
 	protected class Fireball {
@@ -95,5 +107,4 @@ public class Fireballs {
 			this.startTime = System.currentTimeMillis();
 		}
 	}
-
 }
