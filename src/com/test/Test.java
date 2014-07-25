@@ -37,6 +37,8 @@ public class Test extends Activity implements UncaughtExceptionHandler {
 		String message = throwable.getMessage();
 		if (message != null)
 			Log.w(TAG, message);
+		for (StackTraceElement s : throwable.getStackTrace())
+			Log.w(TAG, s.toString());
 		System.exit(1);
 	}
 }
