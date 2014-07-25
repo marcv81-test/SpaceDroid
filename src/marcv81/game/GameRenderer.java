@@ -1,14 +1,11 @@
-package com.test;
-
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
+package marcv81.game;
 
 import marcv81.gfx2d.Renderer;
-
+import javax.microedition.khronos.opengles.GL10;
 import android.content.Context;
 import java.util.Random;
 
-class TestRenderer extends Renderer {
+class GameRenderer extends Renderer {
 
 	protected static final int MAX_TIME_BETWEEN_FIREBALLS = 250;
 
@@ -20,7 +17,7 @@ class TestRenderer extends Renderer {
 	protected final Fireballs fireballs;
 
 	// Constructor
-	public TestRenderer(Context context) {
+	public GameRenderer(Context context) {
 		background = new Background(context);
 		fireballs = new Fireballs(context);
 	}

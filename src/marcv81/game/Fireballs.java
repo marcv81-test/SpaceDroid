@@ -1,4 +1,4 @@
-package com.test;
+package marcv81.game;
 
 import marcv81.gfx2d.Sprite;
 import javax.microedition.khronos.opengles.GL10;

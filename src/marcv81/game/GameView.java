@@ -1,20 +1,20 @@
-package com.test;
+package marcv81.game;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 
-class TestView extends GLSurfaceView {
+class GameView extends GLSurfaceView {
 
 	protected final float SCROLL_DIVIDER = 150f;
 
 	protected float previousX, previousY;
 
-	protected final TestRenderer renderer;
+	protected final GameRenderer renderer;
 
-	TestView(Context context) {
+	GameView(Context context) {
 		super(context);
-		renderer = new TestRenderer(context);
+		renderer = new GameRenderer(context);
 		setRenderer(renderer);
 	}
 

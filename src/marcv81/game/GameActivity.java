@@ -1,21 +1,21 @@
-package com.test;
+package marcv81.game;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import java.lang.Thread.UncaughtExceptionHandler;
 
-public class Test extends Activity implements UncaughtExceptionHandler {
+public class GameActivity extends Activity implements UncaughtExceptionHandler {
 
 	protected static final String TAG = "AndroidTest";
 
-	protected TestView view;
+	protected GameView view;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Thread.setDefaultUncaughtExceptionHandler(this);
-		view = new TestView(this);
+		view = new GameView(this);
 		setContentView(view);
 	}
 
