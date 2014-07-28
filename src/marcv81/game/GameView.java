@@ -1,21 +1,17 @@
 package marcv81.game;
 
-import android.content.Context;
-import android.opengl.GLSurfaceView;
+import marcv81.gfx2d.Gfx2DView;
+import marcv81.gfx2d.Gfx2DActivity;
 import android.view.MotionEvent;
 
-class GameView extends GLSurfaceView {
+class GameView extends Gfx2DView {
 
 	private final float SCROLL_DIVIDER = 150f;
 
 	private float previousX, previousY;
 
-	private final GameRenderer renderer;
-
-	GameView(Context context) {
-		super(context);
-		renderer = new GameRenderer(context);
-		setRenderer(renderer);
+	GameView(Gfx2DActivity activity) {
+		super(activity);
 	}
 
 	@Override
@@ -27,7 +23,7 @@ class GameView extends GLSurfaceView {
 		case MotionEvent.ACTION_MOVE:
 			float dx = (x - previousX);
 			float dy = (y - previousY);
-			renderer.moveXY(dx / SCROLL_DIVIDER, dy / SCROLL_DIVIDER);
+			getRenderer().moveXY(dx / SCROLL_DIVIDER, dy / SCROLL_DIVIDER);
 		}
 		previousX = x;
 		previousY = y;

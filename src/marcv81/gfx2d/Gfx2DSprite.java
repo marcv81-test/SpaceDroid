@@ -9,21 +9,21 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-public class Sprite {
+public abstract class Gfx2DSprite {
 
 	private static final int COORDINATES_PER_VERTEX = 3;
 
 	private final FloatBuffer verticesBuffer;
 	private final FloatBuffer[] textureCoordsBuffers;
-
-	private final Context context;
 	private final int resourceId;
-
 	private int textureName;
 
+	// Draw all the instances of the sprite
+	public abstract void drawAll(GL10 gl, float x, float y);
+
 	// Constructor
-	protected Sprite(Context context, int resourceId, int gfxX, int gfxY,
-			float sizeX, float sizeY) {
+	protected Gfx2DSprite(int resourceId, int gfxX, int gfxY, float sizeX,
+			float sizeY) {
 
 		// Create vertices buffer according to the sprite size
 		// Bottom left, top left, bottom right, top right
@@ -56,13 +56,12 @@ public class Sprite {
 			}
 		}
 
-		// Store the context and resource id to load the texture bitmap
-		this.context = context;
+		// Store the resource ID to load the texture
 		this.resourceId = resourceId;
 	}
 
 	// Load the texture from the bitmap resource
-	public void loadTexture(GL10 gl) {
+	public void loadTexture(GL10 gl, Context context) {
 		Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),
 				resourceId);
 		int names[] = new int[1];
@@ -77,8 +76,8 @@ public class Sprite {
 		bitmap.recycle();
 	}
 
-	// Draw the sprite
-	protected void draw(GL10 gl, float x, float y, float z, float angle,
+	// Draw one sprite
+	protected void drawOne(GL10 gl, float x, float y, float z, float angle,
 			int gfxId) {
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);

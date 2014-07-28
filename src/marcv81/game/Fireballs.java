@@ -1,13 +1,12 @@
 package marcv81.game;
 
-import marcv81.gfx2d.Sprite;
+import marcv81.gfx2d.Gfx2DSprite;
 import javax.microedition.khronos.opengles.GL10;
-import android.content.Context;
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-class Fireballs extends Sprite {
+class Fireballs extends Gfx2DSprite {
 
 	private static final float FIREBALL_DEPTH = 0f;
 	private static final float FIREBALL_SCALE = 0.3f;
@@ -30,55 +29,58 @@ class Fireballs extends Sprite {
 	}
 
 	// Constructor
-	Fireballs(Context context) {
-		super(context, FIREBALL_RESOURCE, FIREBALL_GFX_X, FIREBALL_GFX_Y,
+	Fireballs() {
+		super(FIREBALL_RESOURCE, FIREBALL_GFX_X, FIREBALL_GFX_Y,
 				FIREBALL_SCALE, FIREBALL_SCALE);
 	}
 
-	// Draw the fireballs
-	void draw(GL10 gl) {
-
-		long currentTime = System.currentTimeMillis();
+	void update(long timeSlice) {
 
 		// Iterate through the fireballs
 		Iterator<Fireball> iterator = fireballs.iterator();
 		while (iterator.hasNext()) {
 
 			Fireball fireball = iterator.next();
+			fireball.update(timeSlice);
 
 			// Remove the expired fireballs
-			if (fireball.isExpired(currentTime)) {
+			if (fireball.isExpired()) {
 				iterator.remove();
 			}
+		}
+	}
 
-			// Draw the remaining fireballs
-			else {
-				draw(gl, fireball.x, fireball.y, FIREBALL_DEPTH,
-						fireball.getAngle(currentTime),
-						fireball.getAnimation(currentTime));
-			}
+	@Override
+	public void drawAll(GL10 gl, float x, float y) {
+		for (Fireball fireball : fireballs) {
+			drawOne(gl, fireball.x, fireball.y, FIREBALL_DEPTH,
+					fireball.getAngle(), fireball.getAnimation());
 		}
 	}
 
 	private class Fireball {
 
 		private final float x, y, startAngle, angleRate;
-		private final long startTime;
+		private long lifeTime = 0;
+
+		// Update the fireball life time
+		private void update(long timeSlice) {
+			lifeTime += timeSlice;
+		}
 
 		// Return whether the fireball has gone past its lifespan or not
-		private boolean isExpired(long currentTime) {
-			return (currentTime - startTime) >= FIREBALL_LIFESPAN;
+		private boolean isExpired() {
+			return lifeTime >= FIREBALL_LIFESPAN;
 		}
 
 		// Return the fireball drawing angle
-		private float getAngle(long currentTime) {
-			return startAngle + angleRate * (currentTime - startTime) / 1000;
+		private float getAngle() {
+			return startAngle + angleRate * lifeTime / 1000;
 		}
 
 		// Return the fireball animation
-		private int getAnimation(long currentTime) {
-			long animation = (currentTime - startTime) * FIREBALL_ANIMATIONS
-					/ FIREBALL_LIFESPAN;
+		private int getAnimation() {
+			long animation = lifeTime * FIREBALL_ANIMATIONS / FIREBALL_LIFESPAN;
 			return (int) animation;
 		}
 
@@ -89,7 +91,6 @@ class Fireballs extends Sprite {
 			this.y = y;
 			this.startAngle = 360f * random.nextFloat();
 			this.angleRate = 180f * (random.nextFloat() - 0.5f);
-			this.startTime = System.currentTimeMillis();
 		}
 	}
 }

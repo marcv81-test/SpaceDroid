@@ -1,45 +1,22 @@
 package marcv81.game;
 
-import android.app.Activity;
-import android.os.Bundle;
 import android.util.Log;
-import java.lang.Thread.UncaughtExceptionHandler;
+import marcv81.gfx2d.Gfx2DActivity;
+import marcv81.gfx2d.Gfx2DView;
+import marcv81.gfx2d.Gfx2DThread;
 
-public class GameActivity extends Activity implements UncaughtExceptionHandler {
+public class GameActivity extends Gfx2DActivity {
 
-	private static final String TAG = "AndroidTest";
-
-	private GameView view;
-
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		Thread.setDefaultUncaughtExceptionHandler(this);
-		view = new GameView(this);
-		setContentView(view);
+	public GameActivity() {
+		Log.i(Gfx2DActivity.TAG, "GameActivity()");
 	}
 
-	@Override
-	protected void onPause() {
-		super.onPause();
-		view.onPause();
+	public Gfx2DView createView() {
+		return new GameView(this);
 	}
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-		view.onResume();
+	public Gfx2DThread createThread() {
+		return new GameThread(this);
 	}
 
-	@Override
-	public void uncaughtException(Thread thread, Throwable throwable) {
-		Log.w(TAG, "Caught: " + throwable.getClass());
-		String message = throwable.getMessage();
-		if (message != null)
-			Log.w(TAG, message);
-		for (StackTraceElement s : throwable.getStackTrace())
-			Log.w(TAG, s.toString());
-		System.exit(1);
-	}
 }
-

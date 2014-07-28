@@ -5,23 +5,35 @@ import javax.microedition.khronos.opengles.GL10;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 
-public abstract class Renderer implements GLSurfaceView.Renderer {
+public class Gfx2DRenderer implements GLSurfaceView.Renderer {
 
-	// Load the textures
-	protected abstract void loadTextures(GL10 gl);
+	private final Gfx2DView view;
+	private float x = 0f, y = 0f;
 
-	// Draw the sprites
-	protected abstract void drawSprites(GL10 gl);
+	// Constructor
+	public Gfx2DRenderer(Gfx2DView view) {
+		this.view = view;
+	}
 
-	protected float x = 0f, y = 0f;
+	public Gfx2DView getView() {
+		return view;
+	}
 
-	// Set the x and y camera coordinates
+	public float getX() {
+		return x;
+	}
+
+	public float getY() {
+		return y;
+	}
+
+	// Set the camera coordinates
 	public void setXY(float x, float y) {
 		this.x = x;
 		this.y = y;
 	}
 
-	// Move the x and y camera coordinates
+	// Move the camera coordinates
 	public void moveXY(float dx, float dy) {
 		this.x += dx;
 		this.y += dy;
@@ -40,8 +52,11 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
 		gl.glEnable(GL10.GL_DEPTH_TEST);
 		gl.glDepthFunc(GL10.GL_LEQUAL);
 
-		// Call the abstract method to load the textures
-		loadTextures(gl);
+		// Load the sprites textures
+		for (Gfx2DSprite sprite : getView().getActivity().getThread()
+				.getSprites()) {
+			sprite.loadTexture(gl, getView().getContext());
+		}
 	}
 
 	@Override
@@ -58,13 +73,19 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
 	@Override
 	public final void onDrawFrame(GL10 gl) {
 
+		// Buffer the camera coordinates
+		float x = this.x, y = this.y;
+
 		// Prepare to draw the sprites
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
 		GLU.gluLookAt(gl, x, y, -3f, x, y, 0f, 0f, 1f, 0f);
 
-		// Call the abstract method to draw the sprites
-		drawSprites(gl);
+		// Draw the sprites
+		for (Gfx2DSprite sprite : getView().getActivity().getThread()
+				.getSprites()) {
+			sprite.drawAll(gl, x, y);
+		}
 	}
 }
