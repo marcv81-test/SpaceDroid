@@ -35,50 +35,54 @@ class Fireballs extends Sprite {
 				FIREBALL_SCALE, FIREBALL_SCALE);
 	}
 
-	// Draw the fireballs
-	void draw(GL10 gl) {
-
-		long currentTime = System.currentTimeMillis();
+	// Update the fireballs
+	void update(long timeSlice) {
 
 		// Iterate through the fireballs
 		Iterator<Fireball> iterator = fireballs.iterator();
 		while (iterator.hasNext()) {
 
 			Fireball fireball = iterator.next();
+			fireball.update(timeSlice);
 
 			// Remove the expired fireballs
-			if (fireball.isExpired(currentTime)) {
+			if (fireball.isExpired()) {
 				iterator.remove();
 			}
+		}
+	}
 
-			// Draw the remaining fireballs
-			else {
-				draw(gl, fireball.x, fireball.y, FIREBALL_DEPTH,
-						fireball.getAngle(currentTime),
-						fireball.getAnimation(currentTime));
-			}
+	// Draw the fireballs
+	void draw(GL10 gl) {
+		for (Fireball fireball : fireballs) {
+			draw(gl, fireball.x, fireball.y, FIREBALL_DEPTH,
+					fireball.getAngle(), fireball.getAnimation());
 		}
 	}
 
 	private class Fireball {
 
 		private final float x, y, startAngle, angleRate;
-		private final long startTime;
+		private long age = 0;
+
+		// Update the fireball
+		private void update(long timeSlice) {
+			age += timeSlice;
+		}
 
 		// Return whether the fireball has gone past its lifespan or not
-		private boolean isExpired(long currentTime) {
-			return (currentTime - startTime) >= FIREBALL_LIFESPAN;
+		private boolean isExpired() {
+			return age >= FIREBALL_LIFESPAN;
 		}
 
 		// Return the fireball drawing angle
-		private float getAngle(long currentTime) {
-			return startAngle + angleRate * (currentTime - startTime) / 1000;
+		private float getAngle() {
+			return startAngle + angleRate * age / 1000;
 		}
 
 		// Return the fireball animation
-		private int getAnimation(long currentTime) {
-			long animation = (currentTime - startTime) * FIREBALL_ANIMATIONS
-					/ FIREBALL_LIFESPAN;
+		private int getAnimation() {
+			long animation = age * FIREBALL_ANIMATIONS / FIREBALL_LIFESPAN;
 			return (int) animation;
 		}
 
@@ -89,7 +93,6 @@ class Fireballs extends Sprite {
 			this.y = y;
 			this.startAngle = 360f * random.nextFloat();
 			this.angleRate = 180f * (random.nextFloat() - 0.5f);
-			this.startTime = System.currentTimeMillis();
 		}
 	}
 }

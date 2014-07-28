@@ -7,11 +7,19 @@ import android.opengl.GLU;
 
 public abstract class Renderer implements GLSurfaceView.Renderer {
 
+	private static final long MIN_TIME_SLICE = 40; // 25 FPS
+	private static final long MAX_TIME_SLICE = 100; // 10 FPS
+
+	private long previousTime = 0;
+
 	// Load the textures
 	protected abstract void loadTextures(GL10 gl);
 
 	// Draw the sprites
 	protected abstract void drawSprites(GL10 gl);
+
+	// Update the engine
+	protected abstract void update(long timeSlice);
 
 	protected float x = 0f, y = 0f;
 
@@ -57,6 +65,24 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
 
 	@Override
 	public final void onDrawFrame(GL10 gl) {
+
+		long currentTime, timeSlice;
+
+		// Wait until the time slice is long enough
+		do {
+			currentTime = System.currentTimeMillis();
+			timeSlice = currentTime - previousTime;
+		} while (timeSlice < MIN_TIME_SLICE);
+
+		// Slow the game down if the time slice is too long
+		if (timeSlice > MAX_TIME_SLICE)
+			timeSlice = MAX_TIME_SLICE;
+
+		// Update the engine
+		update(timeSlice);
+
+		// Get ready to calculate the next time slice
+		previousTime = currentTime;
 
 		// Prepare to draw the sprites
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);

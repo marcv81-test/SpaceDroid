@@ -10,7 +10,9 @@ class GameRenderer extends Renderer {
 	private static final int MAX_TIME_BETWEEN_FIREBALLS = 250;
 
 	private final Random random = new Random();
-	private long nextFireball = 0;
+
+	private long gameTime = 0;
+	private long nextFireballTime = 0;
 
 	// Scene sprites
 	private final Background background;
@@ -29,16 +31,23 @@ class GameRenderer extends Renderer {
 	}
 
 	@Override
-	protected void drawSprites(GL10 gl) {
+	protected void update(long timeSlice) {
 
 		// Add random fireballs
-		long currentTime = System.currentTimeMillis();
-		if (currentTime > nextFireball) {
+		gameTime += timeSlice;
+		if (gameTime > nextFireballTime) {
 			fireballs.add(this.x + 2f * (random.nextFloat() - 0.5f), this.y
 					+ 2f * (random.nextFloat() - 0.5f));
-			nextFireball = currentTime
+			nextFireballTime = gameTime
 					+ random.nextInt(MAX_TIME_BETWEEN_FIREBALLS);
 		}
+
+		// Update fireballs
+		fireballs.update(timeSlice);
+	}
+
+	@Override
+	protected void drawSprites(GL10 gl) {
 
 		// Draw the scene objects
 		background.draw(gl, this.x, this.y);
