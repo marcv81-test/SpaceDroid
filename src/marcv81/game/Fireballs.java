@@ -30,8 +30,8 @@ class Fireballs extends Sprite {
 	}
 
 	// Constructor
-	Fireballs(Context context) {
-		super(context, FIREBALL_RESOURCE, FIREBALL_GFX_X, FIREBALL_GFX_Y,
+	Fireballs() {
+		super(FIREBALL_RESOURCE, FIREBALL_GFX_X, FIREBALL_GFX_Y,
 				FIREBALL_SCALE, FIREBALL_SCALE);
 	}
 
@@ -53,9 +53,9 @@ class Fireballs extends Sprite {
 	}
 
 	// Draw the fireballs
-	void draw(GL10 gl) {
+	public void drawAll(GL10 gl, float x, float y) {
 		for (Fireball fireball : fireballs) {
-			draw(gl, fireball.x, fireball.y, FIREBALL_DEPTH,
+			drawOne(gl, fireball.x, fireball.y, FIREBALL_DEPTH,
 					fireball.getAngle(), fireball.getAnimation());
 		}
 	}

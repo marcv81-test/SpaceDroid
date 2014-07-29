@@ -4,24 +4,29 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
+import android.content.Context;
 
 public abstract class Renderer implements GLSurfaceView.Renderer {
 
 	private static final long MIN_TIME_SLICE = 40; // 25 FPS
 	private static final long MAX_TIME_SLICE = 100; // 10 FPS
 
+	private final Context context;
+
 	private long previousTime = 0;
 
-	// Load the textures
-	protected abstract void loadTextures(GL10 gl);
-
-	// Draw the sprites
-	protected abstract void drawSprites(GL10 gl);
+	// Return all the sprites
+	protected abstract Sprite[] getSprites();
 
 	// Update the engine
 	protected abstract void update(long timeSlice);
 
 	protected float x = 0f, y = 0f;
+
+	// Constructor
+	protected Renderer(Context context) {
+		this.context = context;
+	}
 
 	// Set the x and y camera coordinates
 	public void setXY(float x, float y) {
@@ -48,8 +53,10 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
 		gl.glEnable(GL10.GL_DEPTH_TEST);
 		gl.glDepthFunc(GL10.GL_LEQUAL);
 
-		// Call the abstract method to load the textures
-		loadTextures(gl);
+		// Load the textures
+		for (Sprite sprite : getSprites()) {
+			sprite.loadTexture(gl, context);
+		}
 	}
 
 	@Override
@@ -84,13 +91,18 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
 		// Get ready to calculate the next time slice
 		previousTime = currentTime;
 
+		// Buffer the camera coordinates
+		float x = this.x, y = this.y;
+
 		// Prepare to draw the sprites
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
 		GLU.gluLookAt(gl, x, y, -3f, x, y, 0f, 0f, 1f, 0f);
 
-		// Call the abstract method to draw the sprites
-		drawSprites(gl);
+		// Draw the sprites
+		for (Sprite sprite : getSprites()) {
+			sprite.drawAll(gl, x, y);
+		}
 	}
 }
