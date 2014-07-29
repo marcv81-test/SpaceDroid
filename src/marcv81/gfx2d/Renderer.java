@@ -73,13 +73,19 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
 	@Override
 	public final void onDrawFrame(GL10 gl) {
 
-		long currentTime, timeSlice;
+		long currentTime = System.currentTimeMillis();
+		long timeSlice = currentTime - previousTime;
 
 		// Wait until the time slice is long enough
-		do {
+		while (timeSlice < MIN_TIME_SLICE) {
+			try {
+				Thread.sleep(MIN_TIME_SLICE - timeSlice);
+			} catch (InterruptedException e) {
+				// Don't care
+			}
 			currentTime = System.currentTimeMillis();
 			timeSlice = currentTime - previousTime;
-		} while (timeSlice < MIN_TIME_SLICE);
+		}
 
 		// Slow the game down if the time slice is too long
 		if (timeSlice > MAX_TIME_SLICE)
