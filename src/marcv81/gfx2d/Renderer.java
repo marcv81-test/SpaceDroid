@@ -13,6 +13,10 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
 
 	private final Context context;
 
+	private float cameraX = 0f, cameraY = 0f;
+
+	private int width = 0, height = 0;
+
 	private long previousTime = 0;
 
 	// Return all the sprites
@@ -21,23 +25,41 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
 	// Update the engine
 	protected abstract void update(long timeSlice);
 
-	protected float x = 0f, y = 0f;
-
 	// Constructor
 	protected Renderer(Context context) {
 		this.context = context;
 	}
 
-	// Set the x and y camera coordinates
-	public void setXY(float x, float y) {
-		this.x = x;
-		this.y = y;
+	// Get the camera X coordinate
+	public float getCameraX() {
+		return cameraX;
 	}
 
-	// Move the x and y camera coordinates
+	// Get the camera Y coordinate
+	public float getCameraY() {
+		return cameraY;
+	}
+
+	// Set the X and Y camera coordinates
+	public void setXY(float x, float y) {
+		this.cameraX = x;
+		this.cameraY = y;
+	}
+
+	// Move the X and Y camera coordinates
 	public void moveXY(float dx, float dy) {
-		this.x += dx;
-		this.y += dy;
+		this.cameraX += dx;
+		this.cameraY += dy;
+	}
+
+	// Get the surface width
+	public float getWidth() {
+		return width;
+	}
+
+	// Get the surface height
+	public float getHeight() {
+		return height;
 	}
 
 	@Override
@@ -61,6 +83,9 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
 
 	@Override
 	public final void onSurfaceChanged(GL10 gl, int width, int height) {
+
+		this.width = width;
+		this.height = height;
 
 		// Modify the surface according to the new width and height
 		gl.glViewport(0, 0, width, height);
@@ -98,7 +123,7 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
 		previousTime = currentTime;
 
 		// Buffer the camera coordinates
-		float x = this.x, y = this.y;
+		float x = this.cameraX, y = this.cameraY;
 
 		// Prepare to draw the sprites
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);

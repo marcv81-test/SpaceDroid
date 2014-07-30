@@ -6,10 +6,6 @@ import android.view.MotionEvent;
 
 class GameView extends GLSurfaceView {
 
-	private final float SCROLL_DIVIDER = 150f;
-
-	private float previousX, previousY;
-
 	private final GameRenderer renderer;
 
 	GameView(Context context) {
@@ -24,13 +20,17 @@ class GameView extends GLSurfaceView {
 		float x = e.getX();
 		float y = e.getY();
 		switch (e.getAction()) {
+		case MotionEvent.ACTION_DOWN:
+			renderer.setPointerDown(true);
+			renderer.setPointerXY(x, y);
+			break;
 		case MotionEvent.ACTION_MOVE:
-			float dx = (x - previousX);
-			float dy = (y - previousY);
-			renderer.moveXY(dx / SCROLL_DIVIDER, dy / SCROLL_DIVIDER);
+			renderer.setPointerXY(x, y);
+			break;
+		case MotionEvent.ACTION_UP:
+			renderer.setPointerDown(false);
+			break;
 		}
-		previousX = x;
-		previousY = y;
 		return true;
 	}
 }
