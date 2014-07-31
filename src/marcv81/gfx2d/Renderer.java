@@ -8,7 +8,7 @@ import android.content.Context;
 
 public abstract class Renderer implements GLSurfaceView.Renderer {
 
-	private static final long MIN_TIME_SLICE = 40; // 25 FPS
+	private static final long MIN_TIME_SLICE = 20; // 50 FPS
 	private static final long MAX_TIME_SLICE = 100; // 10 FPS
 
 	private final Context context;

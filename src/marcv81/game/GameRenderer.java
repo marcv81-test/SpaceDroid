@@ -12,11 +12,13 @@ class GameRenderer extends Renderer {
 
 	private static final int SPRITE_BACKGROUND = 0;
 	private static final int SPRITE_FIREBALLS = 1;
+	private static final int SPRITE_ASTEROIDS = 2;
 
 	private float pointerX = 0f, pointerY = 0f;
 	private boolean pointerDown = false;
 
-	private final Sprite[] sprites = { new Background(), new Fireballs() };
+	private final Sprite[] sprites = { new Background(), new Fireballs(),
+			new Asteroids() };
 
 	private final Random random = new Random();
 
@@ -54,17 +56,11 @@ class GameRenderer extends Renderer {
 					* timeSlice / 1000 * CAMERA_SPEED);
 		}
 
-		// Add random fireballs
-		gameTime += timeSlice;
-		if (gameTime > nextFireballTime) {
-			((Fireballs) sprites[SPRITE_FIREBALLS]).add(getCameraX() + 2f
-					* (random.nextFloat() - 0.5f), this.getCameraY() + 2f
-					* (random.nextFloat() - 0.5f));
-			nextFireballTime = gameTime
-					+ random.nextInt(MAX_TIME_BETWEEN_FIREBALLS);
-		}
-
 		// Update fireballs
 		((Fireballs) sprites[SPRITE_FIREBALLS]).update(timeSlice);
+
+		// Update asteroids
+		((Asteroids) sprites[SPRITE_ASTEROIDS]).update(timeSlice, getCameraX(),
+				getCameraY());
 	}
 }
