@@ -25,6 +25,8 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
 	// Update the engine
 	protected abstract void update(long timeSlice);
 
+	protected abstract void draw(GL10 gl);
+
 	// Constructor
 	protected Renderer(Context context) {
 		this.context = context;
@@ -132,8 +134,6 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
 		GLU.gluLookAt(gl, x, y, -3f, x, y, 0f, 0f, 1f, 0f);
 
 		// Draw the sprites
-		for (Sprite sprite : getSprites()) {
-			sprite.drawAll(gl, x, y);
-		}
+		draw(gl);
 	}
 }

@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-public abstract class Sprite {
+public class Sprite {
 
 	private static final int COORDINATES_PER_VERTEX = 3;
 
@@ -20,19 +20,14 @@ public abstract class Sprite {
 
 	private int textureName;
 
-	// Draw all the sprites for the concrete class
-	// X and Y are the camera coordinates
-	public abstract void drawAll(GL10 gl, float x, float y);
-
 	// Constructor
-	protected Sprite(int resourceId, int gfxX, int gfxY, float sizeX,
-			float sizeY) {
+	public Sprite(int resourceId, int gfxX, int gfxY, float size) {
 
 		// Create vertices buffer according to the sprite size
 		// Bottom left, top left, bottom right, top right
-		float vertices[] = new float[] { -0.5f * sizeX, -0.5f * sizeY, 0f,
-				-0.5f * sizeX, 0.5f * sizeY, 0f, 0.5f * sizeX, -0.5f * sizeY,
-				0f, 0.5f * sizeX, 0.5f * sizeY, 0f };
+		float vertices[] = new float[] { -0.5f * size, -0.5f * size, 0f,
+				-0.5f * size, 0.5f * size, 0f, 0.5f * size, -0.5f * size, 0f,
+				0.5f * size, 0.5f * size, 0f };
 		ByteBuffer vbb = ByteBuffer.allocateDirect(vertices.length * 4);
 		vbb.order(ByteOrder.nativeOrder());
 		verticesBuffer = vbb.asFloatBuffer();
@@ -80,7 +75,7 @@ public abstract class Sprite {
 	}
 
 	// Draw the sprite
-	protected void drawOne(GL10 gl, float x, float y, float z, float angle,
+	public void draw(GL10 gl, float x, float y, float z, float angle,
 			int gfxId) {
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
