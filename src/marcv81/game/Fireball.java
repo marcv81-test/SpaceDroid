@@ -4,8 +4,8 @@ import java.util.Random;
 
 class Fireball {
 
-	private static final long FIREBALL_LIFESPAN = 1000; // 1 second
-	private static final long FIREBALL_ANIMATIONS = 25;
+	private static final long FIREBALL_LIFESPAN = 650; // 0.65 second
+	private static final long FIREBALL_ANIMATIONS = 16;
 
 	private final float x, y;
 	private final float startAngle, angleRate;
