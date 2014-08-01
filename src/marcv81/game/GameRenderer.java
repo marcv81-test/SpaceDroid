@@ -3,7 +3,7 @@ package marcv81.game;
 import marcv81.gfx2d.Renderer;
 import marcv81.gfx2d.Sprite;
 import android.content.Context;
-
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
@@ -21,7 +21,8 @@ class GameRenderer extends Renderer {
 	private static final int SPRITE_FIREBALL = 1;
 	private static final int SPRITE_ASTEROID = 2;
 
-	private static final int ASTEROID_MAX_COUNT = 25;
+	private static final int ASTEROID_MAX_COUNT = 50;
+	private static final float ASTEROID_COLLISION_DISTANCE = 0.3f;
 
 	// Touchscreen status
 	private float pointerX = 0f, pointerY = 0f;
@@ -32,8 +33,8 @@ class GameRenderer extends Renderer {
 	private final Sprite[] sprites = { new BackgroundSprite(),
 			new FireballSprite(), new AsteroidSprite() };
 
-	private final ArrayList<Fireball> fireballs = new ArrayList<Fireball>();
-	private final ArrayList<Asteroid> asteroids = new ArrayList<Asteroid>();
+	private final List<Fireball> fireballs = new ArrayList<Fireball>();
+	private final List<Asteroid> asteroids = new ArrayList<Asteroid>();
 
 	// Constructor
 	GameRenderer(Context context) {
@@ -96,6 +97,22 @@ class GameRenderer extends Renderer {
 		// Add asteroids if we have space
 		while (asteroids.size() < ASTEROID_MAX_COUNT) {
 			asteroids.add(new Asteroid(random, getCameraX(), getCameraY()));
+		}
+
+		// Asteroid collision detection
+		for (int i = 0; i < asteroids.size(); i++) {
+			for (int j = i + 1; j < asteroids.size(); j++) {
+				Asteroid asteroid1 = asteroids.get(i);
+				Asteroid asteroid2 = asteroids.get(j);
+				if (asteroid1.getDistance(asteroid2) < ASTEROID_COLLISION_DISTANCE) {
+					asteroid1.explode();
+					asteroid2.explode();
+					fireballs.add(new Fireball(random, asteroid1.getX(),
+							asteroid1.getY()));
+					fireballs.add(new Fireball(random, asteroid2.getX(),
+							asteroid2.getY()));
+				}
+			}
 		}
 	}
 
