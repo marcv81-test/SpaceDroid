@@ -6,8 +6,8 @@ class Asteroid {
 
 	private final static float TAU = 6.2831853071f;
 
-	private static final int ASTEROID_ANIMATIONS = 32;
-	private static final int ASTEROID_ANIMATIONS_TYPES = 2;
+	private final static int ASTEROID_ANIMATIONS = 32;
+	private final static int ASTEROID_ANIMATIONS_TYPES = 2;
 	private final static float ASTEROID_SPAWN_DISTANCE = 4f;
 	private final static float ASTEROID_REMOVAL_DISTANCE = 6f;
 	private final static float ASTEROID_DRIFT_MIN_SPEED = 0.1f;
@@ -15,13 +15,14 @@ class Asteroid {
 	private final static int ASTEROID_ANIMATION_MIN_SPEED = 25;
 	private final static int ASTEROID_ANIMATION_MAX_SPEED = 30;
 
+	private final static int ASTEROID_EXPLOSION_TIME = 250;
+
 	private float x, y;
 	private final float speedX, speedY;
 	private final int animationType;
 	private final int animationSpeed;
 	private final int animationDirection;
-	private boolean exploded = false;
-	private long age = 0;
+	private long age = 0, maxAge = 0;
 
 	// Constructor
 	public Asteroid(Random random, float cameraX, float cammeraY) {
@@ -55,8 +56,16 @@ class Asteroid {
 		return y;
 	}
 
+	public float getSpeedX() {
+		return speedX;
+	}
+
+	public float getSpeedY() {
+		return speedY;
+	}
+
 	public void explode() {
-		this.exploded = true;
+		this.maxAge = age + ASTEROID_EXPLOSION_TIME;
 	}
 
 	// Return the asteroid animation
@@ -67,10 +76,16 @@ class Asteroid {
 		return animation + (ASTEROID_ANIMATIONS * animationType);
 	}
 
-	// Return whether the asteroid is too far away from the camera or not
-	public boolean isExpired(float cameraX, float cameraY) {
-		return exploded
-				|| (this.distance(cameraX, cameraY) > ASTEROID_REMOVAL_DISTANCE);
+	public boolean isExploding() {
+		return ((maxAge != 0) && (age < maxAge));
+	}
+
+	public boolean hasExploded() {
+		return ((maxAge != 0) && (age >= maxAge));
+	}
+
+	public boolean isOutOfScope(float cameraX, float cameraY) {
+		return this.distance(cameraX, cameraY) > ASTEROID_REMOVAL_DISTANCE;
 	}
 
 	public float getDistance(Asteroid asteroid) {

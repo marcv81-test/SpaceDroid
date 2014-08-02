@@ -88,8 +88,9 @@ class GameRenderer extends Renderer {
 			Asteroid asteroid = asteroidIterator.next();
 			asteroid.update(timeSlice);
 
-			// Remove the asteroids which are too far
-			if (asteroid.isExpired(getCameraX(), getCameraY())) {
+			// Remove the asteroids which are too far or have exploded
+			if (asteroid.isOutOfScope(getCameraX(), getCameraY())
+					|| asteroid.hasExploded()) {
 				asteroidIterator.remove();
 			}
 		}
@@ -101,16 +102,31 @@ class GameRenderer extends Renderer {
 
 		// Asteroid collision detection
 		for (int i = 0; i < asteroids.size(); i++) {
-			for (int j = i + 1; j < asteroids.size(); j++) {
-				Asteroid asteroid1 = asteroids.get(i);
-				Asteroid asteroid2 = asteroids.get(j);
-				if (asteroid1.getDistance(asteroid2) < ASTEROID_COLLISION_DISTANCE) {
-					asteroid1.explode();
-					asteroid2.explode();
-					fireballs.add(new Fireball(random, asteroid1.getX(),
-							asteroid1.getY()));
-					fireballs.add(new Fireball(random, asteroid2.getX(),
-							asteroid2.getY()));
+			Asteroid asteroid1 = asteroids.get(i);
+			if (!asteroid1.isExploding()) {
+				for (int j = i + 1; j < asteroids.size(); j++) {
+					Asteroid asteroid2 = asteroids.get(j);
+					if (!asteroid2.isExploding()) {
+
+						// Check the distance between the asteroids
+						float distance = asteroid1.getDistance(asteroid2);
+						if (distance < ASTEROID_COLLISION_DISTANCE) {
+
+							// Create a fireball
+							float fx = (asteroid1.getX() + asteroid2.getX()) / 2f;
+							float fy = (asteroid1.getY() + asteroid2.getY()) / 2f;
+							float fsx = (asteroid1.getSpeedX() + asteroid2
+									.getSpeedX()) / 2f;
+							float fsy = (asteroid1.getSpeedY() + asteroid2
+									.getSpeedY()) / 2f;
+							fireballs
+									.add(new Fireball(random, fx, fy, fsx, fsy));
+
+							// Start the asteroids explosion
+							asteroid1.explode();
+							asteroid2.explode();
+						}
+					}
 				}
 			}
 		}
