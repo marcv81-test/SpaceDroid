@@ -4,7 +4,7 @@ import marcv81.gfx2d.Sprite;
 
 class BackgroundSprite extends Sprite {
 
-	public static final float BACKGROUND_SCALE = 8f;
+	public static final float BACKGROUND_SCALE = 16f;
 
 	private static final int BACKGROUND_RESOURCE = R.drawable.stars;
 	private static final int BACKGROUND_GFX_X = 1;
