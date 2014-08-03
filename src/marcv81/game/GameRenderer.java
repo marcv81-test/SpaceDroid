@@ -21,7 +21,7 @@ class GameRenderer extends Renderer {
 	private static final int SPRITE_FIREBALL = 1;
 	private static final int SPRITE_ASTEROID = 2;
 
-	private static final int ASTEROID_MAX_COUNT = 50;
+	private static final int ASTEROID_MAX_COUNT = 100;
 	private static final float ASTEROID_COLLISION_DISTANCE = 0.3f;
 
 	// Touchscreen status
