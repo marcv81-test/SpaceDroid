@@ -98,6 +98,13 @@ class Asteroid {
 		age += timeSlice;
 	}
 
+	public float getTransparency() {
+		if (isExploding())
+			return (maxAge - age) / (float) ASTEROID_EXPLOSION_TIME;
+		else
+			return 1f;
+	}
+
 	// Return the distance between the asteroid and a point
 	private float distance(float x, float y) {
 		return (float) Math.sqrt((x - this.x) * (x - this.x) + (y - this.y)

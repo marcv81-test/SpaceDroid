@@ -156,7 +156,7 @@ class GameRenderer extends Renderer {
 				sprites[SPRITE_BACKGROUND].draw(gl,
 						BackgroundSprite.BACKGROUND_SCALE * x2,
 						BackgroundSprite.BACKGROUND_SCALE * y2,
-						BACKGROUND_DEPTH, 0f, 0);
+						BACKGROUND_DEPTH, 0f, 0, 1f);
 			}
 		}
 	}
@@ -164,7 +164,8 @@ class GameRenderer extends Renderer {
 	private void drawAsteroids(GL10 gl) {
 		for (Asteroid asteroid : asteroids) {
 			sprites[SPRITE_ASTEROID].draw(gl, asteroid.getX(), asteroid.getY(),
-					FOREGROUND_DEPTH, 0f, asteroid.getAnimation());
+					FOREGROUND_DEPTH, 0f, asteroid.getAnimation(),
+					asteroid.getTransparency());
 		}
 	}
 
@@ -172,7 +173,7 @@ class GameRenderer extends Renderer {
 		for (Fireball fireball : fireballs) {
 			sprites[SPRITE_FIREBALL].draw(gl, fireball.getX(), fireball.getY(),
 					FOREGROUND_DEPTH, fireball.getAngle(),
-					fireball.getAnimation());
+					fireball.getAnimation(), 1f);
 		}
 	}
 }

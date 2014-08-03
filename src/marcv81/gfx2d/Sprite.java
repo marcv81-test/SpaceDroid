@@ -76,7 +76,7 @@ public class Sprite {
 
 	// Draw the sprite
 	public void draw(GL10 gl, float x, float y, float z, float angle,
-			int gfxId) {
+			int gfxId, float transparency) {
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 		gl.glPushMatrix();
@@ -84,6 +84,7 @@ public class Sprite {
 		gl.glTranslatef(x, y, z);
 		gl.glRotatef(angle, 0f, 0f, 1f);
 		gl.glFrontFace(GL10.GL_CW);
+		gl.glColor4f(transparency, transparency, transparency, transparency);
 		gl.glVertexPointer(COORDINATES_PER_VERTEX, GL10.GL_FLOAT, 0,
 				verticesBuffer);
 		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureCoordsBuffers[gfxId]);
