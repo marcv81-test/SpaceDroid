@@ -25,12 +25,12 @@ class Asteroid {
 	private long age = 0, maxAge = 0;
 
 	// Constructor
-	public Asteroid(Random random, float cameraX, float cammeraY) {
+	public Asteroid(Random random, float cameraX, float cameraY) {
 
 		// The start position is at a fixed distance from the camera
 		float angle = 6.2831853071f * random.nextFloat();
 		this.x = cameraX + ASTEROID_SPAWN_DISTANCE * (float) Math.cos(angle);
-		this.y = cammeraY + ASTEROID_SPAWN_DISTANCE * (float) Math.sin(angle);
+		this.y = cameraY + ASTEROID_SPAWN_DISTANCE * (float) Math.sin(angle);
 
 		// The drift speed is vaguely towards the camera
 		float r = 2f * (random.nextFloat() - 0.5f); // between -1 and 1

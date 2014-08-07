@@ -33,8 +33,8 @@ class GameRenderer extends Renderer {
 	private final Sprite[] sprites = { new BackgroundSprite(),
 			new FireballSprite(), new AsteroidSprite() };
 
-	private final List<Fireball> fireballs = new ArrayList<Fireball>();
-	private final List<Asteroid> asteroids = new ArrayList<Asteroid>();
+	private final List<Fireball> fireballs = new ArrayList<>();
+	private final List<Asteroid> asteroids = new ArrayList<>();
 
 	// Constructor
 	GameRenderer(Context context) {
