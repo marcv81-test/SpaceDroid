@@ -18,8 +18,9 @@ class GameRenderer extends Renderer {
     private static final float BACKGROUND_DEPTH = 8f;
 
     private static final int SPRITE_BACKGROUND = 0;
-    private static final int SPRITE_FIREBALL = 1;
+    private static final int SPRITE_PLAYER = 1;
     private static final int SPRITE_ASTEROID = 2;
+    private static final int SPRITE_FIREBALL = 3;
 
     private static final int ASTEROID_MAX_COUNT = 100;
     private static final float ASTEROID_COLLISION_DISTANCE = 0.3f;
@@ -31,10 +32,12 @@ class GameRenderer extends Renderer {
     private final Random random = new Random();
 
     private final Sprite[] sprites = {new BackgroundSprite(),
-            new FireballSprite(), new AsteroidSprite()};
+            new PlayerSprite(), new AsteroidSprite(),
+            new FireballSprite()};
 
     private final List<Fireball> fireballs = new ArrayList<>();
     private final List<Asteroid> asteroids = new ArrayList<>();
+    private final Player player = new Player();
 
     // Constructor
     GameRenderer(Context context) {
@@ -57,7 +60,7 @@ class GameRenderer extends Renderer {
 
     @Override
     protected void update(long timeSlice) {
-        updateCamera(timeSlice);
+        updatePlayer(timeSlice);
         updateAsteroids(timeSlice);
         updateFireballs(timeSlice);
     }
@@ -65,19 +68,22 @@ class GameRenderer extends Renderer {
     @Override
     protected void draw(GL10 gl) {
         drawBackground(gl);
+        drawPlayer(gl);
         drawAsteroids(gl);
         drawFireballs(gl);
     }
 
-    private void updateCamera(long timeSlice) {
+    private void updatePlayer(long timeSlice) {
         if (pointerDown) {
             float x = -2f * ((pointerX / getWidth()) - 0.5f);
             float y = -2f * ((pointerY / getHeight()) - 0.5f);
             float norm = (float) Math.sqrt(x * x + y * y);
-            float dx = (x / norm) * timeSlice / 1000 * CAMERA_SPEED;
-            float dy = (y / norm) * timeSlice / 1000 * CAMERA_SPEED;
-            moveXY(dx, dy);
+            player.setAccelXY(x / norm, y / norm);
+        } else {
+            player.setAccelXY(0f, 0f);
         }
+        player.update(timeSlice);
+        setXY(player.getX(), player.getY());
     }
 
     private void updateAsteroids(long timeSlice) {
@@ -159,6 +165,11 @@ class GameRenderer extends Renderer {
                         BACKGROUND_DEPTH, 0f, 0, 1f);
             }
         }
+    }
+
+    private void drawPlayer(GL10 gl) {
+        sprites[SPRITE_PLAYER].draw(gl, player.getX(), player.getY(),
+                FOREGROUND_DEPTH, player.getAngle(), 0, 1f);
     }
 
     private void drawAsteroids(GL10 gl) {
