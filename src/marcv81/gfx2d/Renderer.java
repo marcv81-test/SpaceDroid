@@ -3,11 +3,13 @@ package marcv81.gfx2d;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+import android.util.Log;
 
 public abstract class Renderer implements GLSurfaceView.Renderer {
+
+    private static final String TAG = "Renderer";
 
     private static final long MIN_TIME_SLICE = 20; // 50 FPS
     private static final long MAX_TIME_SLICE = 100; // 10 FPS
@@ -107,6 +109,7 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
         // Wait until the time slice is long enough
         while (timeSlice < MIN_TIME_SLICE) {
             try {
+                Log.i(TAG, "Spare time:" + (MIN_TIME_SLICE - timeSlice));
                 Thread.sleep(MIN_TIME_SLICE - timeSlice);
             } catch (InterruptedException e) {
                 // Don't care
