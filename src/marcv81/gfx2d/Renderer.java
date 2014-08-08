@@ -22,8 +22,8 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
 
     private long previousTime = 0;
 
-    // Return all the textures
-    protected abstract Texture[] getTextures();
+    // Return all the sprites
+    protected abstract Sprite[] getSprites();
 
     // Update the engine
     protected abstract void update(long timeSlice);
@@ -81,8 +81,8 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
         gl.glDepthFunc(GL10.GL_LEQUAL);
 
         // Load the textures
-        for (Texture texture : getTextures()) {
-            texture.load(gl, context);
+        for (Sprite sprite : getSprites()) {
+            sprite.loadTexture(gl, context);
         }
     }
 
