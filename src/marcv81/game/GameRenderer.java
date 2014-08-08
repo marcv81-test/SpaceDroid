@@ -2,7 +2,7 @@ package marcv81.game;
 
 import android.content.Context;
 import marcv81.gfx2d.Renderer;
-import marcv81.gfx2d.Sprite;
+import marcv81.gfx2d.Texture;
 
 import javax.microedition.khronos.opengles.GL10;
 import java.util.ArrayList;
@@ -12,8 +12,40 @@ import java.util.Random;
 
 class GameRenderer extends Renderer {
 
-    private static final float FOREGROUND_DEPTH = 0f;
-    private static final float BACKGROUND_DEPTH = 8f;
+    // Background texture
+    private static final int BACKGROUND_RESOURCE = R.drawable.stars;
+    public static final float BACKGROUND_SIZE = 16f;
+    private static final int BACKGROUND_ANIMATIONS_X = 1;
+    private static final int BACKGROUND_ANIMATIONS_Y = 1;
+    private static final boolean BACKGROUND_SUPPORT_ANGLE = false;
+    private static final boolean BACKGROUND_SUPPORT_TRANSPARENCY = false;
+
+    // Player texture
+    private static final int PLAYER_RESOURCE = R.drawable.player;
+    private static final float PLAYER_SIZE = 0.2f;
+    private static final int PLAYER_ANIMATIONS_X = 1;
+    private static final int PLAYER_ANIMATIONS_Y = 1;
+    private static final boolean PLAYER_SUPPORT_ANGLE = true;
+    private static final boolean PLAYER_SUPPORT_TRANSPARENCY = false;
+
+    // Asteroid texture
+    private static final int ASTEROID_RESOURCE = R.drawable.asteroid;
+    private static final float ASTEROID_SIZE = 0.4f;
+    private static final int ASTEROID_ANIMATIONS_X = 8;
+    private static final int ASTEROID_ANIMATIONS_Y = 8;
+    private static final boolean ASTEROID_SUPPORT_ANGLE = false;
+    private static final boolean ASTEROID_SUPPORT_TRANSPARENCY = true;
+
+    // Fireball texture
+    private static final int FIREBALL_RESOURCE = R.drawable.fireball;
+    private static final float FIREBALL_SIZE = 0.3f;
+    private static final int FIREBALL_ANIMATIONS_X = 4;
+    private static final int FIREBALL_ANIMATIONS_Y = 4;
+    private static final boolean FIREBALL_SUPPORT_ANGLE = true;
+    private static final boolean FIREBALL_SUPPORT_TRANSPARENCY = false;
+
+    protected static final float FOREGROUND_DEPTH = 0f;
+    protected static final float BACKGROUND_DEPTH = 8f;
 
     private static final int SPRITE_BACKGROUND = 0;
     private static final int SPRITE_PLAYER = 1;
@@ -30,9 +62,24 @@ class GameRenderer extends Renderer {
 
     private final Random random = new Random();
 
-    private final Sprite[] sprites = {new BackgroundSprite(),
-            new PlayerSprite(), new AsteroidSprite(),
-            new FireballSprite()};
+    private final Texture[] textures = {
+            new Texture(
+                    BACKGROUND_RESOURCE, BACKGROUND_SIZE,
+                    BACKGROUND_ANIMATIONS_X, BACKGROUND_ANIMATIONS_Y,
+                    BACKGROUND_SUPPORT_ANGLE, BACKGROUND_SUPPORT_TRANSPARENCY),
+            new Texture(
+                    PLAYER_RESOURCE, PLAYER_SIZE,
+                    PLAYER_ANIMATIONS_X, PLAYER_ANIMATIONS_Y,
+                    PLAYER_SUPPORT_ANGLE, PLAYER_SUPPORT_TRANSPARENCY),
+            new Texture(
+                    ASTEROID_RESOURCE, ASTEROID_SIZE,
+                    ASTEROID_ANIMATIONS_X, ASTEROID_ANIMATIONS_Y,
+                    ASTEROID_SUPPORT_ANGLE, ASTEROID_SUPPORT_TRANSPARENCY),
+            new Texture(
+                    FIREBALL_RESOURCE, FIREBALL_SIZE,
+                    FIREBALL_ANIMATIONS_X, FIREBALL_ANIMATIONS_Y,
+                    FIREBALL_SUPPORT_ANGLE, FIREBALL_SUPPORT_TRANSPARENCY)
+    };
 
     private final List<Fireball> fireballs = new ArrayList<>();
     private final List<Asteroid> asteroids = new ArrayList<>();
@@ -53,8 +100,8 @@ class GameRenderer extends Renderer {
     }
 
     @Override
-    protected Sprite[] getSprites() {
-        return sprites;
+    protected Texture[] getTextures() {
+        return textures;
     }
 
     @Override
@@ -168,36 +215,31 @@ class GameRenderer extends Renderer {
 
     // Draw the 4 background tiles the closest to the camera
     private void drawBackground(GL10 gl) {
-        float x1 = Math.round(getCameraX() / BackgroundSprite.BACKGROUND_SCALE);
-        float y1 = Math.round(getCameraY() / BackgroundSprite.BACKGROUND_SCALE);
+        List<Background> tiles = new ArrayList<>();
+        float x1 = Math.round(getCameraX() / BACKGROUND_SIZE);
+        float y1 = Math.round(getCameraY() / BACKGROUND_SIZE);
         for (float x2 : new float[]{x1 - 0.5f, x1 + 0.5f}) {
             for (float y2 : new float[]{y1 - 0.5f, y1 + 0.5f}) {
-                sprites[SPRITE_BACKGROUND].draw(gl,
-                        BackgroundSprite.BACKGROUND_SCALE * x2,
-                        BackgroundSprite.BACKGROUND_SCALE * y2,
-                        BACKGROUND_DEPTH, 0f, 0, 1f);
+                Background background = new Background();
+                background.setX(BACKGROUND_SIZE * x2);
+                background.setY(BACKGROUND_SIZE * y2);
+                tiles.add(background);
             }
         }
+        textures[SPRITE_BACKGROUND].draw(gl, tiles);
     }
 
     private void drawPlayer(GL10 gl) {
-        sprites[SPRITE_PLAYER].draw(gl, player.getX(), player.getY(),
-                FOREGROUND_DEPTH, player.getAngle(), 0, 1f);
+        List<Player> players = new ArrayList<>();
+        players.add(player);
+        textures[SPRITE_PLAYER].draw(gl, players);
     }
 
     private void drawAsteroids(GL10 gl) {
-        for (Asteroid asteroid : asteroids) {
-            sprites[SPRITE_ASTEROID].draw(gl, asteroid.getX(), asteroid.getY(),
-                    FOREGROUND_DEPTH, 0f, asteroid.getAnimation(),
-                    asteroid.getTransparency());
-        }
+        textures[SPRITE_ASTEROID].draw(gl, asteroids);
     }
 
     private void drawFireballs(GL10 gl) {
-        for (Fireball fireball : fireballs) {
-            sprites[SPRITE_FIREBALL].draw(gl, fireball.getX(), fireball.getY(),
-                    FOREGROUND_DEPTH, fireball.getAngle(),
-                    fireball.getAnimation(), 1f);
-        }
+        textures[SPRITE_FIREBALL].draw(gl, fireballs);
     }
 }

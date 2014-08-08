@@ -1,13 +1,14 @@
 package marcv81.game;
 
+import marcv81.gfx2d.Sprite;
+
 import java.util.Random;
 
-class Fireball {
+class Fireball extends Sprite {
 
     private static final long FIREBALL_LIFESPAN = 650; // 0.65 second
     private static final long FIREBALL_ANIMATIONS = 16;
 
-    private float x, y;
     private final float speedX, speedY;
     private final float startAngle, angleRate;
     private long age = 0;
@@ -15,8 +16,9 @@ class Fireball {
     // Constructor
     public Fireball(Random random, float x, float y, float speedX, float speedY) {
 
-        this.x = x;
-        this.y = y;
+        setX(x);
+        setY(y);
+        setZ(GameRenderer.FOREGROUND_DEPTH);
         this.speedX = speedX;
         this.speedY = speedY;
 
@@ -25,20 +27,12 @@ class Fireball {
         this.angleRate = 180f * (random.nextFloat() - 0.5f);
     }
 
-    public float getX() {
-        return x;
-    }
-
-    public float getY() {
-        return y;
-    }
-
     // Return the fireball drawing angle
     public float getAngle() {
         return startAngle + angleRate * age / 1000;
     }
 
-    // Return the fireball animation
+    @Override
     public int getAnimation() {
         long animation = age * FIREBALL_ANIMATIONS / FIREBALL_LIFESPAN;
         return (int) animation;
@@ -50,8 +44,8 @@ class Fireball {
     }
 
     public void update(long timeSlice) {
-        x += speedX * timeSlice / 1000;
-        y += speedY * timeSlice / 1000;
+        setX(getX() + speedX * timeSlice / 1000);
+        setY(getY() + speedY * timeSlice / 1000);
         age += timeSlice;
     }
 }
