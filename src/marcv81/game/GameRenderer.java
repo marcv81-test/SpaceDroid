@@ -12,8 +12,6 @@ import java.util.Random;
 
 class GameRenderer extends Renderer {
 
-    private static final float CAMERA_SPEED = 2f;
-
     private static final float FOREGROUND_DEPTH = 0f;
     private static final float BACKGROUND_DEPTH = 8f;
 
@@ -24,6 +22,7 @@ class GameRenderer extends Renderer {
 
     private static final int ASTEROID_MAX_COUNT = 100;
     private static final float ASTEROID_COLLISION_DISTANCE = 0.3f;
+    private static final float PLAYER_COLLISION_DISTANCE = 0.15f;
 
     // Touchscreen status
     private float pointerX = 0f, pointerY = 0f;
@@ -133,6 +132,20 @@ class GameRenderer extends Renderer {
                             asteroid2.explode();
                         }
                     }
+                }
+                if (asteroid1.getDistance(player) < (ASTEROID_COLLISION_DISTANCE
+                        + PLAYER_COLLISION_DISTANCE) / 2f) {
+
+                    // Create a fireball
+                    float fx = (asteroid1.getX() + player.getX()) / 2f;
+                    float fy = (asteroid1.getY() + player.getY()) / 2f;
+                    float fsx = asteroid1.getSpeedX();
+                    float fsy = asteroid1.getSpeedY();
+                    fireballs
+                            .add(new Fireball(random, fx, fy, fsx, fsy));
+
+                    // Start the asteroid explosion
+                    asteroid1.explode();
                 }
             }
         }

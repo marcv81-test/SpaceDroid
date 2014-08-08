@@ -92,6 +92,10 @@ class Asteroid {
         return distance(asteroid.x, asteroid.y);
     }
 
+    public float getDistance(Player player) {
+        return distance(player.getX(), player.getY());
+    }
+
     public void update(long timeSlice) {
         x += speedX * timeSlice / 1000f;
         y += speedY * timeSlice / 1000f;
