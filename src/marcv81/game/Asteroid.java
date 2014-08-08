@@ -1,10 +1,10 @@
 package marcv81.game;
 
-import marcv81.gfx2d.Sprite;
-
 import java.util.Random;
 
-class Asteroid extends Sprite {
+class Asteroid {
+
+    private final static float TAU = 6.2831853071f;
 
     private final static int ASTEROID_ANIMATIONS = 32;
     private final static int ASTEROID_ANIMATIONS_TYPES = 2;
@@ -17,6 +17,7 @@ class Asteroid extends Sprite {
 
     private final static int ASTEROID_EXPLOSION_TIME = 250;
 
+    private float x, y;
     private final float speedX, speedY;
     private final int animationType;
     private final int animationSpeed;
@@ -28,9 +29,8 @@ class Asteroid extends Sprite {
 
         // The start position is at a fixed distance from the camera
         float angle = 6.2831853071f * random.nextFloat();
-        setX(cameraX + ASTEROID_SPAWN_DISTANCE * (float) Math.cos(angle));
-        setY(cameraY + ASTEROID_SPAWN_DISTANCE * (float) Math.sin(angle));
-        setZ(GameRenderer.FOREGROUND_DEPTH);
+        this.x = cameraX + ASTEROID_SPAWN_DISTANCE * (float) Math.cos(angle);
+        this.y = cameraY + ASTEROID_SPAWN_DISTANCE * (float) Math.sin(angle);
 
         // The drift speed is vaguely towards the camera
         float r = 2f * (random.nextFloat() - 0.5f); // between -1 and 1
@@ -48,6 +48,14 @@ class Asteroid extends Sprite {
         this.animationDirection = random.nextInt(2);
     }
 
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
     public float getSpeedX() {
         return speedX;
     }
@@ -60,7 +68,7 @@ class Asteroid extends Sprite {
         this.maxAge = age + ASTEROID_EXPLOSION_TIME;
     }
 
-    @Override
+    // Return the asteroid animation
     public int getAnimation() {
         int animation = (int) (animationSpeed * age / 1000 % ASTEROID_ANIMATIONS);
         animation = (animationDirection == 0) ? animation : ASTEROID_ANIMATIONS
@@ -81,7 +89,7 @@ class Asteroid extends Sprite {
     }
 
     public float getDistance(Asteroid asteroid) {
-        return distance(asteroid.getX(), asteroid.getY());
+        return distance(asteroid.x, asteroid.y);
     }
 
     public float getDistance(Player player) {
@@ -89,12 +97,11 @@ class Asteroid extends Sprite {
     }
 
     public void update(long timeSlice) {
-        setX(getX() + speedX * timeSlice / 1000f);
-        setY(getY() + speedY * timeSlice / 1000f);
+        x += speedX * timeSlice / 1000f;
+        y += speedY * timeSlice / 1000f;
         age += timeSlice;
     }
 
-    @Override
     public float getTransparency() {
         if (isExploding())
             return (maxAge - age) / (float) ASTEROID_EXPLOSION_TIME;
@@ -104,6 +111,7 @@ class Asteroid extends Sprite {
 
     // Return the distance between the asteroid and a point
     private float distance(float x, float y) {
-        return (float) Math.sqrt((x - this.getX()) * (x - this.getX()) + (y - this.getY()) * (y - this.getY()));
+        return (float) Math.sqrt((x - this.x) * (x - this.x) + (y - this.y)
+                * (y - this.y));
     }
 }
