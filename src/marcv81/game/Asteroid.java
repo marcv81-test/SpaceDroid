@@ -30,7 +30,6 @@ class Asteroid extends Sprite {
         float angle = 6.2831853071f * random.nextFloat();
         setX(cameraX + ASTEROID_SPAWN_DISTANCE * (float) Math.cos(angle));
         setY(cameraY + ASTEROID_SPAWN_DISTANCE * (float) Math.sin(angle));
-        setZ(GameRenderer.FOREGROUND_DEPTH);
 
         // The drift speed is vaguely towards the camera
         float r = 2f * (random.nextFloat() - 0.5f); // between -1 and 1
@@ -77,7 +76,7 @@ class Asteroid extends Sprite {
     }
 
     public boolean isOutOfScope(Player player) {
-        return getXYDistance(player) > ASTEROID_REMOVAL_DISTANCE;
+        return getDistance(player) > ASTEROID_REMOVAL_DISTANCE;
     }
 
     public void update(long timeSlice) {

@@ -18,7 +18,6 @@ class Fireball extends Sprite {
 
         setX(x);
         setY(y);
-        setZ(GameRenderer.FOREGROUND_DEPTH);
         this.speedX = speedX;
         this.speedY = speedY;
 

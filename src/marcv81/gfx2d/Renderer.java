@@ -21,7 +21,7 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
     private long previousTime = 0;
 
     // Return all the textures
-    protected abstract Texture[] getTextures();
+    protected abstract SpriteTexture[] getTextures();
 
     // Update the engine
     protected abstract void update(long timeSlice);
@@ -49,12 +49,6 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
         this.cameraY = y;
     }
 
-    // Move the X and Y camera coordinates
-    public void moveXY(float dx, float dy) {
-        this.cameraX += dx;
-        this.cameraY += dy;
-    }
-
     // Get the surface width
     public float getWidth() {
         return width;
@@ -79,7 +73,7 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
         gl.glDepthFunc(GL10.GL_LEQUAL);
 
         // Load the textures
-        for (Texture texture : getTextures()) {
+        for (SpriteTexture texture : getTextures()) {
             texture.load(gl, context);
         }
     }
@@ -135,6 +129,11 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
         GLU.gluLookAt(gl, x, y, -3f, x, y, 0f, 0f, 1f, 0f);
 
         // Draw the sprites
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+        gl.glFrontFace(GL10.GL_CW);
         draw(gl);
+        gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
     }
 }
