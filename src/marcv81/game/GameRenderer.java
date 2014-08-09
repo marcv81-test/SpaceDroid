@@ -141,7 +141,7 @@ class GameRenderer extends Renderer {
             asteroid.update(timeSlice);
 
             // Remove the asteroids which are too far or have exploded
-            if (asteroid.isOutOfScope(getCameraX(), getCameraY())
+            if (asteroid.isOutOfScope(player)
                     || asteroid.hasExploded()) {
                 asteroidIterator.remove();
             }
@@ -161,7 +161,7 @@ class GameRenderer extends Renderer {
                     if (!asteroid2.isExploding()) {
 
                         // Check the distance between the asteroids
-                        float distance = asteroid1.getDistance(asteroid2);
+                        float distance = asteroid1.getXYDistance(asteroid2);
                         if (distance < ASTEROID_COLLISION_DISTANCE) {
 
                             // Create a fireball
@@ -180,7 +180,7 @@ class GameRenderer extends Renderer {
                         }
                     }
                 }
-                if (asteroid1.getDistance(player) < (ASTEROID_COLLISION_DISTANCE
+                if (asteroid1.getXYDistance(player) < (ASTEROID_COLLISION_DISTANCE
                         + PLAYER_COLLISION_DISTANCE) / 2f) {
 
                     // Create a fireball

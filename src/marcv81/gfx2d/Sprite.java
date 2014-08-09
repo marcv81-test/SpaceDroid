@@ -10,23 +10,18 @@ public class Sprite {
     public float getX() {
         return x;
     }
-
     public float getY() {
         return y;
     }
-
     public float getZ() {
         return z;
     }
-
     public void setX(float x) {
         this.x = x;
     }
-
     public void setY(float y) {
         this.y = y;
     }
-
     public void setZ(float z) {
         this.z = z;
     }
@@ -35,12 +30,17 @@ public class Sprite {
     public int getAnimation() {
         return 0;
     }
-
     public float getAngle() {
         return 0f;
     }
-
     public float getTransparency() {
         return 1f;
+    }
+
+    // Get the distance between the projections on the XY plane of two sprites
+    public float getXYDistance(Sprite sprite) {
+        float dx = sprite.getX() - x;
+        float dy = sprite.getY() - y;
+        return (float) Math.sqrt(dx * dx + dy * dy);
     }
 }

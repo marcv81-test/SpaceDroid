@@ -76,16 +76,8 @@ class Asteroid extends Sprite {
         return ((maxAge != 0) && (age >= maxAge));
     }
 
-    public boolean isOutOfScope(float cameraX, float cameraY) {
-        return this.distance(cameraX, cameraY) > ASTEROID_REMOVAL_DISTANCE;
-    }
-
-    public float getDistance(Asteroid asteroid) {
-        return distance(asteroid.getX(), asteroid.getY());
-    }
-
-    public float getDistance(Player player) {
-        return distance(player.getX(), player.getY());
+    public boolean isOutOfScope(Player player) {
+        return getXYDistance(player) > ASTEROID_REMOVAL_DISTANCE;
     }
 
     public void update(long timeSlice) {
@@ -100,10 +92,5 @@ class Asteroid extends Sprite {
             return (maxAge - age) / (float) ASTEROID_EXPLOSION_TIME;
         else
             return 1f;
-    }
-
-    // Return the distance between the asteroid and a point
-    private float distance(float x, float y) {
-        return (float) Math.sqrt((x - this.getX()) * (x - this.getX()) + (y - this.getY()) * (y - this.getY()));
     }
 }
