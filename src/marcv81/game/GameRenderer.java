@@ -43,6 +43,14 @@ class GameRenderer extends Renderer {
     private static final boolean FIREBALL_SUPPORT_ANGLE = true;
     private static final boolean FIREBALL_SUPPORT_TRANSPARENCY = false;
 
+    // Stardust texture
+    private static final int SMOKE_RESOURCE = R.drawable.stardust;
+    private static final float SMOKE_SIZE = 0.05f;
+    private static final int SMOKE_ANIMATIONS_X = 1;
+    private static final int SMOKE_ANIMATIONS_Y = 1;
+    private static final boolean SMOKE_SUPPORT_ANGLE = true;
+    private static final boolean SMOKE_SUPPORT_TRANSPARENCY = true;
+
     protected static final float FOREGROUND_DEPTH = 0f;
     protected static final float BACKGROUND_DEPTH = 8f;
 
@@ -77,6 +85,11 @@ class GameRenderer extends Renderer {
             new SpriteGeometry(FIREBALL_SIZE), FOREGROUND_DEPTH,
             FIREBALL_SUPPORT_ANGLE, FIREBALL_SUPPORT_TRANSPARENCY
     );
+    private final SpriteGroup<Smoke> smokes = new SpriteGroup<>(
+            new SpriteTexture(SMOKE_RESOURCE, SMOKE_ANIMATIONS_X, SMOKE_ANIMATIONS_Y),
+            new SpriteGeometry(SMOKE_SIZE), FOREGROUND_DEPTH,
+            SMOKE_SUPPORT_ANGLE, SMOKE_SUPPORT_TRANSPARENCY
+    );
 
     Player player = new Player();
 
@@ -99,7 +112,8 @@ class GameRenderer extends Renderer {
     protected SpriteTexture[] getTextures() {
         return new SpriteTexture[]{
                 backgrounds.getTexture(), players.getTexture(),
-                asteroids.getTexture(), fireballs.getTexture()};
+                asteroids.getTexture(), fireballs.getTexture(),
+                smokes.getTexture()};
     }
 
     @Override
@@ -108,6 +122,7 @@ class GameRenderer extends Renderer {
         updatePlayer(timeSlice);
         updateAsteroids(timeSlice);
         updateFireballs(timeSlice);
+        updateSmokes(timeSlice);
     }
 
     @Override
@@ -117,6 +132,7 @@ class GameRenderer extends Renderer {
         players.draw(gl);
         asteroids.draw(gl);
         fireballs.draw(gl);
+        smokes.draw(gl);
     }
 
     private void updateBackground() {
@@ -140,6 +156,9 @@ class GameRenderer extends Renderer {
             float y = -2f * ((pointerY / getHeight()) - 0.5f);
             float norm = (float) Math.sqrt(x * x + y * y);
             player.setAccelXY(x / norm, y / norm);
+            smokes.getSprites().add(new Smoke(random,
+                    player.getExhaustX(), player.getExhaustY(),
+                    random.nextFloat() - 0.5f, random.nextFloat() - 0.5f));
         } else {
             player.setAccelXY(0f, 0f);
         }
@@ -224,6 +243,20 @@ class GameRenderer extends Renderer {
             // Remove the expired fireballs
             if (fireball.isExpired()) {
                 fireballIterator.remove();
+            }
+        }
+    }
+
+    private void updateSmokes(long timeSlice) {
+
+        Iterator<Smoke> smokeIterator = smokes.getSprites().iterator();
+        while (smokeIterator.hasNext()) {
+
+            Smoke smoke = smokeIterator.next();
+            smoke.update(timeSlice);
+
+            if (smoke.isExpired()) {
+                smokeIterator.remove();
             }
         }
     }

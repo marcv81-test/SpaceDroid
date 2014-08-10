@@ -14,14 +14,21 @@ public class Player extends Sprite {
 
     private float speedX = 0f, speedY = 0f;
     private float accelX = 0f, accelY = 0f;
-    private float lastAngle = 90f;
+    private float lastAngle = SPRITE_ANGLE;
+
+    public float getExhaustX() {
+        return getX() + 0.15f * (float) Math.cos((lastAngle - SPRITE_ANGLE) / DEG_PER_RAD);
+    }
+    public float getExhaustY() {
+        return getY() + 0.15f * (float) Math.sin((lastAngle - SPRITE_ANGLE)/ DEG_PER_RAD);
+    }
 
     public void setAccelXY(float accelX, float accelY) {
         this.accelX = PLAYER_ACCELERATION * accelX;
         this.accelY = PLAYER_ACCELERATION * accelY;
         float accel = (float) Math.sqrt(accelX * accelX + accelY * accelY);
         if (accel > 0.5f) {
-            lastAngle = DEG_PER_RAD * (float) Math.atan2(accelY, accelX) - 90f;
+            lastAngle = DEG_PER_RAD * (float) Math.atan2(accelY, accelX) - SPRITE_ANGLE;
         }
     }
 
