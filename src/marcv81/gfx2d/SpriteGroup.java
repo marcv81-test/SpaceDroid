@@ -15,10 +15,12 @@ public class SpriteGroup<T extends Sprite> {
     private final boolean supportAngle;
     private final boolean supportTransparency;
     private final boolean supportAnimation;
+    private final boolean supportScaling;
 
     // Constructor
     public SpriteGroup(SpriteTexture texture, SpriteGeometry geometry, float z,
-                       boolean supportAngle, boolean supportTransparency) {
+                       boolean supportAngle, boolean supportTransparency,
+                       boolean supportScaling) {
 
         this.texture = texture;
         this.geometry = geometry;
@@ -28,6 +30,7 @@ public class SpriteGroup<T extends Sprite> {
         this.supportAngle = supportAngle;
         this.supportTransparency = supportTransparency;
         this.supportAnimation = (texture.getTotalAnimations() > 1);
+        this.supportScaling = supportScaling;
     }
 
     public List<T> getSprites() { return sprites; }
@@ -60,6 +63,10 @@ public class SpriteGroup<T extends Sprite> {
             }
             if (supportAnimation) {
                 texture.setAnimation(gl, sprite.getAnimation());
+            }
+            if (supportScaling) {
+                float scale = sprite.getScale();
+                gl.glScalef(scale, scale, scale);
             }
 
             gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);

@@ -33,6 +33,11 @@ public class Smoke extends Sprite {
         return 1f - ((float) age / SMOKE_LIFESPAN);
     }
 
+    @Override
+    public float getScale() {
+        return 1f + 3f * ((float) age / SMOKE_LIFESPAN);
+    }
+
     public boolean isExpired() {
         return age >= SMOKE_LIFESPAN;
     }

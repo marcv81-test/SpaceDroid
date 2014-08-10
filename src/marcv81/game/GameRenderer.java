@@ -18,6 +18,7 @@ class GameRenderer extends Renderer {
     private static final int BACKGROUND_ANIMATIONS_Y = 1;
     private static final boolean BACKGROUND_SUPPORT_ANGLE = false;
     private static final boolean BACKGROUND_SUPPORT_TRANSPARENCY = false;
+    private static final boolean BACKGROUND_SUPPORT_SCALING = false;
 
     // Player texture
     private static final int PLAYER_RESOURCE = R.drawable.player;
@@ -26,6 +27,7 @@ class GameRenderer extends Renderer {
     private static final int PLAYER_ANIMATIONS_Y = 1;
     private static final boolean PLAYER_SUPPORT_ANGLE = true;
     private static final boolean PLAYER_SUPPORT_TRANSPARENCY = false;
+    private static final boolean PLAYER_SUPPORT_SCALING = false;
 
     // Asteroid texture
     private static final int ASTEROID_RESOURCE = R.drawable.asteroid;
@@ -34,6 +36,7 @@ class GameRenderer extends Renderer {
     private static final int ASTEROID_ANIMATIONS_Y = 8;
     private static final boolean ASTEROID_SUPPORT_ANGLE = false;
     private static final boolean ASTEROID_SUPPORT_TRANSPARENCY = true;
+    private static final boolean ASTEROID_SUPPORT_SCALING = false;
 
     // Fireball texture
     private static final int FIREBALL_RESOURCE = R.drawable.fireball;
@@ -42,6 +45,7 @@ class GameRenderer extends Renderer {
     private static final int FIREBALL_ANIMATIONS_Y = 4;
     private static final boolean FIREBALL_SUPPORT_ANGLE = true;
     private static final boolean FIREBALL_SUPPORT_TRANSPARENCY = false;
+    private static final boolean FIREBALL_SUPPORT_SCALING = false;
 
     // Stardust texture
     private static final int SMOKE_RESOURCE = R.drawable.stardust;
@@ -50,6 +54,7 @@ class GameRenderer extends Renderer {
     private static final int SMOKE_ANIMATIONS_Y = 1;
     private static final boolean SMOKE_SUPPORT_ANGLE = true;
     private static final boolean SMOKE_SUPPORT_TRANSPARENCY = true;
+    private static final boolean SMOKE_SUPPORT_SCALING = true;
 
     protected static final float FOREGROUND_DEPTH = 0f;
     protected static final float BACKGROUND_DEPTH = 8f;
@@ -68,27 +73,27 @@ class GameRenderer extends Renderer {
     private final SpriteGroup<Background> backgrounds = new SpriteGroup<>(
             new SpriteTexture(BACKGROUND_RESOURCE, BACKGROUND_ANIMATIONS_X, BACKGROUND_ANIMATIONS_Y),
             new SpriteGeometry(BACKGROUND_SIZE), BACKGROUND_DEPTH,
-            BACKGROUND_SUPPORT_ANGLE, BACKGROUND_SUPPORT_TRANSPARENCY
+            BACKGROUND_SUPPORT_ANGLE, BACKGROUND_SUPPORT_TRANSPARENCY, BACKGROUND_SUPPORT_SCALING
     );
     private final SpriteGroup<Player> players = new SpriteGroup<>(
             new SpriteTexture(PLAYER_RESOURCE, PLAYER_ANIMATIONS_X, PLAYER_ANIMATIONS_Y),
             new SpriteGeometry(PLAYER_SIZE), FOREGROUND_DEPTH,
-            PLAYER_SUPPORT_ANGLE, PLAYER_SUPPORT_TRANSPARENCY
+            PLAYER_SUPPORT_ANGLE, PLAYER_SUPPORT_TRANSPARENCY, PLAYER_SUPPORT_SCALING
     );
     private final SpriteGroup<Asteroid> asteroids = new SpriteGroup<>(
             new SpriteTexture(ASTEROID_RESOURCE, ASTEROID_ANIMATIONS_X, ASTEROID_ANIMATIONS_Y),
             new SpriteGeometry(ASTEROID_SIZE), FOREGROUND_DEPTH,
-            ASTEROID_SUPPORT_ANGLE, ASTEROID_SUPPORT_TRANSPARENCY
+            ASTEROID_SUPPORT_ANGLE, ASTEROID_SUPPORT_TRANSPARENCY, ASTEROID_SUPPORT_SCALING
     );
     private final SpriteGroup<Fireball> fireballs = new SpriteGroup<>(
             new SpriteTexture(FIREBALL_RESOURCE, FIREBALL_ANIMATIONS_X, FIREBALL_ANIMATIONS_Y),
             new SpriteGeometry(FIREBALL_SIZE), FOREGROUND_DEPTH,
-            FIREBALL_SUPPORT_ANGLE, FIREBALL_SUPPORT_TRANSPARENCY
+            FIREBALL_SUPPORT_ANGLE, FIREBALL_SUPPORT_TRANSPARENCY, FIREBALL_SUPPORT_SCALING
     );
     private final SpriteGroup<Smoke> smokes = new SpriteGroup<>(
             new SpriteTexture(SMOKE_RESOURCE, SMOKE_ANIMATIONS_X, SMOKE_ANIMATIONS_Y),
             new SpriteGeometry(SMOKE_SIZE), FOREGROUND_DEPTH,
-            SMOKE_SUPPORT_ANGLE, SMOKE_SUPPORT_TRANSPARENCY
+            SMOKE_SUPPORT_ANGLE, SMOKE_SUPPORT_TRANSPARENCY, SMOKE_SUPPORT_SCALING
     );
 
     Player player = new Player();

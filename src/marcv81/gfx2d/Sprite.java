@@ -30,6 +30,7 @@ public class Sprite {
     public float getTransparency() {
         return 1f;
     }
+    public float getScale() { return 1f; }
 
     // Get the distance between the projections on the XY plane of two sprites
     public float getDistance(Sprite sprite) {
