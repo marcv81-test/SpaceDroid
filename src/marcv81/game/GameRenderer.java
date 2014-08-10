@@ -48,10 +48,10 @@ class GameRenderer extends Renderer {
     private static final boolean FIREBALL_SUPPORT_SCALING = false;
 
     // Stardust texture
-    private static final int SMOKE_RESOURCE = R.drawable.stardust;
-    private static final float SMOKE_SIZE = 0.05f;
-    private static final int SMOKE_ANIMATIONS_X = 1;
-    private static final int SMOKE_ANIMATIONS_Y = 1;
+    private static final int SMOKE_RESOURCE = R.drawable.smoke;
+    private static final float SMOKE_SIZE = 0.1f;
+    private static final int SMOKE_ANIMATIONS_X = 2;
+    private static final int SMOKE_ANIMATIONS_Y = 2;
     private static final boolean SMOKE_SUPPORT_ANGLE = true;
     private static final boolean SMOKE_SUPPORT_TRANSPARENCY = true;
     private static final boolean SMOKE_SUPPORT_SCALING = true;
@@ -161,9 +161,7 @@ class GameRenderer extends Renderer {
             float y = -2f * ((pointerY / getHeight()) - 0.5f);
             float norm = (float) Math.sqrt(x * x + y * y);
             player.setAccelXY(x / norm, y / norm);
-            smokes.getSprites().add(new Smoke(random,
-                    player.getExhaustX(), player.getExhaustY(),
-                    random.nextFloat() - 0.5f, random.nextFloat() - 0.5f));
+            smokes.getSprites().add(new Smoke(random, player.getExhaustX(), player.getExhaustY()));
         } else {
             player.setAccelXY(0f, 0f);
         }
