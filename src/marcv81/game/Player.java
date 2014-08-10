@@ -11,6 +11,7 @@ public class Player extends Sprite {
     private static final float PLAYER_ACCELERATION = 3f;
     private static final float PLAYER_STOP_SPEED = 0.2f;
     private static final float PLAYER_START_SPEED = 0.5f;
+    private static final float PLAYER_MAX_SPEED = 1.2f;
 
     private float speedX = 0f, speedY = 0f;
     private float accelX = 0f, accelY = 0f;
@@ -59,6 +60,11 @@ public class Player extends Sprite {
 
         speedX += (accelX - (PLAYER_FRICTION * speedX)) * timeSlice / 1000;
         speedY += (accelY - (PLAYER_FRICTION * speedY)) * timeSlice / 1000;
+
+        if (speed > PLAYER_MAX_SPEED) {
+            speedX = speedX / speed * PLAYER_MAX_SPEED;
+            speedY = speedY / speed * PLAYER_MAX_SPEED;
+        }
 
         setX(getX() + speedX * timeSlice / 1000);
         setY(getY() + speedY * timeSlice / 1000);
