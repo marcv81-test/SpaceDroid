@@ -19,6 +19,10 @@ public class Player extends Sprite {
     public void setAccelXY(float accelX, float accelY) {
         this.accelX = PLAYER_ACCELERATION * accelX;
         this.accelY = PLAYER_ACCELERATION * accelY;
+        float accel = (float) Math.sqrt(accelX * accelX + accelY * accelY);
+        if (accel > 0.5f) {
+            lastAngle = DEG_PER_RAD * (float) Math.atan2(accelY, accelX) - 90f;
+        }
     }
 
     public Player() {
@@ -27,10 +31,6 @@ public class Player extends Sprite {
 
     @Override
     public float getAngle() {
-        float speed = (float) Math.sqrt(speedX * speedX + speedY * speedY);
-        if (speed >= PLAYER_STOP_SPEED) {
-            lastAngle = DEG_PER_RAD * (float) Math.atan2(speedY, speedX) - SPRITE_ANGLE;
-        }
         return lastAngle;
     }
 
