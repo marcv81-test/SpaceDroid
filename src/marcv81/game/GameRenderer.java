@@ -29,12 +29,12 @@ class GameRenderer extends Renderer {
 
     // Asteroid texture
     private static final int ASTEROID_RESOURCE = R.drawable.asteroid;
-    private static final float ASTEROID_SIZE = 0.4f;
+    private static final float ASTEROID_SIZE = 0.15f;
     private static final int ASTEROID_ANIMATIONS_X = 8;
     private static final int ASTEROID_ANIMATIONS_Y = 8;
     private static final boolean ASTEROID_SUPPORT_ANGLE = true;
     private static final boolean ASTEROID_SUPPORT_TRANSPARENCY = true;
-    private static final boolean ASTEROID_SUPPORT_SCALING = false;
+    private static final boolean ASTEROID_SUPPORT_SCALING = true;
 
     // Fireball texture
     private static final int FIREBALL_RESOURCE = R.drawable.fireball;
@@ -58,7 +58,7 @@ class GameRenderer extends Renderer {
     protected static final float BACKGROUND_DEPTH = 8f;
 
     private static final int ASTEROID_MAX_COUNT = 100;
-    private static final float ASTEROID_COLLISION_DISTANCE = 0.3f;
+    private static final float ASTEROID_COLLISION_DISTANCE = 0.11f;
     private static final float PLAYER_COLLISION_DISTANCE = 0.15f;
 
     // Touchscreen status
@@ -213,7 +213,9 @@ class GameRenderer extends Renderer {
 
                         // Check the distance between the asteroids
                         float distance = asteroid1.getDistance(asteroid2);
-                        if (distance < ASTEROID_COLLISION_DISTANCE) {
+                        float collisionDistance = (ASTEROID_COLLISION_DISTANCE * asteroid1.getScale()
+                                + ASTEROID_COLLISION_DISTANCE * asteroid2.getScale()) / 2f;
+                        if (distance < collisionDistance) {
 
                             // Create a fireball
                             float fx = (asteroid1.getX() + asteroid2.getX()) / 2f;
@@ -230,8 +232,9 @@ class GameRenderer extends Renderer {
                 }
 
                 // Check the distance between the asteroid and the player
-                if (asteroid1.getDistance(player)
-                        < (ASTEROID_COLLISION_DISTANCE + PLAYER_COLLISION_DISTANCE) / 2f) {
+                float collisionDistance = (ASTEROID_COLLISION_DISTANCE * asteroid1.getScale()
+                        + PLAYER_COLLISION_DISTANCE) / 2f;
+                if (asteroid1.getDistance(player) < collisionDistance) {
 
                     // Create a fireball
                     float fx = (asteroid1.getX() + player.getX()) / 2f;

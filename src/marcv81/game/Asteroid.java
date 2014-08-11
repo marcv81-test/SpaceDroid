@@ -18,6 +18,7 @@ class Asteroid extends Sprite {
 
     private final float speedX, speedY;
     private final float angle;
+    private final float scale;
     private final int animationType;
     private final int animationSpeed;
     private final int animationDirection;
@@ -41,6 +42,9 @@ class Asteroid extends Sprite {
         this.animationSpeed = ASTEROID_ANIMATION_MIN_SPEED + 1
                 + random.nextInt(ASTEROID_ANIMATION_MAX_SPEED - ASTEROID_ANIMATION_MIN_SPEED);
         this.animationDirection = random.nextInt(2); // 2 possible rotation directions
+
+        // Random scale between 1 and 4
+        this.scale = 3f * random.nextFloat() + 1f;
     }
 
 
@@ -95,6 +99,11 @@ class Asteroid extends Sprite {
         } else {
             return 1f;
         }
+    }
+
+    @Override
+    public float getScale() {
+        return scale;
     }
 
     public boolean isExploding() {
