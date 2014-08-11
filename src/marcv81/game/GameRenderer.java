@@ -1,10 +1,8 @@
 package marcv81.game;
 
 import android.content.Context;
-import marcv81.gfx2d.Renderer;
-import marcv81.gfx2d.SpriteGeometry;
-import marcv81.gfx2d.SpriteGroup;
-import marcv81.gfx2d.SpriteTexture;
+import marcv81.gfx2d.*;
+
 import javax.microedition.khronos.opengles.GL10;
 import java.util.Iterator;
 import java.util.Random;
@@ -34,7 +32,7 @@ class GameRenderer extends Renderer {
     private static final float ASTEROID_SIZE = 0.4f;
     private static final int ASTEROID_ANIMATIONS_X = 8;
     private static final int ASTEROID_ANIMATIONS_Y = 8;
-    private static final boolean ASTEROID_SUPPORT_ANGLE = false;
+    private static final boolean ASTEROID_SUPPORT_ANGLE = true;
     private static final boolean ASTEROID_SUPPORT_TRANSPARENCY = true;
     private static final boolean ASTEROID_SUPPORT_SCALING = false;
 
@@ -85,12 +83,12 @@ class GameRenderer extends Renderer {
             new SpriteGeometry(ASTEROID_SIZE), FOREGROUND_DEPTH,
             ASTEROID_SUPPORT_ANGLE, ASTEROID_SUPPORT_TRANSPARENCY, ASTEROID_SUPPORT_SCALING
     );
-    private final SpriteGroup<Fireball> fireballs = new SpriteGroup<>(
+    private final ParticleGroup<Fireball> fireballs = new ParticleGroup<>(
             new SpriteTexture(FIREBALL_RESOURCE, FIREBALL_ANIMATIONS_X, FIREBALL_ANIMATIONS_Y),
             new SpriteGeometry(FIREBALL_SIZE), FOREGROUND_DEPTH,
             FIREBALL_SUPPORT_ANGLE, FIREBALL_SUPPORT_TRANSPARENCY, FIREBALL_SUPPORT_SCALING
     );
-    private final SpriteGroup<Smoke> smokes = new SpriteGroup<>(
+    private final ParticleGroup<Smoke> smokes = new ParticleGroup<>(
             new SpriteTexture(SMOKE_RESOURCE, SMOKE_ANIMATIONS_X, SMOKE_ANIMATIONS_Y),
             new SpriteGeometry(SMOKE_SIZE), FOREGROUND_DEPTH,
             SMOKE_SUPPORT_ANGLE, SMOKE_SUPPORT_TRANSPARENCY, SMOKE_SUPPORT_SCALING
@@ -115,10 +113,8 @@ class GameRenderer extends Renderer {
 
     @Override
     protected SpriteTexture[] getTextures() {
-        return new SpriteTexture[]{
-                backgrounds.getTexture(), players.getTexture(),
-                asteroids.getTexture(), fireballs.getTexture(),
-                smokes.getTexture()};
+        return new SpriteTexture[]{backgrounds.getTexture(), players.getTexture(),
+                asteroids.getTexture(), fireballs.getTexture(), smokes.getTexture()};
     }
 
     @Override
@@ -126,13 +122,12 @@ class GameRenderer extends Renderer {
         updateBackground();
         updatePlayer(timeSlice);
         updateAsteroids(timeSlice);
-        updateFireballs(timeSlice);
-        updateSmokes(timeSlice);
+        fireballs.update(timeSlice);
+        smokes.update(timeSlice);
     }
 
     @Override
     protected void draw(GL10 gl) {
-
         backgrounds.draw(gl);
         players.draw(gl);
         asteroids.draw(gl);
@@ -142,59 +137,78 @@ class GameRenderer extends Renderer {
 
     private void updateBackground() {
 
+        // Remove all the background tiles
         backgrounds.getSprites().clear();
-        float x1 = Math.round(getCameraX() / BACKGROUND_SIZE);
-        float y1 = Math.round(getCameraY() / BACKGROUND_SIZE);
+
+        // Add 4 tiles around the player
+        float x1 = Math.round(player.getX() / BACKGROUND_SIZE);
+        float y1 = Math.round(player.getY() / BACKGROUND_SIZE);
         for (float x2 : new float[]{x1 - 0.5f, x1 + 0.5f}) {
             for (float y2 : new float[]{y1 - 0.5f, y1 + 0.5f}) {
-                Background background = new Background();
-                background.setX(BACKGROUND_SIZE * x2);
-                background.setY(BACKGROUND_SIZE * y2);
+                Background background = new Background(BACKGROUND_SIZE * x2, BACKGROUND_SIZE * y2);
                 backgrounds.getSprites().add(background);
             }
         }
     }
 
     private void updatePlayer(long timeSlice) {
+
+        // If touching the screen
         if (pointerDown) {
+
+            // Calculate the touchscreen vector
             float x = -2f * ((pointerX / getWidth()) - 0.5f);
             float y = -2f * ((pointerY / getHeight()) - 0.5f);
             float norm = (float) Math.sqrt(x * x + y * y);
-            player.setAccelXY(x / norm, y / norm);
-            smokes.getSprites().add(new Smoke(random, player.getExhaustX(), player.getExhaustY()));
-        } else {
-            player.setAccelXY(0f, 0f);
+
+            // Set the acceleration to the normalised touchscreen vector
+            player.setAcceleration(x / norm, y / norm);
+
+            // Add smoke particles
+            smokes.getSprites().add(new Smoke(player.getExhaustX(), player.getExhaustY(), random));
         }
+
+        // If not touching the screen
+        else {
+            player.setAcceleration(0f, 0f);
+        }
+
+        // Update the player sprite
         player.update(timeSlice);
-        setXY(player.getX(), player.getY());
+
+        // Update the camera position
+        setCamera(player.getX(), player.getY());
     }
 
     private void updateAsteroids(long timeSlice) {
 
+        // Iterate over all the asteroids
         Iterator<Asteroid> asteroidIterator = asteroids.getSprites().iterator();
         while (asteroidIterator.hasNext()) {
 
+            // Update each asteroid
             Asteroid asteroid = asteroidIterator.next();
             asteroid.update(timeSlice);
 
             // Remove the asteroids which are too far or have exploded
-            if (asteroid.isOutOfScope(player)
-                    || asteroid.hasExploded()) {
+            if (asteroid.isOutOfScope(player) || asteroid.hasExploded()) {
                 asteroidIterator.remove();
             }
         }
 
         // Add asteroids if we have space
         while (asteroids.getSprites().size() < ASTEROID_MAX_COUNT) {
-            asteroids.getSprites().add(new Asteroid(random, getCameraX(), getCameraY()));
+            asteroids.getSprites().add(Asteroid.spawn(player, random));
         }
 
-        // Asteroid collision detection
+        // Iterate over asteroids
         for (int i = 0; i < asteroids.getSprites().size(); i++) {
-            Asteroid asteroid1 = (Asteroid) asteroids.getSprites().get(i);
+            Asteroid asteroid1 = asteroids.getSprites().get(i);
             if (!asteroid1.isExploding()) {
+
+                // Iterate over asteroids pairs
                 for (int j = i + 1; j < asteroids.getSprites().size(); j++) {
-                    Asteroid asteroid2 = (Asteroid) asteroids.getSprites().get(j);
+                    Asteroid asteroid2 = asteroids.getSprites().get(j);
                     if (!asteroid2.isExploding()) {
 
                         // Check the distance between the asteroids
@@ -204,12 +218,9 @@ class GameRenderer extends Renderer {
                             // Create a fireball
                             float fx = (asteroid1.getX() + asteroid2.getX()) / 2f;
                             float fy = (asteroid1.getY() + asteroid2.getY()) / 2f;
-                            float fsx = (asteroid1.getSpeedX() + asteroid2
-                                    .getSpeedX()) / 2f;
-                            float fsy = (asteroid1.getSpeedY() + asteroid2
-                                    .getSpeedY()) / 2f;
-                            fireballs.getSprites()
-                                    .add(new Fireball(random, fx, fy, fsx, fsy));
+                            float fsx = (asteroid1.getSpeedX() + asteroid2.getSpeedX()) / 2f;
+                            float fsy = (asteroid1.getSpeedY() + asteroid2.getSpeedY()) / 2f;
+                            fireballs.getSprites().add(new Fireball(fx, fy, fsx, fsy, random));
 
                             // Start the asteroids explosion
                             asteroid1.explode();
@@ -217,49 +228,21 @@ class GameRenderer extends Renderer {
                         }
                     }
                 }
-                if (asteroid1.getDistance(player) < (ASTEROID_COLLISION_DISTANCE
-                        + PLAYER_COLLISION_DISTANCE) / 2f) {
+
+                // Check the distance between the asteroid and the player
+                if (asteroid1.getDistance(player)
+                        < (ASTEROID_COLLISION_DISTANCE + PLAYER_COLLISION_DISTANCE) / 2f) {
 
                     // Create a fireball
                     float fx = (asteroid1.getX() + player.getX()) / 2f;
                     float fy = (asteroid1.getY() + player.getY()) / 2f;
                     float fsx = asteroid1.getSpeedX();
                     float fsy = asteroid1.getSpeedY();
-                    fireballs.getSprites()
-                            .add(new Fireball(random, fx, fy, fsx, fsy));
+                    fireballs.getSprites().add(new Fireball(fx, fy, fsx, fsy, random));
 
                     // Start the asteroid explosion
                     asteroid1.explode();
                 }
-            }
-        }
-    }
-
-    private void updateFireballs(long timeSlice) {
-
-        Iterator<Fireball> fireballIterator = fireballs.getSprites().iterator();
-        while (fireballIterator.hasNext()) {
-
-            Fireball fireball = fireballIterator.next();
-            fireball.update(timeSlice);
-
-            // Remove the expired fireballs
-            if (fireball.isExpired()) {
-                fireballIterator.remove();
-            }
-        }
-    }
-
-    private void updateSmokes(long timeSlice) {
-
-        Iterator<Smoke> smokeIterator = smokes.getSprites().iterator();
-        while (smokeIterator.hasNext()) {
-
-            Smoke smoke = smokeIterator.next();
-            smoke.update(timeSlice);
-
-            if (smoke.isExpired()) {
-                smokeIterator.remove();
             }
         }
     }

@@ -19,8 +19,7 @@ public class SpriteGroup<T extends Sprite> {
 
     // Constructor
     public SpriteGroup(SpriteTexture texture, SpriteGeometry geometry, float z,
-                       boolean supportAngle, boolean supportTransparency,
-                       boolean supportScaling) {
+                       boolean supportAngle, boolean supportTransparency, boolean supportScaling) {
 
         this.texture = texture;
         this.geometry = geometry;
@@ -33,8 +32,13 @@ public class SpriteGroup<T extends Sprite> {
         this.supportScaling = supportScaling;
     }
 
-    public List<T> getSprites() { return sprites; }
-    public SpriteTexture getTexture() { return texture; }
+    public List<T> getSprites() {
+        return sprites;
+    }
+
+    public SpriteTexture getTexture() {
+        return texture;
+    }
 
     // Draw the sprites in the group
     public void draw(GL10 gl) {

@@ -4,68 +4,73 @@ import marcv81.gfx2d.Sprite;
 
 public class Player extends Sprite {
 
-    private static final float DEG_PER_RAD = 57.2957795f;
-    private static final float SPRITE_ANGLE = 90f;
-
+    private static final float PLAYER_ACCELERATION_MULTIPLIER = 3f;
     private static final float PLAYER_FRICTION = 0.8f;
-    private static final float PLAYER_ACCELERATION = 3f;
-    private static final float PLAYER_STOP_SPEED = 0.2f;
-    private static final float PLAYER_START_SPEED = 0.5f;
     private static final float PLAYER_MAX_SPEED = 1.2f;
+    private static final float PLAYER_SPRITE_ANGLE = 90f;
+    private static final float PLAYER_EXHAUST_DISTANCE = 0.15f;
 
     private float speedX = 0f, speedY = 0f;
-    private float accelX = 0f, accelY = 0f;
-    private float lastAngle = SPRITE_ANGLE;
+    private float accelerationX = 0f, accelerationY = 0f;
+    private float angle = PLAYER_SPRITE_ANGLE;
 
-    public float getExhaustX() {
-        return getX() + 0.15f * (float) Math.cos((lastAngle - SPRITE_ANGLE) / DEG_PER_RAD);
-    }
-    public float getExhaustY() {
-        return getY() + 0.15f * (float) Math.sin((lastAngle - SPRITE_ANGLE)/ DEG_PER_RAD);
-    }
-
-    public void setAccelXY(float accelX, float accelY) {
-        this.accelX = PLAYER_ACCELERATION * accelX;
-        this.accelY = PLAYER_ACCELERATION * accelY;
-        float accel = (float) Math.sqrt(accelX * accelX + accelY * accelY);
-        if (accel > 0.5f) {
-            lastAngle = DEG_PER_RAD * (float) Math.atan2(accelY, accelX) - SPRITE_ANGLE;
-        }
-    }
-
+    // Constructor
     public Player() {
-        setY(GameRenderer.FOREGROUND_DEPTH);
+        super(0f, 0f);
+    }
+
+    // Get the X coordinate of the exhaust (to draw smoke)
+    public float getExhaustX() {
+        float exhaustAngle = (angle - PLAYER_SPRITE_ANGLE) / DEGREE_PER_RADIAN;
+        return getX() + PLAYER_EXHAUST_DISTANCE * (float) Math.cos(exhaustAngle);
+    }
+
+    // Get the Y coordinate of the exhaust (to draw smoke)
+    public float getExhaustY() {
+        float exhaustAngle = (angle - PLAYER_SPRITE_ANGLE) / DEGREE_PER_RADIAN;
+        return getY() + PLAYER_EXHAUST_DISTANCE * (float) Math.sin(exhaustAngle);
+    }
+
+    public float getAcceleration() {
+        return (float) Math.sqrt(accelerationX * accelerationX + accelerationY * accelerationY);
+    }
+
+    public float getSpeed() {
+        return (float) Math.sqrt(speedX * speedX + speedY * speedY);
+    }
+
+    public void setAcceleration(float accelerationX, float accelerationY) {
+
+        // Set the acceleration
+        this.accelerationX = PLAYER_ACCELERATION_MULTIPLIER * accelerationX;
+        this.accelerationY = PLAYER_ACCELERATION_MULTIPLIER * accelerationY;
+
+        // Update the drawing angle if accelerating
+        if (getAcceleration() > 0.5f) {
+            angle = DEGREE_PER_RADIAN * (float) Math.atan2(accelerationY, accelerationX) - PLAYER_SPRITE_ANGLE;
+        }
     }
 
     @Override
     public float getAngle() {
-        return lastAngle;
+        return angle;
     }
 
     // Update player speed and position from acceleration
     public void update(long timeSlice) {
 
-        float accel = (float) Math.sqrt(accelX * accelX + accelY * accelY);
-        float speed = (float) Math.sqrt(speedX * speedX + speedY * speedY);
+        // Update speed
+        speedX += (accelerationX - (PLAYER_FRICTION * speedX)) * timeSlice / 1000;
+        speedY += (accelerationY - (PLAYER_FRICTION * speedY)) * timeSlice / 1000;
 
-        if (speed < PLAYER_STOP_SPEED) {
-            speedX = 0f;
-            speedY = 0f;
-        }
-        if ((accel > PLAYER_ACCELERATION / 2f)
-                && (speed < PLAYER_STOP_SPEED)) {
-            speedX = PLAYER_START_SPEED * accelX / PLAYER_ACCELERATION;
-            speedY = PLAYER_START_SPEED * accelY / PLAYER_ACCELERATION;
-        }
-
-        speedX += (accelX - (PLAYER_FRICTION * speedX)) * timeSlice / 1000;
-        speedY += (accelY - (PLAYER_FRICTION * speedY)) * timeSlice / 1000;
-
+        // Limit speed
+        float speed = getSpeed();
         if (speed > PLAYER_MAX_SPEED) {
             speedX = speedX / speed * PLAYER_MAX_SPEED;
             speedY = speedY / speed * PLAYER_MAX_SPEED;
         }
 
+        // Update position
         setX(getX() + speedX * timeSlice / 1000);
         setY(getY() + speedY * timeSlice / 1000);
     }

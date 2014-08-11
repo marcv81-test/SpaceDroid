@@ -10,7 +10,7 @@ import javax.microedition.khronos.opengles.GL10;
 public abstract class Renderer implements GLSurfaceView.Renderer {
 
     private static final long MIN_TIME_SLICE = 20; // 50 FPS
-    private static final long MAX_TIME_SLICE = 100; // 10 FPS
+    private static final long MAX_TIME_SLICE = 50; // 20 FPS
 
     private final Context context;
 
@@ -33,18 +33,8 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
         this.context = context;
     }
 
-    // Get the camera X coordinate
-    public float getCameraX() {
-        return cameraX;
-    }
-
-    // Get the camera Y coordinate
-    public float getCameraY() {
-        return cameraY;
-    }
-
     // Set the X and Y camera coordinates
-    public void setXY(float x, float y) {
+    public void setCamera(float x, float y) {
         this.cameraX = x;
         this.cameraY = y;
     }
