@@ -14,7 +14,7 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
 
     private final Context context;
 
-    private float cameraX = 0f, cameraY = 0f;
+    private Vector2f camera = new Vector2f(0f, 0f);
 
     private int width = 0, height = 0;
 
@@ -34,9 +34,8 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
     }
 
     // Set the X and Y camera coordinates
-    public void setCamera(float x, float y) {
-        this.cameraX = x;
-        this.cameraY = y;
+    public void setCamera(Vector2f position) {
+        camera.set(position);
     }
 
     // Get the surface width
@@ -109,14 +108,11 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
         // Get ready to calculate the next time slice
         previousTime = currentTime;
 
-        // Buffer the camera coordinates
-        float x = this.cameraX, y = this.cameraY;
-
         // Prepare to draw the sprites
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
         gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glLoadIdentity();
-        GLU.gluLookAt(gl, x, y, -3f, x, y, 0f, 0f, 1f, 0f);
+        GLU.gluLookAt(gl, camera.x, camera.y, -3f, camera.x, camera.y, 0f, 0f, 1f, 0f);
 
         // Draw the sprites
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);

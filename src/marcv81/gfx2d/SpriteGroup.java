@@ -56,7 +56,7 @@ public class SpriteGroup<T extends Sprite> {
         for (Sprite sprite : sprites) {
 
             gl.glPushMatrix();
-            gl.glTranslatef(sprite.getX(), sprite.getY(), z);
+            gl.glTranslatef(sprite.getPosition().x, sprite.getPosition().y, z);
 
             if (supportAngle) {
                 gl.glRotatef(sprite.getAngle(), 0f, 0f, 1f);

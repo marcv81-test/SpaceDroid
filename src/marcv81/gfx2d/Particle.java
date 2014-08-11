@@ -6,8 +6,8 @@ public abstract class Particle extends Sprite {
     private long age = 0;
 
     // Constructor
-    public Particle(float x, float y) {
-        super(x, y);
+    public Particle(Vector2f position) {
+        super(position);
     }
 
     // To be overridden in the particle implementation

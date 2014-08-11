@@ -1,53 +1,45 @@
 package marcv81.game;
 
-import marcv81.gfx2d.Sprite;
+import marcv81.gfx2d.DriftingSprite;
+import marcv81.gfx2d.Vector2f;
 
-public class Player extends Sprite {
+public class Player extends DriftingSprite {
 
     private static final float PLAYER_ACCELERATION_MULTIPLIER = 3f;
     private static final float PLAYER_FRICTION = 0.8f;
     private static final float PLAYER_MAX_SPEED = 1.2f;
     private static final float PLAYER_SPRITE_ANGLE = 90f;
     private static final float PLAYER_EXHAUST_DISTANCE = 0.15f;
+    private static final float PLAYER_DIAMETER = 0.15f;
+    private static final float PLAYER_MASS = 0.5f;
 
-    private float speedX = 0f, speedY = 0f;
-    private float accelerationX = 0f, accelerationY = 0f;
+    private Vector2f acceleration = new Vector2f(0f, 0f);
     private float angle = PLAYER_SPRITE_ANGLE;
 
     // Constructor
     public Player() {
-        super(0f, 0f);
+        super(new Vector2f(0f, 0f), new Vector2f(0f, 0f));
     }
 
-    // Get the X coordinate of the exhaust (to draw smoke)
-    public float getExhaustX() {
+    // Get the coordinates of the exhaust (to draw smoke)
+    public Vector2f getExhaust() {
+        Vector2f exhaustPosition = new Vector2f(getPosition());
         float exhaustAngle = (angle - PLAYER_SPRITE_ANGLE) / DEGREE_PER_RADIAN;
-        return getX() + PLAYER_EXHAUST_DISTANCE * (float) Math.cos(exhaustAngle);
+        Vector2f exhaustDisplacement = new Vector2f(exhaustAngle);
+        exhaustDisplacement.scale(PLAYER_EXHAUST_DISTANCE);
+        exhaustPosition.add(exhaustDisplacement);
+        return exhaustPosition;
     }
 
-    // Get the Y coordinate of the exhaust (to draw smoke)
-    public float getExhaustY() {
-        float exhaustAngle = (angle - PLAYER_SPRITE_ANGLE) / DEGREE_PER_RADIAN;
-        return getY() + PLAYER_EXHAUST_DISTANCE * (float) Math.sin(exhaustAngle);
-    }
-
-    public float getAcceleration() {
-        return (float) Math.sqrt(accelerationX * accelerationX + accelerationY * accelerationY);
-    }
-
-    public float getSpeed() {
-        return (float) Math.sqrt(speedX * speedX + speedY * speedY);
-    }
-
-    public void setAcceleration(float accelerationX, float accelerationY) {
+    public void setAcceleration(Vector2f acceleration) {
 
         // Set the acceleration
-        this.accelerationX = PLAYER_ACCELERATION_MULTIPLIER * accelerationX;
-        this.accelerationY = PLAYER_ACCELERATION_MULTIPLIER * accelerationY;
+        this.acceleration.set(acceleration);
+        this.acceleration.scale(PLAYER_ACCELERATION_MULTIPLIER);
 
         // Update the drawing angle if accelerating
-        if (getAcceleration() > 0.5f) {
-            angle = DEGREE_PER_RADIAN * (float) Math.atan2(accelerationY, accelerationX) - PLAYER_SPRITE_ANGLE;
+        if (acceleration.norm() > 0.5f) {
+            angle = DEGREE_PER_RADIAN * acceleration.angle() - PLAYER_SPRITE_ANGLE;
         }
     }
 
@@ -56,22 +48,33 @@ public class Player extends Sprite {
         return angle;
     }
 
+    @Override
+    public float getMass() {
+        return PLAYER_MASS;
+    }
+
+    @Override
+    public float getDiameter() {
+        return PLAYER_DIAMETER;
+    }
+
     // Update player speed and position from acceleration
     public void update(long timeSlice) {
 
         // Update speed
-        speedX += (accelerationX - (PLAYER_FRICTION * speedX)) * timeSlice / 1000;
-        speedY += (accelerationY - (PLAYER_FRICTION * speedY)) * timeSlice / 1000;
+        Vector2f deltaAcceleration = new Vector2f(acceleration);
+        Vector2f friction = new Vector2f(getSpeed());
+        friction.scale(PLAYER_FRICTION);
+        deltaAcceleration.sub(friction);
+        deltaAcceleration.scale(timeSlice / 1000f);
+        getSpeed().add(deltaAcceleration);
 
         // Limit speed
-        float speed = getSpeed();
-        if (speed > PLAYER_MAX_SPEED) {
-            speedX = speedX / speed * PLAYER_MAX_SPEED;
-            speedY = speedY / speed * PLAYER_MAX_SPEED;
+        float normSpeed = getSpeed().norm();
+        if (normSpeed > PLAYER_MAX_SPEED) {
+            getSpeed().scale(PLAYER_MAX_SPEED / normSpeed);
         }
 
-        // Update position
-        setX(getX() + speedX * timeSlice / 1000);
-        setY(getY() + speedY * timeSlice / 1000);
+        super.update(timeSlice);
     }
 }

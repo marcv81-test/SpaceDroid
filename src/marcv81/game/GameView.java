@@ -3,6 +3,7 @@ package marcv81.game;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
+import marcv81.gfx2d.Vector2f;
 
 class GameView extends GLSurfaceView {
 
@@ -22,10 +23,10 @@ class GameView extends GLSurfaceView {
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 renderer.setPointerDown(true);
-                renderer.setPointerXY(x, y);
+                renderer.setPointer(new Vector2f(x, y));
                 break;
             case MotionEvent.ACTION_MOVE:
-                renderer.setPointerXY(x, y);
+                renderer.setPointer(new Vector2f(x, y));
                 break;
             case MotionEvent.ACTION_UP:
                 renderer.setPointerDown(false);

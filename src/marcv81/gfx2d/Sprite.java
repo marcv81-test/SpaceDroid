@@ -5,28 +5,16 @@ public class Sprite {
     protected static final float TAU = 6.2831853071f;
     protected static final float DEGREE_PER_RADIAN = 57.2957795f;
 
-    private float x = 0f, y = 0f;
+    private Vector2f position;
 
     // Constructor
-    public Sprite(float x, float y) {
-        this.x = x;
-        this.y = y;
+    public Sprite(Vector2f position) {
+        this.position = new Vector2f(position);
     }
 
-    public float getX() {
-        return x;
-    }
-
-    public float getY() {
-        return y;
-    }
-
-    public void setX(float x) {
-        this.x = x;
-    }
-
-    public void setY(float y) {
-        this.y = y;
+    // Return the sprite position
+    public Vector2f getPosition() {
+        return position;
     }
 
     // Override this method if the sprites support multiple animations
@@ -49,10 +37,8 @@ public class Sprite {
         return 1f;
     }
 
-    // Get the distance between the projections on the XY plane of two sprites
+    // Get the distance between two sprites
     public float getDistance(Sprite sprite) {
-        float dx = sprite.getX() - x;
-        float dy = sprite.getY() - y;
-        return (float) Math.sqrt(dx * dx + dy * dy);
+        return position.distance(sprite.position);
     }
 }

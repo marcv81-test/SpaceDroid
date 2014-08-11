@@ -1,10 +1,11 @@
 package marcv81.game;
 
-import marcv81.gfx2d.Sprite;
+import marcv81.gfx2d.DriftingSprite;
+import marcv81.gfx2d.Vector2f;
 
 import java.util.Random;
 
-class Asteroid extends Sprite {
+class Asteroid extends DriftingSprite {
 
     private static final int ASTEROID_ANIMATIONS = 32;
     private static final int ASTEROID_ANIMATIONS_TYPES = 2;
@@ -15,8 +16,8 @@ class Asteroid extends Sprite {
     private static final int ASTEROID_ANIMATION_MIN_SPEED = 25;
     private static final int ASTEROID_ANIMATION_MAX_SPEED = 30;
     private static final int ASTEROID_EXPLOSION_TIME = 250;
+    private static final float ASTEROID_DIAMETER = 0.11f;
 
-    private final float speedX, speedY;
     private final float angle;
     private final float scale;
     private final int animationType;
@@ -25,14 +26,10 @@ class Asteroid extends Sprite {
     private long age = 0, maxAge = 0;
 
     // Constructor
-    public Asteroid(float x, float y, float speedX, float speedY, Random random) {
+    public Asteroid(Vector2f position, Vector2f speed, Random random) {
 
         // Call parent constructor
-        super(x, y);
-
-        // Set speed
-        this.speedX = speedX;
-        this.speedY = speedY;
+        super(position, speed);
 
         // Random initial angle
         this.angle = 360f * random.nextFloat();
@@ -47,33 +44,26 @@ class Asteroid extends Sprite {
         this.scale = 3f * random.nextFloat() + 1f;
     }
 
-
-    public float getSpeedX() {
-        return speedX;
-    }
-
-    public float getSpeedY() {
-        return speedY;
-    }
-
     // Spawn asteroids away from the player
     public static Asteroid spawn(Player player, Random random) {
 
         // Random initial position at a fixed distance from the player
         float angle = TAU * random.nextFloat();
-        float x = (player.getX() + ASTEROID_SPAWN_DISTANCE * (float) Math.cos(angle));
-        float y = (player.getY() + ASTEROID_SPAWN_DISTANCE * (float) Math.sin(angle));
+        Vector2f displacement = new Vector2f(angle);
+        displacement.scale(ASTEROID_SPAWN_DISTANCE);
+        Vector2f position = new Vector2f(player.getPosition());
+        position.add(displacement);
 
         // Random initial speed towards the player
         float r = 2f * (random.nextFloat() - 0.5f); // between -1 and 1
         float driftAngle = angle + (TAU / 2f) + (r * (TAU / 4f));
         float driftSpeed = ASTEROID_DRIFT_MIN_SPEED
                 + random.nextFloat() * (ASTEROID_DRIFT_MAX_SPEED - ASTEROID_DRIFT_MIN_SPEED);
-        float speedX = driftSpeed * (float) Math.cos(driftAngle);
-        float speedY = driftSpeed * (float) Math.sin(driftAngle);
+        Vector2f speed = new Vector2f(driftAngle);
+        speed.scale(driftSpeed);
 
         // Build and return an asteroid
-        return new Asteroid(x, y, speedX, speedY, random);
+        return new Asteroid(position, speed, random);
     }
 
     public void explode() {
@@ -106,6 +96,16 @@ class Asteroid extends Sprite {
         return scale;
     }
 
+    @Override
+    public float getMass() {
+        return scale;
+    }
+
+    @Override
+    public float getDiameter() {
+        return scale * ASTEROID_DIAMETER;
+    }
+
     public boolean isExploding() {
         return ((maxAge != 0) && (age < maxAge));
     }
@@ -120,7 +120,6 @@ class Asteroid extends Sprite {
 
     public void update(long timeSlice) {
         age += timeSlice;
-        setX(getX() + speedX * timeSlice / 1000f);
-        setY(getY() + speedY * timeSlice / 1000f);
+        super.update(timeSlice);
     }
 }

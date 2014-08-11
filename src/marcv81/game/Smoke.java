@@ -1,6 +1,7 @@
 package marcv81.game;
 
 import marcv81.gfx2d.Particle;
+import marcv81.gfx2d.Vector2f;
 
 import java.util.Random;
 
@@ -11,21 +12,21 @@ public class Smoke extends Particle {
     private static final float SMOKE_DISPERSION = 0.2f;
     private static final int SMOKE_ANIMATIONS = 4;
 
-    private final float speedX, speedY;
+    private final Vector2f speed;
     private final float startAngle, angleRate;
     private final int animation;
 
     // Constructor
-    public Smoke(float x, float y, Random random) {
+    public Smoke(Vector2f position, Random random) {
 
         // Call parent constructor
-        super(x, y);
+        super(position);
 
         // Random initial speed
         float angle = TAU * random.nextFloat();
         float norm = SMOKE_DISPERSION * random.nextFloat();
-        this.speedX = norm * (float) Math.cos(angle);
-        this.speedY = norm * (float) Math.cos(angle);
+        speed = new Vector2f(angle);
+        speed.scale(norm);
 
         // Random initial angle and rotation rate
         this.startAngle = 360f * random.nextFloat();
@@ -65,7 +66,8 @@ public class Smoke extends Particle {
         super.update(timeSlice);
 
         // Update position
-        setX(getX() + speedX * timeSlice / 1000);
-        setY(getY() + speedY * timeSlice / 1000);
+        Vector2f deltaSpeed = new Vector2f(speed);
+        deltaSpeed.scale(timeSlice / 1000f);
+        getPosition().add(deltaSpeed);
     }
 }
