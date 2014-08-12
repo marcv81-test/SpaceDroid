@@ -84,7 +84,7 @@ class Asteroid extends DriftingSprite {
 
     @Override
     public float getMass() {
-        return scale * scale * scale;
+        return scale * scale;
     }
 
     @Override

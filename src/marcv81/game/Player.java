@@ -11,7 +11,7 @@ public class Player extends DriftingSprite {
     private static final float PLAYER_SPRITE_ANGLE = 90f;
     private static final float PLAYER_EXHAUST_DISTANCE = 0.15f;
     private static final float PLAYER_DIAMETER = 0.15f;
-    private static final float PLAYER_MASS = 0.5f;
+    private static final float PLAYER_MASS = 1f;
 
     private Vector2f acceleration = new Vector2f(0f, 0f);
     private float angle = PLAYER_SPRITE_ANGLE;
