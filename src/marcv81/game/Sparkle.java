@@ -1,0 +1,56 @@
+package marcv81.game;
+
+import marcv81.gfx2d.Particle;
+import marcv81.gfx2d.Vector2f;
+
+import java.util.Random;
+
+public class Sparkle extends Particle {
+
+    private static final float SPARKLE_DISPERSION = 0.8f;
+    private static final long SPARKLE_MIN_LIFESPAN = 200;
+    private static final long SPARKLE_MAX_LIFESPAN = 800;
+
+    private final Vector2f speed;
+    private final long lifespan;
+
+    public Sparkle(Vector2f position, Random random) {
+
+        super(position);
+
+        // Random initial speed
+        float angle = TAU * random.nextFloat();
+        float norm = SPARKLE_DISPERSION * random.nextFloat();
+        speed = new Vector2f(angle);
+        speed.scale(norm);
+
+        // Random lifespan
+        this.lifespan = SPARKLE_MIN_LIFESPAN
+                + random.nextInt((int) (SPARKLE_MAX_LIFESPAN - SPARKLE_MIN_LIFESPAN));
+    }
+
+    @Override
+    public long getLifespan() {
+        return lifespan;
+    }
+
+    @Override
+    public float getTransparency() {
+        float percent = getAgePercent();
+        if (percent < 0.5f) {
+            return 1f;
+        } else {
+            return 1f - 2f * (percent - 0.5f);
+        }
+    }
+
+    public void update(long timeSlice) {
+
+        super.update(timeSlice);
+
+        // Update position
+        Vector2f deltaSpeed = new Vector2f(speed);
+        deltaSpeed.scale(timeSlice / 1000f);
+        getPosition().add(deltaSpeed);
+    }
+}

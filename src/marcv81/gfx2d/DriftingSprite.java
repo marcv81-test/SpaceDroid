@@ -30,8 +30,18 @@ public abstract class DriftingSprite extends Sprite {
         return (getDistance(s) < (getDiameter() + s.getDiameter()) / 2f);
     }
 
+    public Vector2f impactPoint(DriftingSprite s) {
+        Vector2f position1 = new Vector2f(this.getPosition());
+        position1.scale(s.getDiameter());
+        Vector2f position2 = new Vector2f(s.getPosition());
+        position2.scale(this.getDiameter());
+        position1.add(position2);
+        position1.scale(1f / (this.getDiameter() + s.getDiameter()));
+        return position1;
+    }
+
     // Deviate two colliding sprites
-    public void collide(DriftingSprite s) {
+    public boolean collide(DriftingSprite s) {
 
         // Prepare the collision delta vectors
         Vector2f deltaSpeed = new Vector2f(getSpeed());
@@ -57,6 +67,13 @@ public abstract class DriftingSprite extends Sprite {
             Vector2f deviation2 = new Vector2f(deltaPosition);
             deviation2.scale(-getMass() * ratio);
             s.getSpeed().sub(deviation2);
+
+            return true;
+        }
+
+        // If the collision would have generated an attracting deviation
+        else {
+            return false;
         }
     }
 }

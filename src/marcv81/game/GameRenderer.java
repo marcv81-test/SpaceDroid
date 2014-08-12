@@ -45,9 +45,19 @@ class GameRenderer extends Renderer {
     private static final boolean SMOKE_SUPPORT_TRANSPARENCY = true;
     private static final boolean SMOKE_SUPPORT_SCALING = true;
 
+    // Sparkle texture
+    private static final int SPARKLE_RESOURCE = R.drawable.sparkle;
+    private static final float SPARKLE_SIZE = 0.05f;
+    private static final int SPARKLE_ANIMATIONS_X = 1;
+    private static final int SPARKLE_ANIMATIONS_Y = 1;
+    private static final boolean SPARKLE_SUPPORT_ANGLE = false;
+    private static final boolean SPARKLE_SUPPORT_TRANSPARENCY = true;
+    private static final boolean SPARKLE_SUPPORT_SCALING = false;
+
     protected static final float FOREGROUND_DEPTH = 0f;
     protected static final float BACKGROUND_DEPTH = 8f;
 
+    private static final int SPARKLES_PER_IMPACT = 5;
     private static final int ASTEROID_MAX_COUNT = 100;
 
     // Touchscreen status
@@ -77,6 +87,11 @@ class GameRenderer extends Renderer {
             new SpriteGeometry(SMOKE_SIZE), FOREGROUND_DEPTH,
             SMOKE_SUPPORT_ANGLE, SMOKE_SUPPORT_TRANSPARENCY, SMOKE_SUPPORT_SCALING
     );
+    private final ParticleGroup<Sparkle> sparkles = new ParticleGroup<>(
+            new SpriteTexture(SPARKLE_RESOURCE, SPARKLE_ANIMATIONS_X, SPARKLE_ANIMATIONS_Y),
+            new SpriteGeometry(SPARKLE_SIZE), FOREGROUND_DEPTH,
+            SPARKLE_SUPPORT_ANGLE, SPARKLE_SUPPORT_TRANSPARENCY, SPARKLE_SUPPORT_SCALING
+    );
 
     Player player = new Player();
 
@@ -97,7 +112,7 @@ class GameRenderer extends Renderer {
     @Override
     protected SpriteTexture[] getTextures() {
         return new SpriteTexture[]{backgrounds.getTexture(), players.getTexture(),
-                asteroids.getTexture(), smokes.getTexture()};
+                asteroids.getTexture(), smokes.getTexture(), sparkles.getTexture()};
     }
 
     @Override
@@ -106,6 +121,7 @@ class GameRenderer extends Renderer {
         updatePlayer(timeSlice);
         updateAsteroids(timeSlice);
         smokes.update(timeSlice);
+        sparkles.update(timeSlice);
     }
 
     @Override
@@ -114,6 +130,7 @@ class GameRenderer extends Renderer {
         players.draw(gl);
         asteroids.draw(gl);
         smokes.draw(gl);
+        sparkles.draw(gl);
     }
 
     private void updateBackground() {
@@ -193,13 +210,23 @@ class GameRenderer extends Renderer {
 
                 // Check asteroids pair for collision
                 if (asteroid1.overlaps(asteroid2)) {
-                    asteroid1.collide(asteroid2);
+                    if (asteroid1.collide(asteroid2)) {
+                        Vector2f impactPoint = asteroid1.impactPoint(asteroid2);
+                        for (int n = 0; n < SPARKLES_PER_IMPACT; n++) {
+                            sparkles.getSprites().add(new Sparkle(impactPoint, random));
+                        }
+                    }
                 }
             }
 
             // Check asteroid and player for collision
             if (asteroid1.overlaps(player)) {
-                asteroid1.collide(player);
+                if (asteroid1.collide(player)) {
+                    Vector2f impactPoint = asteroid1.impactPoint(player);
+                    for (int n = 0; n < SPARKLES_PER_IMPACT; n++) {
+                        sparkles.getSprites().add(new Sparkle(impactPoint, random));
+                    }
+                }
             }
         }
     }
