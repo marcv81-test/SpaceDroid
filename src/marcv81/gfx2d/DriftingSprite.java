@@ -4,6 +4,7 @@ public abstract class DriftingSprite extends Sprite {
 
     private Vector2f speed;
 
+    // Constructor
     public DriftingSprite(Vector2f position, Vector2f speed) {
         super(position);
         this.speed = new Vector2f(speed);
@@ -17,35 +18,45 @@ public abstract class DriftingSprite extends Sprite {
 
     public abstract float getDiameter();
 
+    // Update the sprite position
     public void update(long timeSlice) {
-
-        // Update position
         Vector2f deltaSpeed = new Vector2f(speed);
         deltaSpeed.scale(timeSlice / 1000f);
         getPosition().add(deltaSpeed);
     }
 
+    // Find if two sprites overlap
     public boolean overlaps(DriftingSprite s) {
         return (getDistance(s) < (getDiameter() + s.getDiameter()) / 2f);
     }
 
+    // Deviate two colliding sprites
     public void collide(DriftingSprite s) {
 
-        Vector2f speedDiff = new Vector2f(getSpeed());
-        speedDiff.sub(s.getSpeed());
-        Vector2f positionDiff = new Vector2f(getPosition());
-        positionDiff.sub(s.getPosition());
+        // Prepare the collision delta vectors
+        Vector2f deltaSpeed = new Vector2f(getSpeed());
+        deltaSpeed.sub(s.getSpeed());
+        Vector2f deltaPosition = new Vector2f(getPosition());
+        deltaPosition.sub(s.getPosition());
 
-        Vector2f deviation;
-        float ratio = 2f * speedDiff.dot(positionDiff)
-                / ((getMass() + s.getMass()) * positionDiff.normSquare());
+        // Calculate the dot product between the delta vectors
+        float dotProduct = deltaSpeed.dot(deltaPosition);
 
-        deviation = new Vector2f(positionDiff);
-        deviation.scale(s.getMass() * ratio);
-        getSpeed().sub(deviation);
+        // Prevent collisions from generating attracting deviations
+        if (dotProduct < 0f) {
 
-        deviation = new Vector2f(positionDiff);
-        deviation.scale(-getMass() * ratio);
-        s.getSpeed().sub(deviation);
+            // Calculate the collision factor
+            float ratio = 2f * dotProduct / ((getMass() + s.getMass()) * deltaPosition.normSquare());
+
+            // Apply the deviation to this sprite
+            Vector2f deviation1 = new Vector2f(deltaPosition);
+            deviation1.scale(s.getMass() * ratio);
+            getSpeed().sub(deviation1);
+
+            // Apply the deviation to the parameter sprite
+            Vector2f deviation2 = new Vector2f(deltaPosition);
+            deviation2.scale(-getMass() * ratio);
+            s.getSpeed().sub(deviation2);
+        }
     }
 }
