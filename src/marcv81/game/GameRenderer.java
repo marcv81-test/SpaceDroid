@@ -33,7 +33,7 @@ class GameRenderer extends Renderer {
     private static final int ASTEROID_ANIMATIONS_X = 8;
     private static final int ASTEROID_ANIMATIONS_Y = 8;
     private static final boolean ASTEROID_SUPPORT_ANGLE = true;
-    private static final boolean ASTEROID_SUPPORT_TRANSPARENCY = true;
+    private static final boolean ASTEROID_SUPPORT_TRANSPARENCY = false;
     private static final boolean ASTEROID_SUPPORT_SCALING = true;
 
     // Stardust texture
@@ -172,8 +172,8 @@ class GameRenderer extends Renderer {
             Asteroid asteroid = asteroidIterator.next();
             asteroid.update(timeSlice);
 
-            // Remove the asteroids which are too far or have exploded
-            if (asteroid.isOutOfScope(player) || asteroid.hasExploded()) {
+            // Remove the asteroids which are too far
+            if (asteroid.isOutOfScope(player)) {
                 asteroidIterator.remove();
             }
         }
@@ -186,23 +186,20 @@ class GameRenderer extends Renderer {
         // Iterate over asteroids
         for (int i = 0; i < asteroids.getSprites().size(); i++) {
             Asteroid asteroid1 = asteroids.getSprites().get(i);
-            if (!asteroid1.isExploding()) {
 
-                // Iterate over asteroids pairs
-                for (int j = i + 1; j < asteroids.getSprites().size(); j++) {
-                    Asteroid asteroid2 = asteroids.getSprites().get(j);
-                    if (!asteroid2.isExploding()) {
+            // Iterate over asteroids pairs
+            for (int j = i + 1; j < asteroids.getSprites().size(); j++) {
+                Asteroid asteroid2 = asteroids.getSprites().get(j);
 
-                        // Check the distance between the asteroids
-                        if (asteroid1.overlaps(asteroid2)) {
-                            asteroid1.collide(asteroid2);
-                        }
-                    }
+                // Check asteroids pair for collision
+                if (asteroid1.overlaps(asteroid2)) {
+                    asteroid1.collide(asteroid2);
                 }
+            }
 
-                if (asteroid1.overlaps(player)) {
-                    asteroid1.collide(player);
-                }
+            // Check asteroid and player for collision
+            if (asteroid1.overlaps(player)) {
+                asteroid1.collide(player);
             }
         }
     }

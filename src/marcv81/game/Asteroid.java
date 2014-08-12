@@ -15,7 +15,6 @@ class Asteroid extends DriftingSprite {
     private static final float ASTEROID_DRIFT_MAX_SPEED = 0.5f;
     private static final int ASTEROID_ANIMATION_MIN_SPEED = 25;
     private static final int ASTEROID_ANIMATION_MAX_SPEED = 30;
-    private static final int ASTEROID_EXPLOSION_TIME = 250;
     private static final float ASTEROID_DIAMETER = 0.11f;
 
     private final float angle;
@@ -23,7 +22,7 @@ class Asteroid extends DriftingSprite {
     private final int animationType;
     private final int animationSpeed;
     private final int animationDirection;
-    private long age = 0, maxAge = 0;
+    private long age = 0;
 
     // Constructor
     public Asteroid(Vector2f position, Vector2f speed, Random random) {
@@ -62,12 +61,8 @@ class Asteroid extends DriftingSprite {
         Vector2f speed = new Vector2f(driftAngle);
         speed.scale(driftSpeed);
 
-        // Build and return an asteroid
+        // Return a new asteroid
         return new Asteroid(position, speed, random);
-    }
-
-    public void explode() {
-        this.maxAge = age + ASTEROID_EXPLOSION_TIME;
     }
 
     @Override
@@ -83,35 +78,18 @@ class Asteroid extends DriftingSprite {
     }
 
     @Override
-    public float getTransparency() {
-        if (isExploding()) {
-            return (float) (maxAge - age) / ASTEROID_EXPLOSION_TIME;
-        } else {
-            return 1f;
-        }
-    }
-
-    @Override
     public float getScale() {
         return scale;
     }
 
     @Override
     public float getMass() {
-        return scale;
+        return scale * scale * scale;
     }
 
     @Override
     public float getDiameter() {
         return scale * ASTEROID_DIAMETER;
-    }
-
-    public boolean isExploding() {
-        return ((maxAge != 0) && (age < maxAge));
-    }
-
-    public boolean hasExploded() {
-        return ((maxAge != 0) && (age >= maxAge));
     }
 
     public boolean isOutOfScope(Player player) {
