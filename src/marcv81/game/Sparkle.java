@@ -7,7 +7,9 @@ import java.util.Random;
 
 public class Sparkle extends Particle {
 
-    private static final float SPARKLE_DISPERSION = 0.8f;
+    private static final float SPARKLE_FRICTION = 3.5f;
+    private static final float SPARKLE_MIN_DISPERSION = 0.8f;
+    private static final float SPARKLE_MAX_DISPERSION = 1.2f;
     private static final long SPARKLE_MIN_LIFESPAN = 200;
     private static final long SPARKLE_MAX_LIFESPAN = 800;
 
@@ -20,7 +22,8 @@ public class Sparkle extends Particle {
 
         // Random initial speed
         float angle = TAU * random.nextFloat();
-        float norm = SPARKLE_DISPERSION * random.nextFloat();
+        float norm = SPARKLE_MIN_DISPERSION
+                + random.nextFloat() * (SPARKLE_MAX_DISPERSION - SPARKLE_MIN_DISPERSION);
         speed = new Vector2f(angle);
         speed.scale(norm);
 
@@ -47,6 +50,10 @@ public class Sparkle extends Particle {
     public void update(long timeSlice) {
 
         super.update(timeSlice);
+
+        Vector2f friction = new Vector2f(speed);
+        friction.scale(-SPARKLE_FRICTION * timeSlice / 1000f);
+        speed.add(friction);
 
         // Update position
         Vector2f deltaSpeed = new Vector2f(speed);
