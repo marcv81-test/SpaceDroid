@@ -15,7 +15,7 @@ class Asteroid extends DriftingSprite {
     private static final float ASTEROID_DRIFT_MAX_SPEED = 0.5f;
     private static final int ASTEROID_ANIMATION_MIN_SPEED = 25;
     private static final int ASTEROID_ANIMATION_MAX_SPEED = 30;
-    private static final float ASTEROID_DIAMETER = 0.11f;
+    private static final float ASTEROID_DIAMETER = 0.10f;
 
     private final float angle;
     private final float scale;
