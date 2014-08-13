@@ -139,8 +139,7 @@ class GameRenderer extends Renderer {
         backgrounds.getSprites().clear();
 
         // Add 4 tiles around the player
-        Vector2f center = new Vector2f(player.getPosition());
-        center.scale(1 / BACKGROUND_SIZE);
+        Vector2f center = player.getPosition().divide(BACKGROUND_SIZE);
         center.x = Math.round(center.x);
         center.y = Math.round(center.y);
         for (float x : new float[]{center.x - 0.5f, center.x + 0.5f}) {
@@ -160,7 +159,7 @@ class GameRenderer extends Renderer {
             Vector2f pointer = new Vector2f(
                     -this.pointer.x / getWidth() + 0.5f,
                     -this.pointer.y / getHeight() + 0.5f);
-            pointer.scale(1f / pointer.norm());
+            pointer.divide(pointer.norm());
             player.setAcceleration(pointer);
 
             // Add smoke particles

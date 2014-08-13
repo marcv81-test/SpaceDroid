@@ -23,23 +23,18 @@ public class Player extends DriftingSprite {
 
     // Get the coordinates of the exhaust (to draw smoke)
     public Vector2f getExhaust() {
-        Vector2f exhaustPosition = new Vector2f(getPosition());
         float exhaustAngle = (angle - PLAYER_SPRITE_ANGLE) / DEGREE_PER_RADIAN;
-        Vector2f exhaustDisplacement = new Vector2f(exhaustAngle);
-        exhaustDisplacement.scale(PLAYER_EXHAUST_DISTANCE);
-        exhaustPosition.add(exhaustDisplacement);
-        return exhaustPosition;
+        return getPosition().plus((new Vector2f(exhaustAngle)).multiply(PLAYER_EXHAUST_DISTANCE));
     }
 
-    public void setAcceleration(Vector2f acceleration) {
+    public void setAcceleration(Vector2f v) {
 
         // Set the acceleration
-        this.acceleration.set(acceleration);
-        this.acceleration.scale(PLAYER_ACCELERATION_MULTIPLIER);
+        acceleration.set(v).multiply(PLAYER_ACCELERATION_MULTIPLIER);
 
         // Update the drawing angle if accelerating
-        if (acceleration.norm() > 0.5f) {
-            angle = DEGREE_PER_RADIAN * acceleration.angle() - PLAYER_SPRITE_ANGLE;
+        if (v.norm() > 0.5f) {
+            angle = DEGREE_PER_RADIAN * v.angle() - PLAYER_SPRITE_ANGLE;
         }
     }
 
@@ -62,17 +57,15 @@ public class Player extends DriftingSprite {
     public void update(long timeSlice) {
 
         // Update speed
-        Vector2f deltaAcceleration = new Vector2f(acceleration);
-        Vector2f friction = new Vector2f(getSpeed());
-        friction.scale(PLAYER_FRICTION);
-        deltaAcceleration.sub(friction);
-        deltaAcceleration.scale(timeSlice / 1000f);
-        getSpeed().add(deltaAcceleration);
+        addToSpeed((new Vector2f(acceleration))
+                .minus(getSpeed().multiply(PLAYER_FRICTION))
+                .multiply(timeSlice / 1000f));
 
         // Limit speed
-        float normSpeed = getSpeed().norm();
+        Vector2f speed = getSpeed();
+        float normSpeed = speed.norm();
         if (normSpeed > PLAYER_MAX_SPEED) {
-            getSpeed().scale(PLAYER_MAX_SPEED / normSpeed);
+            setSpeed(speed.multiply(PLAYER_MAX_SPEED / normSpeed));
         }
 
         super.update(timeSlice);

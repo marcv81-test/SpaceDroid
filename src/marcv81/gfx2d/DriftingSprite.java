@@ -11,7 +11,15 @@ public abstract class DriftingSprite extends Sprite {
     }
 
     public Vector2f getSpeed() {
-        return speed;
+        return new Vector2f(speed);
+    }
+
+    public void setSpeed(Vector2f v) {
+        speed.set(v);
+    }
+
+    public void addToSpeed(Vector2f v) {
+        speed.plus(v);
     }
 
     public abstract float getMass();
@@ -20,9 +28,7 @@ public abstract class DriftingSprite extends Sprite {
 
     // Update the sprite position
     public void update(long timeSlice) {
-        Vector2f deltaSpeed = new Vector2f(speed);
-        deltaSpeed.scale(timeSlice / 1000f);
-        getPosition().add(deltaSpeed);
+        addToPosition((new Vector2f(speed)).multiply(timeSlice / 1000f));
     }
 
     // Find if two sprites overlap
@@ -31,23 +37,17 @@ public abstract class DriftingSprite extends Sprite {
     }
 
     public Vector2f impactPoint(DriftingSprite s) {
-        Vector2f position1 = new Vector2f(this.getPosition());
-        position1.scale(s.getDiameter());
-        Vector2f position2 = new Vector2f(s.getPosition());
-        position2.scale(this.getDiameter());
-        position1.add(position2);
-        position1.scale(1f / (this.getDiameter() + s.getDiameter()));
-        return position1;
+        return this.getPosition().multiply(s.getDiameter())
+                .plus(s.getPosition().multiply(this.getDiameter()))
+                .divide(this.getDiameter() + s.getDiameter());
     }
 
     // Deviate two colliding sprites
     public boolean collide(DriftingSprite s) {
 
         // Prepare the collision delta vectors
-        Vector2f deltaSpeed = new Vector2f(getSpeed());
-        deltaSpeed.sub(s.getSpeed());
-        Vector2f deltaPosition = new Vector2f(getPosition());
-        deltaPosition.sub(s.getPosition());
+        Vector2f deltaSpeed = this.getSpeed().minus(s.getSpeed());
+        Vector2f deltaPosition = this.getPosition().minus(s.getPosition());
 
         // Calculate the dot product between the delta vectors
         float dotProduct = deltaSpeed.dot(deltaPosition);
@@ -58,15 +58,9 @@ public abstract class DriftingSprite extends Sprite {
             // Calculate the collision factor
             float ratio = 2f * dotProduct / ((getMass() + s.getMass()) * deltaPosition.normSquare());
 
-            // Apply the deviation to this sprite
-            Vector2f deviation1 = new Vector2f(deltaPosition);
-            deviation1.scale(s.getMass() * ratio);
-            getSpeed().sub(deviation1);
-
-            // Apply the deviation to the parameter sprite
-            Vector2f deviation2 = new Vector2f(deltaPosition);
-            deviation2.scale(-getMass() * ratio);
-            s.getSpeed().sub(deviation2);
+            // Apply the deviations
+            this.addToSpeed((new Vector2f(deltaPosition)).multiply(-s.getMass() * ratio));
+            s.addToSpeed((new Vector2f(deltaPosition)).multiply(this.getMass() * ratio));
 
             return true;
         }

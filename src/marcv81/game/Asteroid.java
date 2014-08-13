@@ -48,18 +48,15 @@ class Asteroid extends DriftingSprite {
 
         // Random initial position at a fixed distance from the player
         float angle = TAU * random.nextFloat();
-        Vector2f displacement = new Vector2f(angle);
-        displacement.scale(ASTEROID_SPAWN_DISTANCE);
-        Vector2f position = new Vector2f(player.getPosition());
-        position.add(displacement);
+        Vector2f position = player.getPosition()
+                .plus(new Vector2f(angle).multiply(ASTEROID_SPAWN_DISTANCE));
 
         // Random initial speed towards the player
         float r = 2f * (random.nextFloat() - 0.5f); // between -1 and 1
         float driftAngle = angle + (TAU / 2f) + (r * (TAU / 4f));
         float driftSpeed = ASTEROID_DRIFT_MIN_SPEED
                 + random.nextFloat() * (ASTEROID_DRIFT_MAX_SPEED - ASTEROID_DRIFT_MIN_SPEED);
-        Vector2f speed = new Vector2f(driftAngle);
-        speed.scale(driftSpeed);
+        Vector2f speed = (new Vector2f(driftAngle)).multiply(driftSpeed);
 
         // Return a new asteroid
         return new Asteroid(position, speed, random);

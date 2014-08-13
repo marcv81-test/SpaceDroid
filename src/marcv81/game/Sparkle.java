@@ -24,8 +24,7 @@ public class Sparkle extends Particle {
         float angle = TAU * random.nextFloat();
         float norm = SPARKLE_MIN_DISPERSION
                 + random.nextFloat() * (SPARKLE_MAX_DISPERSION - SPARKLE_MIN_DISPERSION);
-        speed = new Vector2f(angle);
-        speed.scale(norm);
+        this.speed = (new Vector2f(angle)).multiply(norm);
 
         // Random lifespan
         this.lifespan = SPARKLE_MIN_LIFESPAN
@@ -51,13 +50,10 @@ public class Sparkle extends Particle {
 
         super.update(timeSlice);
 
-        Vector2f friction = new Vector2f(speed);
-        friction.scale(-SPARKLE_FRICTION * timeSlice / 1000f);
-        speed.add(friction);
+        // Apply friction
+        speed.multiply(1f - SPARKLE_FRICTION * timeSlice / 1000f);
 
         // Update position
-        Vector2f deltaSpeed = new Vector2f(speed);
-        deltaSpeed.scale(timeSlice / 1000f);
-        getPosition().add(deltaSpeed);
+        addToPosition((new Vector2f(speed)).multiply(timeSlice / 1000f));
     }
 }

@@ -25,8 +25,7 @@ public class Smoke extends Particle {
         // Random initial speed
         float angle = TAU * random.nextFloat();
         float norm = SMOKE_DISPERSION * random.nextFloat();
-        speed = new Vector2f(angle);
-        speed.scale(norm);
+        this.speed = (new Vector2f(angle)).multiply(norm);
 
         // Random initial angle and rotation rate
         this.startAngle = 360f * random.nextFloat();
@@ -66,8 +65,6 @@ public class Smoke extends Particle {
         super.update(timeSlice);
 
         // Update position
-        Vector2f deltaSpeed = new Vector2f(speed);
-        deltaSpeed.scale(timeSlice / 1000f);
-        getPosition().add(deltaSpeed);
+        addToPosition((new Vector2f(speed)).multiply(timeSlice / 1000f));
     }
 }

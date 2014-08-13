@@ -22,49 +22,50 @@ public class Vector2f {
         this.y = v.y;
     }
 
-    public void set(Vector2f v) {
+    public Vector2f set(Vector2f v) {
         this.x = v.x;
         this.y = v.y;
+        return this;
     }
 
-    public void add(Vector2f v) {
-        x += v.x;
-        y += v.y;
+    public Vector2f plus(Vector2f v) {
+        this.x += v.x;
+        this.y += v.y;
+        return this;
     }
 
-    public void sub(Vector2f v) {
-        x -= v.x;
-        y -= v.y;
+    public Vector2f minus(Vector2f v) {
+        this.x -= v.x;
+        this.y -= v.y;
+        return this;
     }
 
-    public void scale(float f) {
-        x *= f;
-        y *= f;
+    public Vector2f multiply(float f) {
+        this.x *= f;
+        this.y *= f;
+        return this;
     }
 
-    public void negate() {
-        x = -x;
-        y = -y;
+    public Vector2f divide(float f) {
+        this.x /= f;
+        this.y /= f;
+        return this;
     }
 
-
-    // Dot product
     public float dot(Vector2f v) {
-        return x * v.x + y * v.y;
-    }
-
-    public float norm() {
-        return (float) Math.sqrt(normSquare());
+        return this.x * v.x + this.y * v.y;
     }
 
     public float normSquare() {
         return (x * x) + (y * y);
     }
 
+    public float norm() {
+        return (float) Math.sqrt(normSquare());
+    }
+
     public float distance(Vector2f v) {
-        Vector2f u = new Vector2f(this);
-        u.sub(v);
-        return u.norm();
+        return (new Vector2f(this)).minus(v).norm();
     }
 
     public float angle() {

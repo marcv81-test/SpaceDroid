@@ -12,9 +12,21 @@ public class Sprite {
         this.position = new Vector2f(position);
     }
 
-    // Return the sprite position
     public Vector2f getPosition() {
-        return position;
+        return new Vector2f(position);
+    }
+
+    public void setPosition(Vector2f v) {
+        position.set(v);
+    }
+
+    public void addToPosition(Vector2f v) {
+        position.plus(v);
+    }
+
+    // Get the distance between two sprites
+    public float getDistance(Sprite sprite) {
+        return position.distance(sprite.position);
     }
 
     // Override this method if the sprites support multiple animations
@@ -35,10 +47,5 @@ public class Sprite {
     // Override this method if the sprites support scaling
     public float getScale() {
         return 1f;
-    }
-
-    // Get the distance between two sprites
-    public float getDistance(Sprite sprite) {
-        return position.distance(sprite.position);
     }
 }
