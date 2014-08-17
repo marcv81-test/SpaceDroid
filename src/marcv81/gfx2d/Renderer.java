@@ -41,9 +41,24 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
         return new Vector2f(camera);
     }
 
-    // Get the surface size
-    public Vector2f getSize() {
-        return new Vector2f(size);
+    // Get the X coordinate of the right of the screen
+    public float getRight() {
+        return camera.x + size.x / size.y;
+    }
+
+    // Get the X coordinate of the left of the screen
+    public float getLeft() {
+        return camera.x - size.x / size.y;
+    }
+
+    // Get the Y coordinate of the top of the screen
+    public float getTop() {
+        return camera.y + 1.0f;
+    }
+
+    // Get the Y coordinate of the bottom of the screen
+    public float getBottom() {
+        return camera.y - 1.0f;
     }
 
     public Vector2f convertScreenToWorld(Vector2f point) {

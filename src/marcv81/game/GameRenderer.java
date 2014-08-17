@@ -67,7 +67,7 @@ class GameRenderer extends Renderer {
     protected static final float BACKGROUND_DEPTH = 10f;
 
     private static final int SPARKLES_PER_IMPACT = 5;
-    private static final int ASTEROID_MAX_COUNT = 100;
+    private static final int ASTEROID_MAX_COUNT = 20;
 
     // Touchscreen status
     private Vector2f touchscreen = new Vector2f(0f, 0f);
@@ -204,14 +204,14 @@ class GameRenderer extends Renderer {
             asteroid.update(timeSlice);
 
             // Remove the asteroids which are too far
-            if (asteroid.isOutOfScope(player)) {
+            if (asteroid.isOutOfScope(this)) {
                 asteroidIterator.remove();
             }
         }
 
         // Add asteroids if we have space
         while (asteroids.getSprites().size() < ASTEROID_MAX_COUNT) {
-            asteroids.getSprites().add(Asteroid.spawn(player, random));
+            asteroids.getSprites().add(Asteroid.spawn(this, random));
         }
 
         // Iterate over asteroids

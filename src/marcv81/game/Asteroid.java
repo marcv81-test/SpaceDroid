@@ -2,6 +2,7 @@ package marcv81.game;
 
 import marcv81.gfx2d.DriftingSprite;
 import marcv81.gfx2d.Vector2f;
+import marcv81.gfx2d.Renderer;
 
 import java.util.Random;
 
@@ -9,8 +10,8 @@ class Asteroid extends DriftingSprite {
 
     private static final int ASTEROID_ANIMATIONS = 32;
     private static final int ASTEROID_ANIMATIONS_TYPES = 2;
-    private static final float ASTEROID_SPAWN_DISTANCE = 4f;
-    private static final float ASTEROID_REMOVAL_DISTANCE = 6f;
+    private static final float ASTEROID_SPAWN_DISTANCE = 0.5f;
+    private static final float ASTEROID_REMOVAL_DISTANCE = 0.75f;
     private static final float ASTEROID_DRIFT_MIN_SPEED = 0.1f;
     private static final float ASTEROID_DRIFT_MAX_SPEED = 0.5f;
     private static final int ASTEROID_ANIMATION_MIN_SPEED = 25;
@@ -43,19 +44,50 @@ class Asteroid extends DriftingSprite {
         this.scale = 3f * random.nextFloat() + 1f;
     }
 
-    // Spawn asteroids away from the player
-    public static Asteroid spawn(Player player, Random random) {
+    // Spawn asteroids at the edge of the play area
+    public static Asteroid spawn(Renderer renderer, Random random) {
 
-        // Random initial position at a fixed distance from the player
-        float angle = TAU * random.nextFloat();
-        Vector2f position = player.getPosition()
-                .plus(new Vector2f(angle).multiply(ASTEROID_SPAWN_DISTANCE));
+        // Random initial position
+        Vector2f position;
+        switch(random.nextInt(4)) {
 
-        // Random initial speed towards the player
-        float r = 2f * (random.nextFloat() - 0.5f); // between -1 and 1
-        float driftAngle = angle + (TAU / 2f) + (r * (TAU / 4f));
-        float driftSpeed = ASTEROID_DRIFT_MIN_SPEED
-                + random.nextFloat() * (ASTEROID_DRIFT_MAX_SPEED - ASTEROID_DRIFT_MIN_SPEED);
+            // Right edge
+            default:
+                position = new Vector2f(
+                        renderer.getRight() + ASTEROID_SPAWN_DISTANCE,
+                        renderer.getBottom() + random.nextFloat()
+                                * (renderer.getTop() - renderer.getBottom()));
+                break;
+
+            // Left edge
+            case 1:
+                position = new Vector2f(
+                        renderer.getLeft() - ASTEROID_SPAWN_DISTANCE,
+                        renderer.getBottom()+ random.nextFloat()
+                                * (renderer.getTop() - renderer.getBottom()));
+                break;
+
+            // Top edge
+            case 2:
+                position = new Vector2f(
+                        renderer.getRight() + random.nextFloat()
+                                * (renderer.getLeft() - renderer.getRight()),
+                        renderer.getTop() + ASTEROID_SPAWN_DISTANCE);
+                break;
+
+            // Bottom edge
+            case 3:
+                position = new Vector2f(
+                        renderer.getRight() + random.nextFloat()
+                                * (renderer.getLeft() - renderer.getRight()),
+                        renderer.getBottom() - ASTEROID_SPAWN_DISTANCE);
+                break;
+        }
+
+        // Random initial speed
+        float driftAngle = TAU * random.nextFloat();
+        float driftSpeed = ASTEROID_DRIFT_MIN_SPEED + random.nextFloat()
+                * (ASTEROID_DRIFT_MAX_SPEED - ASTEROID_DRIFT_MIN_SPEED);
         Vector2f speed = (new Vector2f(driftAngle)).multiply(driftSpeed);
 
         // Return a new asteroid
@@ -89,8 +121,12 @@ class Asteroid extends DriftingSprite {
         return scale * ASTEROID_DIAMETER;
     }
 
-    public boolean isOutOfScope(Player player) {
-        return getDistance(player) > ASTEROID_REMOVAL_DISTANCE;
+    public boolean isOutOfScope(Renderer renderer) {
+        Vector2f position = getPosition();
+        return position.y >= renderer.getTop() + ASTEROID_REMOVAL_DISTANCE
+                || position.y <= renderer.getBottom() - ASTEROID_REMOVAL_DISTANCE
+                || position.x >= renderer.getRight() + ASTEROID_REMOVAL_DISTANCE
+                || position.x <= renderer.getLeft() - ASTEROID_REMOVAL_DISTANCE;
     }
 
     public void update(long timeSlice) {
