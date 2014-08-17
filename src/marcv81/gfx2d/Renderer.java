@@ -15,8 +15,7 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
     private final Context context;
 
     private Vector2f camera = new Vector2f(0f, 0f);
-
-    private int width = 0, height = 0;
+    private Vector2f size = new Vector2f(0f ,0f);
 
     private long previousTime = 0;
 
@@ -38,14 +37,19 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
         camera.set(position);
     }
 
-    // Get the surface width
-    public float getWidth() {
-        return width;
+    public Vector2f getCamera() {
+        return new Vector2f(camera);
     }
 
-    // Get the surface height
-    public float getHeight() {
-        return height;
+    // Get the surface size
+    public Vector2f getSize() {
+        return new Vector2f(size);
+    }
+
+    public Vector2f convertScreenToWorld(Vector2f point) {
+        return new Vector2f(
+                (-2f * point.x + size.x) / size.y,
+                (-2f * point.y + size.y) / size.y);
     }
 
     @Override
@@ -70,15 +74,16 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
     @Override
     public final void onSurfaceChanged(GL10 gl, int width, int height) {
 
-        this.width = width;
-        this.height = height;
+        // Store the new size
+        this.size = new Vector2f(width, height);
 
         // Modify the surface according to the new width and height
         gl.glViewport(0, 0, width, height);
-        float ratio = (float) width / height;
         gl.glMatrixMode(GL10.GL_PROJECTION);
         gl.glLoadIdentity();
-        gl.glFrustumf(-ratio, ratio, -1f, 1f, 3f, 20f);
+        float ratio = (float) width / height;
+        gl.glOrthof(-ratio, ratio, -1.0f, 1.0f, -50f, 50f);
+        gl.glMatrixMode(GL10.GL_MODELVIEW);
     }
 
     @Override
@@ -110,7 +115,6 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
 
         // Prepare to draw the sprites
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-        gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glLoadIdentity();
         GLU.gluLookAt(gl, camera.x, camera.y, -3f, camera.x, camera.y, 0f, 0f, 1f, 0f);
 

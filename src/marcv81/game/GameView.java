@@ -22,14 +22,14 @@ class GameView extends GLSurfaceView {
         float y = e.getY();
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                renderer.setPointerDown(true);
-                renderer.setPointer(new Vector2f(x, y));
+                renderer.setTouchscreenPressed(true);
+                renderer.setTouchscreen(new Vector2f(x, y));
                 break;
             case MotionEvent.ACTION_MOVE:
-                renderer.setPointer(new Vector2f(x, y));
+                renderer.setTouchscreen(new Vector2f(x, y));
                 break;
             case MotionEvent.ACTION_UP:
-                renderer.setPointerDown(false);
+                renderer.setTouchscreenPressed(false);
                 break;
         }
         return true;

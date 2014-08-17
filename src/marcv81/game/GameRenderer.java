@@ -11,7 +11,7 @@ class GameRenderer extends Renderer {
 
     // Background texture
     private static final int BACKGROUND_RESOURCE = R.drawable.stars;
-    public static final float BACKGROUND_SIZE = 16f;
+    public static final float BACKGROUND_SIZE = 4f;
     private static final int BACKGROUND_ANIMATIONS_X = 1;
     private static final int BACKGROUND_ANIMATIONS_Y = 1;
     private static final boolean BACKGROUND_SUPPORT_ANGLE = false;
@@ -36,7 +36,7 @@ class GameRenderer extends Renderer {
     private static final boolean ASTEROID_SUPPORT_TRANSPARENCY = false;
     private static final boolean ASTEROID_SUPPORT_SCALING = true;
 
-    // Stardust texture
+    // Smoke texture
     private static final int SMOKE_RESOURCE = R.drawable.smoke;
     private static final float SMOKE_SIZE = 0.1f;
     private static final int SMOKE_ANIMATIONS_X = 2;
@@ -54,15 +54,24 @@ class GameRenderer extends Renderer {
     private static final boolean SPARKLE_SUPPORT_TRANSPARENCY = true;
     private static final boolean SPARKLE_SUPPORT_SCALING = false;
 
+    // Bonus texture
+    private static final int BONUS_RESOURCE = R.drawable.bonus;
+    private static final float BONUS_SIZE = 0.15f;
+    private static final int BONUS_ANIMATIONS_X = 1;
+    private static final int BONUS_ANIMATIONS_Y = 1;
+    private static final boolean BONUS_SUPPORT_ANGLE = false;
+    private static final boolean BONUS_SUPPORT_TRANSPARENCY = false;
+    private static final boolean BONUS_SUPPORT_SCALING = false;
+
     protected static final float FOREGROUND_DEPTH = 0f;
-    protected static final float BACKGROUND_DEPTH = 8f;
+    protected static final float BACKGROUND_DEPTH = 10f;
 
     private static final int SPARKLES_PER_IMPACT = 5;
     private static final int ASTEROID_MAX_COUNT = 100;
 
     // Touchscreen status
-    private Vector2f pointer = new Vector2f(0f, 0f);
-    private boolean pointerDown = false;
+    private Vector2f touchscreen = new Vector2f(0f, 0f);
+    private boolean touchscreenPressed = false;
 
     private final Random random = new Random();
 
@@ -92,6 +101,11 @@ class GameRenderer extends Renderer {
             new SpriteGeometry(SPARKLE_SIZE), FOREGROUND_DEPTH,
             SPARKLE_SUPPORT_ANGLE, SPARKLE_SUPPORT_TRANSPARENCY, SPARKLE_SUPPORT_SCALING
     );
+    private final SpriteGroup<Bonus> bonuses = new SpriteGroup<>(
+            new SpriteTexture(BONUS_RESOURCE, BONUS_ANIMATIONS_X, BONUS_ANIMATIONS_Y),
+            new SpriteGeometry(BONUS_SIZE), FOREGROUND_DEPTH,
+            BONUS_SUPPORT_ANGLE, BONUS_SUPPORT_TRANSPARENCY, BONUS_SUPPORT_SCALING
+    );
 
     Player player = new Player();
 
@@ -101,18 +115,19 @@ class GameRenderer extends Renderer {
         players.getSprites().add(player);
     }
 
-    void setPointerDown(boolean pointerDown) {
-        this.pointerDown = pointerDown;
+    void setTouchscreenPressed(boolean b) {
+        this.touchscreenPressed = b;
     }
 
-    void setPointer(Vector2f pointer) {
-        this.pointer.set(pointer);
+    void setTouchscreen(Vector2f v) {
+        this.touchscreen.set(v);
     }
 
     @Override
     protected SpriteTexture[] getTextures() {
-        return new SpriteTexture[]{backgrounds.getTexture(), players.getTexture(),
-                asteroids.getTexture(), smokes.getTexture(), sparkles.getTexture()};
+        return new SpriteTexture[]{
+                backgrounds.getTexture(), players.getTexture(), asteroids.getTexture(),
+                smokes.getTexture(), sparkles.getTexture(), bonuses.getTexture()};
     }
 
     @Override
@@ -122,6 +137,7 @@ class GameRenderer extends Renderer {
         updateAsteroids(timeSlice);
         smokes.update(timeSlice);
         sparkles.update(timeSlice);
+        updateBonuses();
     }
 
     @Override
@@ -131,6 +147,7 @@ class GameRenderer extends Renderer {
         asteroids.draw(gl);
         smokes.draw(gl);
         sparkles.draw(gl);
+        bonuses.draw(gl);
     }
 
     private void updateBackground() {
@@ -153,14 +170,12 @@ class GameRenderer extends Renderer {
     private void updatePlayer(long timeSlice) {
 
         // If touching the screen
-        if (pointerDown) {
+        if (touchscreenPressed) {
 
             // Set the acceleration to the normalised touchscreen vector
-            Vector2f pointer = new Vector2f(
-                    -this.pointer.x / getWidth() + 0.5f,
-                    -this.pointer.y / getHeight() + 0.5f);
-            pointer.divide(pointer.norm());
-            player.setAcceleration(pointer);
+            Vector2f v = convertScreenToWorld(touchscreen);
+            v.divide(v.norm());
+            player.setAcceleration(v);
 
             // Add smoke particles
             smokes.getSprites().add(new Smoke(player.getExhaust(), random));
@@ -227,6 +242,13 @@ class GameRenderer extends Renderer {
                     }
                 }
             }
+        }
+    }
+
+    private void updateBonuses() {
+        bonuses.getSprites().clear();
+        if(touchscreenPressed) {
+            bonuses.getSprites().add(new Bonus(getCamera().plus(convertScreenToWorld(touchscreen))));
         }
     }
 }
