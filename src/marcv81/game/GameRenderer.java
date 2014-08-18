@@ -247,7 +247,7 @@ class GameRenderer extends Renderer {
 
     private void updateBonuses() {
         bonuses.getSprites().clear();
-        if(touchscreenPressed) {
+        if (touchscreenPressed) {
             bonuses.getSprites().add(new Bonus(getCamera().plus(convertScreenToWorld(touchscreen))));
         }
     }

@@ -1,8 +1,8 @@
 package marcv81.game;
 
 import marcv81.gfx2d.DriftingSprite;
-import marcv81.gfx2d.Vector2f;
 import marcv81.gfx2d.Renderer;
+import marcv81.gfx2d.Vector2f;
 
 import java.util.Random;
 
@@ -49,7 +49,7 @@ class Asteroid extends DriftingSprite {
 
         // Random initial position
         Vector2f position;
-        switch(random.nextInt(4)) {
+        switch (random.nextInt(4)) {
 
             // Right edge
             default:
@@ -63,7 +63,7 @@ class Asteroid extends DriftingSprite {
             case 1:
                 position = new Vector2f(
                         renderer.getLeft() - ASTEROID_SPAWN_DISTANCE,
-                        renderer.getBottom()+ random.nextFloat()
+                        renderer.getBottom() + random.nextFloat()
                                 * (renderer.getTop() - renderer.getBottom()));
                 break;
 

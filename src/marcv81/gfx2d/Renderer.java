@@ -15,7 +15,7 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
     private final Context context;
 
     private Vector2f camera = new Vector2f(0f, 0f);
-    private Vector2f size = new Vector2f(0f ,0f);
+    private Vector2f size = new Vector2f(0f, 0f);
 
     private long previousTime = 0;
 
