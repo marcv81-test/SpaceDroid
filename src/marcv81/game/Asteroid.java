@@ -1,6 +1,5 @@
 package marcv81.game;
 
-import marcv81.gfx2d.DriftingSprite;
 import marcv81.gfx2d.Renderer;
 import marcv81.gfx2d.Vector2f;
 
