@@ -8,9 +8,9 @@ public class Player extends DriftingSprite {
     private static final float PLAYER_ACCELERATION_MULTIPLIER = 3f;
     private static final float PLAYER_FRICTION = 0.8f;
     private static final float PLAYER_MAX_SPEED = 1.2f;
-    private static final float PLAYER_SPRITE_ANGLE = 90f;
+    private static final float PLAYER_SPRITE_ANGLE = -90f;
     private static final float PLAYER_EXHAUST_DISTANCE = 0.15f;
-    private static final float PLAYER_DIAMETER = 0.15f;
+    private static final float PLAYER_DIAMETER = 0.18f;
     private static final float PLAYER_MASS = 1f;
 
     private Vector2f acceleration = new Vector2f(0f, 0f);
