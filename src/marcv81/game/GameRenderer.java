@@ -6,6 +6,7 @@ import marcv81.gfx2d.*;
 import javax.microedition.khronos.opengles.GL10;
 import java.util.Iterator;
 import java.util.Random;
+import android.os.Vibrator;
 
 class GameRenderer extends Renderer {
 
@@ -68,8 +69,11 @@ class GameRenderer extends Renderer {
 
     private static final int SPARKLES_PER_IMPACT = 5;
     private static final int ASTEROID_MAX_COUNT = 20;
+    private static final int IMPACT_VIBRATION_TIME = 25;
 
     private boolean paused = false;
+
+    private final Vibrator vibrator;
 
     // Touchscreen status
     private Vector2f touchscreen = new Vector2f(0f, 0f);
@@ -115,6 +119,7 @@ class GameRenderer extends Renderer {
     GameRenderer(Context context) {
         super(context);
         players.getSprites().add(player);
+        vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     public void setPaused(boolean paused) {
@@ -254,6 +259,8 @@ class GameRenderer extends Renderer {
                     Vector2f impactPoint = asteroid1.impactPoint(player);
                     for (int n = 0; n < SPARKLES_PER_IMPACT; n++) {
                         sparkles.getSprites().add(new Sparkle(impactPoint, random));
+                        vibrator.cancel(); // prevents the vibrator from getting stuck
+                        vibrator.vibrate(IMPACT_VIBRATION_TIME);
                     }
                 }
             }
