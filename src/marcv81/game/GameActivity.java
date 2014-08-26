@@ -25,5 +25,14 @@ public class GameActivity extends DebugActivity {
         super.onResume();
         view.onResume();
     }
+
+    @Override
+    public void onBackPressed() {
+        if (view.getPaused() == true) {
+            finish();
+        } else {
+            view.setPaused(true);
+        }
+    }
 }
 

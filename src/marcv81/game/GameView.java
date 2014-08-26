@@ -15,6 +15,14 @@ class GameView extends GLSurfaceView {
         setRenderer(renderer);
     }
 
+    void setPaused(boolean paused) {
+        renderer.setPaused(paused);
+    }
+
+    boolean getPaused() {
+        return renderer.getPaused();
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent e) {
 

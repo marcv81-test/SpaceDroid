@@ -69,6 +69,8 @@ class GameRenderer extends Renderer {
     private static final int SPARKLES_PER_IMPACT = 5;
     private static final int ASTEROID_MAX_COUNT = 20;
 
+    private boolean paused = false;
+
     // Touchscreen status
     private Vector2f touchscreen = new Vector2f(0f, 0f);
     private boolean touchscreenPressed = false;
@@ -115,6 +117,14 @@ class GameRenderer extends Renderer {
         players.getSprites().add(player);
     }
 
+    public void setPaused(boolean paused) {
+        this.paused = paused;
+    }
+
+    public boolean getPaused() {
+        return this.paused;
+    }
+
     void setTouchscreenPressed(boolean b) {
         this.touchscreenPressed = b;
     }
@@ -132,12 +142,17 @@ class GameRenderer extends Renderer {
 
     @Override
     protected void update(long timeSlice) {
-        updateBackground();
-        updatePlayer(timeSlice);
-        updateAsteroids(timeSlice);
-        smokes.update(timeSlice);
-        sparkles.update(timeSlice);
-        updateBonuses();
+        if (paused && touchscreenPressed) {
+            paused = false;
+        }
+        if (!paused) {
+            updateBackground();
+            updatePlayer(timeSlice);
+            updateAsteroids(timeSlice);
+            smokes.update(timeSlice);
+            sparkles.update(timeSlice);
+            updateBonuses();
+        }
     }
 
     @Override
