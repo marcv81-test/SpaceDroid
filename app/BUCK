@@ -1,0 +1,21 @@
+android_binary(
+  name = 'game',
+  manifest = 'AndroidManifest.xml',
+  target = 'Google Inc.:Google APIs:21',
+  keystore = ':debug_keystore',
+  deps = [
+    '//java/marcv81/gfx2d:gfx2d',
+    '//java/marcv81/game:game',
+    '//res/app:res',
+  ],
+)
+
+keystore(
+  name = 'debug_keystore',
+  store = 'debug.keystore',
+  properties = 'debug.keystore.properties',
+)
+
+project_config(
+  src_target = ':game',
+)

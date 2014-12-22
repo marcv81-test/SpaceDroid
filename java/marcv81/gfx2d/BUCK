@@ -1,0 +1,10 @@
+android_library(
+  name = 'gfx2d',
+  srcs = glob(['*.java']),
+  visibility = [ 'PUBLIC' ],
+)
+
+project_config(
+  src_target = ':gfx2d',
+)
+

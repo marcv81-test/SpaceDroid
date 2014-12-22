@@ -1,0 +1,14 @@
+android_library(
+  name = 'game',
+  srcs = glob(['*.java']),
+  visibility = [ 'PUBLIC' ],
+  deps = [
+    '//java/marcv81/gfx2d:gfx2d',
+    '//res/marcv81/game:res',
+  ],
+)
+
+project_config(
+  src_target = ':game',
+)
+
