@@ -64,9 +64,6 @@ class GameRenderer extends Renderer {
     private static final boolean BONUS_SUPPORT_TRANSPARENCY = false;
     private static final boolean BONUS_SUPPORT_SCALING = false;
 
-    protected static final float FOREGROUND_DEPTH = 0f;
-    protected static final float BACKGROUND_DEPTH = 10f;
-
     private static final int SPARKLES_PER_IMPACT = 5;
     private static final int ASTEROID_MAX_COUNT = 20;
     private static final int IMPACT_VIBRATION_TIME = 25;

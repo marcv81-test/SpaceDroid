@@ -12,6 +12,11 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
     private static final long MIN_TIME_SLICE = 20; // 50 FPS
     private static final long MAX_TIME_SLICE = 50; // 20 FPS
 
+    private static final float EPSILON = 0.1f;
+    private static final float CAMERA_DEPTH = -3f;
+    protected static final float FOREGROUND_DEPTH = 0f;
+    protected static final float BACKGROUND_DEPTH = 10f;
+
     private final Context context;
 
     private Vector2f camera = new Vector2f(0f, 0f);
@@ -97,7 +102,9 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
         gl.glMatrixMode(GL10.GL_PROJECTION);
         gl.glLoadIdentity();
         float ratio = (float) width / height;
-        gl.glOrthof(-ratio, ratio, -1.0f, 1.0f, -50f, 50f);
+        gl.glOrthof(-ratio, ratio, -1.0f, 1.0f,
+                FOREGROUND_DEPTH - CAMERA_DEPTH - EPSILON,
+                BACKGROUND_DEPTH - CAMERA_DEPTH + EPSILON);
         gl.glMatrixMode(GL10.GL_MODELVIEW);
     }
 
@@ -131,7 +138,7 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
         // Prepare to draw the sprites
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
         gl.glLoadIdentity();
-        GLU.gluLookAt(gl, camera.x, camera.y, -3f, camera.x, camera.y, 0f, 0f, 1f, 0f);
+        GLU.gluLookAt(gl, camera.x, camera.y, CAMERA_DEPTH, camera.x, camera.y, 0f, 0f, 1f, 0f);
 
         // Draw the sprites
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
