@@ -6,7 +6,16 @@ android_binary(
   deps = [
     '//java/marcv81/gfx2d:gfx2d',
     '//java/marcv81/game:game',
-    '//res/app:res',
+    '//app:res',
+  ],
+)
+
+android_resource(
+  name = 'res',
+  res = 'res',
+  manifest = 'AndroidManifest.xml',
+  visibility = [
+    '//app:game',
   ],
 )
 
