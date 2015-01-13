@@ -12,10 +12,9 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
     private static final long MIN_TIME_SLICE = 20; // 50 FPS
     private static final long MAX_TIME_SLICE = 50; // 20 FPS
 
-    private static final float EPSILON = 0.1f;
+    private static final float SPRITE_DEPTH = 0f;
     private static final float CAMERA_DEPTH = -3f;
-    protected static final float FOREGROUND_DEPTH = 0f;
-    protected static final float BACKGROUND_DEPTH = 10f;
+    private static final float EPSILON = 0.1f;
 
     private final Context context;
 
@@ -103,8 +102,8 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
         gl.glLoadIdentity();
         float ratio = (float) width / height;
         gl.glOrthof(-ratio, ratio, -1.0f, 1.0f,
-                FOREGROUND_DEPTH - CAMERA_DEPTH - EPSILON,
-                BACKGROUND_DEPTH - CAMERA_DEPTH + EPSILON);
+                SPRITE_DEPTH - CAMERA_DEPTH - EPSILON,
+                SPRITE_DEPTH - CAMERA_DEPTH + EPSILON);
         gl.glMatrixMode(GL10.GL_MODELVIEW);
     }
 

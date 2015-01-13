@@ -6,10 +6,11 @@ import java.util.List;
 
 public class SpriteGroup<T extends Sprite> {
 
+
+
     private List<T> sprites = new LinkedList<>();
     private final SpriteTexture texture;
     private final SpriteGeometry geometry;
-    private final float z;
 
     // Sprites drawing capabilities
     private final boolean supportAngle;
@@ -18,12 +19,11 @@ public class SpriteGroup<T extends Sprite> {
     private final boolean supportScaling;
 
     // Constructor
-    public SpriteGroup(SpriteTexture texture, SpriteGeometry geometry, float z,
+    public SpriteGroup(SpriteTexture texture, SpriteGeometry geometry,
                        boolean supportAngle, boolean supportTransparency, boolean supportScaling) {
 
         this.texture = texture;
         this.geometry = geometry;
-        this.z = z;
 
         // Set sprite drawing capabilities
         this.supportAngle = supportAngle;
@@ -56,7 +56,7 @@ public class SpriteGroup<T extends Sprite> {
         for (Sprite sprite : sprites) {
 
             gl.glPushMatrix();
-            gl.glTranslatef(sprite.getPosition().x, sprite.getPosition().y, z);
+            gl.glTranslatef(sprite.getPosition().x, sprite.getPosition().y, 0f);
 
             if (supportAngle) {
                 gl.glRotatef(sprite.getAngle(), 0f, 0f, 1f);

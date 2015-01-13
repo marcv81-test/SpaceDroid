@@ -81,32 +81,32 @@ class GameRenderer extends Renderer {
     // Sprites groups
     private final SpriteGroup<Background> backgrounds = new SpriteGroup<>(
             new SpriteTexture(BACKGROUND_RESOURCE, BACKGROUND_ANIMATIONS_X, BACKGROUND_ANIMATIONS_Y),
-            new SpriteGeometry(BACKGROUND_SIZE), BACKGROUND_DEPTH,
+            new SpriteGeometry(BACKGROUND_SIZE),
             BACKGROUND_SUPPORT_ANGLE, BACKGROUND_SUPPORT_TRANSPARENCY, BACKGROUND_SUPPORT_SCALING
     );
     private final SpriteGroup<Player> players = new SpriteGroup<>(
             new SpriteTexture(PLAYER_RESOURCE, PLAYER_ANIMATIONS_X, PLAYER_ANIMATIONS_Y),
-            new SpriteGeometry(PLAYER_SIZE), FOREGROUND_DEPTH,
+            new SpriteGeometry(PLAYER_SIZE),
             PLAYER_SUPPORT_ANGLE, PLAYER_SUPPORT_TRANSPARENCY, PLAYER_SUPPORT_SCALING
     );
     private final SpriteGroup<Asteroid> asteroids = new SpriteGroup<>(
             new SpriteTexture(ASTEROID_RESOURCE, ASTEROID_ANIMATIONS_X, ASTEROID_ANIMATIONS_Y),
-            new SpriteGeometry(ASTEROID_SIZE), FOREGROUND_DEPTH,
+            new SpriteGeometry(ASTEROID_SIZE),
             ASTEROID_SUPPORT_ANGLE, ASTEROID_SUPPORT_TRANSPARENCY, ASTEROID_SUPPORT_SCALING
     );
     private final ParticleGroup<Smoke> smokes = new ParticleGroup<>(
             new SpriteTexture(SMOKE_RESOURCE, SMOKE_ANIMATIONS_X, SMOKE_ANIMATIONS_Y),
-            new SpriteGeometry(SMOKE_SIZE), FOREGROUND_DEPTH,
+            new SpriteGeometry(SMOKE_SIZE),
             SMOKE_SUPPORT_ANGLE, SMOKE_SUPPORT_TRANSPARENCY, SMOKE_SUPPORT_SCALING
     );
     private final ParticleGroup<Sparkle> sparkles = new ParticleGroup<>(
             new SpriteTexture(SPARKLE_RESOURCE, SPARKLE_ANIMATIONS_X, SPARKLE_ANIMATIONS_Y),
-            new SpriteGeometry(SPARKLE_SIZE), FOREGROUND_DEPTH,
+            new SpriteGeometry(SPARKLE_SIZE),
             SPARKLE_SUPPORT_ANGLE, SPARKLE_SUPPORT_TRANSPARENCY, SPARKLE_SUPPORT_SCALING
     );
     private final SpriteGroup<Bonus> bonuses = new SpriteGroup<>(
             new SpriteTexture(BONUS_RESOURCE, BONUS_ANIMATIONS_X, BONUS_ANIMATIONS_Y),
-            new SpriteGeometry(BONUS_SIZE), FOREGROUND_DEPTH,
+            new SpriteGeometry(BONUS_SIZE),
             BONUS_SUPPORT_ANGLE, BONUS_SUPPORT_TRANSPARENCY, BONUS_SUPPORT_SCALING
     );
 

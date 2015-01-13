@@ -5,9 +5,9 @@ import java.util.Iterator;
 public class ParticleGroup<T extends Particle> extends SpriteGroup<T> {
 
     // Constructor
-    public ParticleGroup(SpriteTexture texture, SpriteGeometry geometry, float z,
+    public ParticleGroup(SpriteTexture texture, SpriteGeometry geometry,
                          boolean supportAngle, boolean supportTransparency, boolean supportScaling) {
-        super(texture, geometry, z, supportAngle, supportTransparency, supportScaling);
+        super(texture, geometry, supportAngle, supportTransparency, supportScaling);
     }
 
     public void update(long timeSlice) {
