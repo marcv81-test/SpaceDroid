@@ -22,6 +22,6 @@ public class DebugActivity extends Activity implements Thread.UncaughtExceptionH
             Log.w(TAG, message);
         for (StackTraceElement s : throwable.getStackTrace())
             Log.w(TAG, s.toString());
-        System.exit(1);
+        finish();
     }
 }
