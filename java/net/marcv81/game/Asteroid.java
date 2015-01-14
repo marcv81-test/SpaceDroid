@@ -51,7 +51,7 @@ class Asteroid extends DriftingSprite {
         switch (random.nextInt(4)) {
 
             // Right edge
-            default:
+            case 0:
                 position = new Vector2f(
                         renderer.getRight() + ASTEROID_SPAWN_DISTANCE,
                         renderer.getBottom() + random.nextFloat()
@@ -75,7 +75,7 @@ class Asteroid extends DriftingSprite {
                 break;
 
             // Bottom edge
-            case 3:
+            default:
                 position = new Vector2f(
                         renderer.getRight() + random.nextFloat()
                                 * (renderer.getLeft() - renderer.getRight()),

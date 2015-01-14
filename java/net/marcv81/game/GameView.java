@@ -39,6 +39,8 @@ class GameView extends GLSurfaceView {
             case MotionEvent.ACTION_UP:
                 renderer.setTouchscreenPressed(false);
                 break;
+            default:
+                break;
         }
         return true;
     }
