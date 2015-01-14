@@ -239,25 +239,21 @@ class GameRenderer extends Renderer {
                 Asteroid asteroid2 = asteroids.getSprites().get(j);
 
                 // Check asteroids pair for collision
-                if (asteroid1.overlaps(asteroid2)) {
-                    if (asteroid1.collide(asteroid2)) {
-                        Vector2f impactPoint = asteroid1.impactPoint(asteroid2);
-                        for (int n = 0; n < SPARKLES_PER_IMPACT; n++) {
-                            sparkles.getSprites().add(new Sparkle(impactPoint, random));
-                        }
+                if (asteroid1.overlaps(asteroid2) && asteroid1.collide(asteroid2)) {
+                    Vector2f impactPoint = asteroid1.impactPoint(asteroid2);
+                    for (int n = 0; n < SPARKLES_PER_IMPACT; n++) {
+                        sparkles.getSprites().add(new Sparkle(impactPoint, random));
                     }
                 }
             }
 
             // Check asteroid and player for collision
-            if (asteroid1.overlaps(player)) {
-                if (asteroid1.collide(player)) {
-                    Vector2f impactPoint = asteroid1.impactPoint(player);
-                    for (int n = 0; n < SPARKLES_PER_IMPACT; n++) {
-                        sparkles.getSprites().add(new Sparkle(impactPoint, random));
-                        vibrator.cancel(); // prevents the vibrator from getting stuck
-                        vibrator.vibrate(IMPACT_VIBRATION_TIME);
-                    }
+            if (asteroid1.overlaps(player) && asteroid1.collide(player)) {
+                Vector2f impactPoint = asteroid1.impactPoint(player);
+                for (int n = 0; n < SPARKLES_PER_IMPACT; n++) {
+                    sparkles.getSprites().add(new Sparkle(impactPoint, random));
+                    vibrator.cancel(); // prevents the vibrator from getting stuck
+                    vibrator.vibrate(IMPACT_VIBRATION_TIME);
                 }
             }
         }
