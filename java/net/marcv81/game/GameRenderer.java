@@ -196,10 +196,9 @@ class GameRenderer extends Renderer {
 
             // Add smoke particles
             smokes.getSprites().add(new Smoke(player.getExhaust(), random));
-        }
 
         // If not touching the screen
-        else {
+        } else {
             player.setAcceleration(new Vector2f(0f, 0f));
         }
 

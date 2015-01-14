@@ -66,10 +66,9 @@ public abstract class DriftingSprite extends Sprite {
             s.addToSpeed((new Vector2f(deltaPosition)).multiply(this.getMass() * ratio));
 
             return true;
-        }
 
         // If the collision would have generated an attracting deviation
-        else {
+        } else {
             return false;
         }
     }
