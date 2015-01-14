@@ -1,9 +1,9 @@
 android_resource(
   name = 'res',
   res = 'res',
-  package = 'marcv81.game',
+  package = 'net.marcv81.game',
   visibility = [
-    '//java/marcv81/game:game',
+    '//java/net/marcv81/game:game',
   ],
 )
 

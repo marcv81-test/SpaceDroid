@@ -4,8 +4,8 @@ android_binary(
   target = 'Google Inc.:Google APIs:21',
   keystore = ':debug_keystore',
   deps = [
-    '//java/marcv81/gfx2d:gfx2d',
-    '//java/marcv81/game:game',
+    '//java/net/marcv81/gfx2d:gfx2d',
+    '//java/net/marcv81/game:game',
     '//app:res',
   ],
 )

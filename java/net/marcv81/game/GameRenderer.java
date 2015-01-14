@@ -1,7 +1,7 @@
-package marcv81.game;
+package net.marcv81.game;
 
 import android.content.Context;
-import marcv81.gfx2d.*;
+import net.marcv81.gfx2d.*;
 
 import javax.microedition.khronos.opengles.GL10;
 import java.util.Iterator;

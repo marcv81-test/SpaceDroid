@@ -1,7 +1,7 @@
-package marcv81.game;
+package net.marcv81.game;
 
 import android.os.Bundle;
-import marcv81.gfx2d.DebugActivity;
+import net.marcv81.gfx2d.DebugActivity;
 
 public class GameActivity extends DebugActivity {
 

@@ -1,4 +1,4 @@
-package marcv81.gfx2d;
+package net.marcv81.gfx2d;
 
 public class Vector2f {
 

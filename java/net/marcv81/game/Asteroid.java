@@ -1,7 +1,7 @@
-package marcv81.game;
+package net.marcv81.game;
 
-import marcv81.gfx2d.Renderer;
-import marcv81.gfx2d.Vector2f;
+import net.marcv81.gfx2d.Renderer;
+import net.marcv81.gfx2d.Vector2f;
 
 import java.util.Random;
 

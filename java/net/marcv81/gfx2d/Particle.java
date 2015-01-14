@@ -1,4 +1,4 @@
-package marcv81.gfx2d;
+package net.marcv81.gfx2d;
 
 // Particles are sprites with a fixed lifespan
 public abstract class Particle extends Sprite {
