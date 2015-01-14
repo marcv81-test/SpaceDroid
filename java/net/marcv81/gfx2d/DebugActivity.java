@@ -18,10 +18,12 @@ public class DebugActivity extends Activity implements Thread.UncaughtExceptionH
     public void uncaughtException(Thread thread, Throwable throwable) {
         Log.w(TAG, "Caught: " + throwable.getClass());
         String message = throwable.getMessage();
-        if (message != null)
+        if (message != null) {
             Log.w(TAG, message);
-        for (StackTraceElement s : throwable.getStackTrace())
+        }
+        for (StackTraceElement s : throwable.getStackTrace()) {
             Log.w(TAG, s.toString());
+        }
         finish();
     }
 }

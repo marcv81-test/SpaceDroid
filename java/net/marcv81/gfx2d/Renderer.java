@@ -125,8 +125,9 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
         }
 
         // Slow the game down if the time slice is too long
-        if (timeSlice > MAX_TIME_SLICE)
+        if (timeSlice > MAX_TIME_SLICE) {
             timeSlice = MAX_TIME_SLICE;
+        }
 
         // Update the engine
         update(timeSlice);
