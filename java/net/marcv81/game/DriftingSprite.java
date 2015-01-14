@@ -36,7 +36,7 @@ public abstract class DriftingSprite extends Sprite {
 
     // Find if two sprites overlap
     public boolean overlaps(DriftingSprite s) {
-        return (getDistance(s) < (getDiameter() + s.getDiameter()) / 2f);
+        return getDistance(s) < (getDiameter() + s.getDiameter()) / 2f;
     }
 
     public Vector2f impactPoint(DriftingSprite s) {
