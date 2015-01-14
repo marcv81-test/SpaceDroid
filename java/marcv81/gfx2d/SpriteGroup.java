@@ -6,8 +6,6 @@ import java.util.List;
 
 public class SpriteGroup<T extends Sprite> {
 
-
-
     private List<T> sprites = new LinkedList<>();
     private final SpriteTexture texture;
     private final SpriteGeometry geometry;
