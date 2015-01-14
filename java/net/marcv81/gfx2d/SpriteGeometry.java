@@ -15,7 +15,7 @@ public class SpriteGeometry {
 
         // Create vertices buffer according to the sprite size
         // Bottom left, top left, bottom right, top right
-        float vertices[] = new float[]{
+        float[] vertices = new float[]{
                 -0.5f * size, -0.5f * size, 0f,
                 -0.5f * size, 0.5f * size, 0f,
                 0.5f * size, -0.5f * size, 0f,

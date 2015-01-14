@@ -30,7 +30,7 @@ public class SpriteTexture {
             for (int i = 0; i < animationsX; i++) {
                 int index = i + (j * animationsX);
                 // Top left, bottom left, top right, bottom right
-                float coordinates[] = {
+                float[] coordinates = {
                         i / (float) animationsX, (j + 1) / (float) animationsY,
                         i / (float) animationsX, j / (float) animationsY,
                         (i + 1) / (float) animationsX, (j + 1) / (float) animationsY,
@@ -50,7 +50,7 @@ public class SpriteTexture {
     // Load the texture from the bitmap resource
     public void load(GL10 gl, Context context) {
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId);
-        int names[] = new int[1];
+        int[] names = new int[1];
         gl.glGenTextures(1, names, 0);
         textureName = names[0];
         gl.glBindTexture(GL10.GL_TEXTURE_2D, textureName);
