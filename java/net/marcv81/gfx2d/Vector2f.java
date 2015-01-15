@@ -52,9 +52,13 @@ public class Vector2f {
         return this;
     }
 
-    public float getX() { return this.x; }
+    public float getX() {
+        return this.x;
+    }
 
-    public float getY() { return this.y; }
+    public float getY() {
+        return this.y;
+    }
 
     public float dot(Vector2f v) {
         return this.x * v.x + this.y * v.y;
