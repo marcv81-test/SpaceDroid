@@ -47,28 +47,28 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
 
     // Get the X coordinate of the right of the screen
     public float getRight() {
-        return camera.x + size.x / size.y;
+        return camera.getX() + size.getX() / size.getY();
     }
 
     // Get the X coordinate of the left of the screen
     public float getLeft() {
-        return camera.x - size.x / size.y;
+        return camera.getX() - size.getX() / size.getY();
     }
 
     // Get the Y coordinate of the top of the screen
     public float getTop() {
-        return camera.y + 1.0f;
+        return camera.getY() + 1.0f;
     }
 
     // Get the Y coordinate of the bottom of the screen
     public float getBottom() {
-        return camera.y - 1.0f;
+        return camera.getY() - 1.0f;
     }
 
     public Vector2f convertScreenToWorld(Vector2f point) {
         return new Vector2f(
-                (-2f * point.x + size.x) / size.y,
-                (-2f * point.y + size.y) / size.y);
+                (-2f * point.getX() + size.getX()) / size.getY(),
+                (-2f * point.getY() + size.getY()) / size.getY());
     }
 
     @Override
@@ -138,7 +138,7 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
         // Prepare to draw the sprites
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
         gl.glLoadIdentity();
-        GLU.gluLookAt(gl, camera.x, camera.y, CAMERA_DEPTH, camera.x, camera.y, 0f, 0f, 1f, 0f);
+        GLU.gluLookAt(gl, camera.getX(), camera.getY(), CAMERA_DEPTH, camera.getX(), camera.getY(), 0f, 0f, 1f, 0f);
 
         // Draw the sprites
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);

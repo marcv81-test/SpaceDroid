@@ -122,10 +122,10 @@ class Asteroid extends DriftingSprite {
 
     public boolean isOutOfScope(Renderer renderer) {
         Vector2f position = getPosition();
-        return position.y >= renderer.getTop() + ASTEROID_REMOVAL_DISTANCE
-                || position.y <= renderer.getBottom() - ASTEROID_REMOVAL_DISTANCE
-                || position.x >= renderer.getRight() + ASTEROID_REMOVAL_DISTANCE
-                || position.x <= renderer.getLeft() - ASTEROID_REMOVAL_DISTANCE;
+        return position.getY() >= renderer.getTop() + ASTEROID_REMOVAL_DISTANCE
+                || position.getY() <= renderer.getBottom() - ASTEROID_REMOVAL_DISTANCE
+                || position.getX() >= renderer.getRight() + ASTEROID_REMOVAL_DISTANCE
+                || position.getX() <= renderer.getLeft() - ASTEROID_REMOVAL_DISTANCE;
     }
 
     public void update(long timeSlice) {

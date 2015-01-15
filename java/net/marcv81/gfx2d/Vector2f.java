@@ -2,7 +2,7 @@ package net.marcv81.gfx2d;
 
 public class Vector2f {
 
-    public float x, y;
+    private float x, y;
 
     // Constructor
     public Vector2f(float x, float y) {
@@ -51,6 +51,10 @@ public class Vector2f {
         this.y /= f;
         return this;
     }
+
+    public float getX() { return this.x; }
+
+    public float getY() { return this.y; }
 
     public float dot(Vector2f v) {
         return this.x * v.x + this.y * v.y;

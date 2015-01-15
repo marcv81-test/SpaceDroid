@@ -174,10 +174,9 @@ class GameRenderer extends Renderer {
 
         // Add 4 tiles around the player
         Vector2f center = player.getPosition().divide(BACKGROUND_SIZE);
-        center.x = Math.round(center.x);
-        center.y = Math.round(center.y);
-        for (float x : new float[]{center.x - 0.5f, center.x + 0.5f}) {
-            for (float y : new float[]{center.y - 0.5f, center.y + 0.5f}) {
+        center = new Vector2f(Math.round(center.getX()), Math.round(center.getY()));
+        for (float x : new float[]{center.getX() - 0.5f, center.getX() + 0.5f}) {
+            for (float y : new float[]{center.getY() - 0.5f, center.getY() + 0.5f}) {
                 backgrounds.getSprites().add(new Background(
                         new Vector2f(BACKGROUND_SIZE * x, BACKGROUND_SIZE * y)));
             }
