@@ -261,11 +261,9 @@ class GameRenderer extends Renderer {
     private void updateAsteroids(long timeSlice) {
 
         // Iterate over all the asteroids
-        Iterator<Asteroid> asteroidIterator = asteroids.getSprites().iterator();
-        while (asteroidIterator.hasNext()) {
+        for (Asteroid asteroid : asteroids.getSprites()) {
 
             // Update each asteroid
-            Asteroid asteroid = asteroidIterator.next();
             asteroid.update(timeSlice);
         }
 
