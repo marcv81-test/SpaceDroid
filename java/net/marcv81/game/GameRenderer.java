@@ -208,17 +208,14 @@ class GameRenderer extends Renderer {
         setCamera(player.getPosition());
     }
 
-    private void updateAsteroids(long timeSlice) {
+    private void updateAsteroidsCreation() {
 
         // Iterate over all the asteroids
         Iterator<Asteroid> asteroidIterator = asteroids.getSprites().iterator();
         while (asteroidIterator.hasNext()) {
 
-            // Update each asteroid
-            Asteroid asteroid = asteroidIterator.next();
-            asteroid.update(timeSlice);
-
             // Remove the asteroids which are too far
+            Asteroid asteroid = asteroidIterator.next();
             if (asteroid.isOutOfScope(this)) {
                 asteroidIterator.remove();
             }
@@ -228,6 +225,9 @@ class GameRenderer extends Renderer {
         while (asteroids.getSprites().size() < ASTEROID_MAX_COUNT) {
             asteroids.getSprites().add(Asteroid.spawn(this, random));
         }
+    }
+
+    private void updateAsteroidsCollisions() {
 
         // Iterate over asteroids
         for (int i = 0; i < asteroids.getSprites().size(); i++) {
@@ -256,6 +256,21 @@ class GameRenderer extends Renderer {
                 }
             }
         }
+    }
+
+    private void updateAsteroids(long timeSlice) {
+
+        // Iterate over all the asteroids
+        Iterator<Asteroid> asteroidIterator = asteroids.getSprites().iterator();
+        while (asteroidIterator.hasNext()) {
+
+            // Update each asteroid
+            Asteroid asteroid = asteroidIterator.next();
+            asteroid.update(timeSlice);
+        }
+
+        updateAsteroidsCreation();
+        updateAsteroidsCollisions();
     }
 
     private void updateBonuses() {
