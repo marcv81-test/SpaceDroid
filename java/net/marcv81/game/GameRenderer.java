@@ -318,8 +318,7 @@ class GameRenderer extends Renderer {
         }
     }
 
-    private void createImpact(DriftingSprite sprite1, DriftingSprite sprite2)
-    {
+    private void createImpact(DriftingSprite sprite1, DriftingSprite sprite2) {
         Vector2f impactPoint = sprite1.impactPoint(sprite2);
         for (int n = 0; n < SPARKLES_PER_IMPACT; n++) {
             sparkles.getSprites().add(new Sparkle(impactPoint, random));
