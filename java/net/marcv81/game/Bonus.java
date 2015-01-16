@@ -118,8 +118,7 @@ public class Bonus extends DriftingSprite {
         this.lifespan = age + 500;
     }
 
-    public boolean isExploding()
-    {
+    public boolean isExploding() {
         return lifespan > 0;
     }
 
