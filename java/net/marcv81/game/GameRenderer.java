@@ -206,12 +206,9 @@ class GameRenderer extends Renderer {
 
             // Check player and asteroid for collision
             if (player.overlaps(asteroid) && player.collide(asteroid)) {
-                Vector2f impactPoint = player.impactPoint(asteroid);
-                for (int n = 0; n < SPARKLES_PER_IMPACT; n++) {
-                    sparkles.getSprites().add(new Sparkle(impactPoint, random));
-                    vibrator.cancel(); // prevents the vibrator from getting stuck
-                    vibrator.vibrate(IMPACT_VIBRATION_TIME);
-                }
+                createImpact(player, asteroid);
+                vibrator.cancel(); // prevents the vibrator from getting stuck
+                vibrator.vibrate(IMPACT_VIBRATION_TIME);
             }
         }
 
@@ -264,10 +261,7 @@ class GameRenderer extends Renderer {
 
                 // Check asteroids pairs for collision
                 if (asteroid1.overlaps(asteroid2) && asteroid1.collide(asteroid2)) {
-                    Vector2f impactPoint = asteroid1.impactPoint(asteroid2);
-                    for (int n = 0; n < SPARKLES_PER_IMPACT; n++) {
-                        sparkles.getSprites().add(new Sparkle(impactPoint, random));
-                    }
+                    createImpact(asteroid1, asteroid2);
                 }
             }
         }
@@ -278,10 +272,7 @@ class GameRenderer extends Renderer {
 
                 // Check asteroid and bonus for collision
                 if (!bonus.isExploding() && asteroid.overlaps(bonus) && asteroid.collide(bonus)) {
-                    Vector2f impactPoint = asteroid.impactPoint(bonus);
-                    for (int n = 0; n < SPARKLES_PER_IMPACT; n++) {
-                        sparkles.getSprites().add(new Sparkle(impactPoint, random));
-                    }
+                    createImpact(asteroid, bonus);
                 }
             }
         }
@@ -321,12 +312,17 @@ class GameRenderer extends Renderer {
                 // Check bonuses pair for collision
                 if (!bonus1.isExploding() && !bonus2.isExploding() &&
                         bonus1.overlaps(bonus2) && bonus1.collide(bonus2)) {
-                    Vector2f impactPoint = bonus1.impactPoint(bonus2);
-                    for (int n = 0; n < SPARKLES_PER_IMPACT; n++) {
-                        sparkles.getSprites().add(new Sparkle(impactPoint, random));
-                    }
+                    createImpact(bonus1, bonus2);
                 }
             }
+        }
+    }
+
+    private void createImpact(DriftingSprite sprite1, DriftingSprite sprite2)
+    {
+        Vector2f impactPoint = sprite1.impactPoint(sprite2);
+        for (int n = 0; n < SPARKLES_PER_IMPACT; n++) {
+            sparkles.getSprites().add(new Sparkle(impactPoint, random));
         }
     }
 }
