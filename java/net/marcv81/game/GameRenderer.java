@@ -61,11 +61,12 @@ class GameRenderer extends Renderer {
     private static final int BONUS_ANIMATIONS_X = 1;
     private static final int BONUS_ANIMATIONS_Y = 1;
     private static final boolean BONUS_SUPPORT_ANGLE = false;
-    private static final boolean BONUS_SUPPORT_TRANSPARENCY = false;
-    private static final boolean BONUS_SUPPORT_SCALING = false;
+    private static final boolean BONUS_SUPPORT_TRANSPARENCY = true;
+    private static final boolean BONUS_SUPPORT_SCALING = true;
 
     private static final int SPARKLES_PER_IMPACT = 5;
     private static final int ASTEROID_MAX_COUNT = 20;
+    private static final int BONUS_MAX_COUNT = 3;
     private static final int IMPACT_VIBRATION_TIME = 25;
 
     private boolean paused = false;
@@ -153,7 +154,7 @@ class GameRenderer extends Renderer {
             updateAsteroids(timeSlice);
             smokes.update(timeSlice);
             sparkles.update(timeSlice);
-            updateBonuses();
+            updateBonuses(timeSlice);
         }
     }
 
@@ -196,9 +197,31 @@ class GameRenderer extends Renderer {
             // Add smoke particles
             smokes.getSprites().add(new Smoke(player.getExhaust(), random));
 
-        // If not touching the screen
         } else {
             player.setAcceleration(new Vector2f(0f, 0f));
+        }
+
+        // Iterate over asteroids
+        for (Asteroid asteroid : asteroids.getSprites()) {
+
+            // Check player and asteroid for collision
+            if (player.overlaps(asteroid) && player.collide(asteroid)) {
+                Vector2f impactPoint = player.impactPoint(asteroid);
+                for (int n = 0; n < SPARKLES_PER_IMPACT; n++) {
+                    sparkles.getSprites().add(new Sparkle(impactPoint, random));
+                    vibrator.cancel(); // prevents the vibrator from getting stuck
+                    vibrator.vibrate(IMPACT_VIBRATION_TIME);
+                }
+            }
+        }
+
+        // Iterate over bonuses
+        for (Bonus bonus : bonuses.getSprites()) {
+
+            // Check player and bonus for collision
+            if (!bonus.isExploding() && player.overlaps(bonus)) {
+                bonus.explode();
+            }
         }
 
         // Update the player sprite
@@ -208,7 +231,14 @@ class GameRenderer extends Renderer {
         setCamera(player.getPosition());
     }
 
-    private void updateAsteroidsCreation() {
+    private void updateAsteroids(long timeSlice) {
+
+        // Iterate over all the asteroids
+        for (Asteroid asteroid : asteroids.getSprites()) {
+
+            // Update each asteroid
+            asteroid.update(timeSlice);
+        }
 
         // Iterate over all the asteroids
         Iterator<Asteroid> asteroidIterator = asteroids.getSprites().iterator();
@@ -225,19 +255,14 @@ class GameRenderer extends Renderer {
         while (asteroids.getSprites().size() < ASTEROID_MAX_COUNT) {
             asteroids.getSprites().add(Asteroid.spawn(this, random));
         }
-    }
 
-    private void updateAsteroidsCollisions() {
-
-        // Iterate over asteroids
+        // Iterate over asteroids pairs
         for (int i = 0; i < asteroids.getSprites().size(); i++) {
             Asteroid asteroid1 = asteroids.getSprites().get(i);
-
-            // Iterate over asteroids pairs
             for (int j = i + 1; j < asteroids.getSprites().size(); j++) {
                 Asteroid asteroid2 = asteroids.getSprites().get(j);
 
-                // Check asteroids pair for collision
+                // Check asteroids pairs for collision
                 if (asteroid1.overlaps(asteroid2) && asteroid1.collide(asteroid2)) {
                     Vector2f impactPoint = asteroid1.impactPoint(asteroid2);
                     for (int n = 0; n < SPARKLES_PER_IMPACT; n++) {
@@ -245,36 +270,63 @@ class GameRenderer extends Renderer {
                     }
                 }
             }
+        }
 
-            // Check asteroid and player for collision
-            if (asteroid1.overlaps(player) && asteroid1.collide(player)) {
-                Vector2f impactPoint = asteroid1.impactPoint(player);
-                for (int n = 0; n < SPARKLES_PER_IMPACT; n++) {
-                    sparkles.getSprites().add(new Sparkle(impactPoint, random));
-                    vibrator.cancel(); // prevents the vibrator from getting stuck
-                    vibrator.vibrate(IMPACT_VIBRATION_TIME);
+        // Iterate over asteroid-bonus pairs
+        for (Asteroid asteroid : asteroids.getSprites()) {
+            for (Bonus bonus : bonuses.getSprites()) {
+
+                // Check asteroid and bonus for collision
+                if (!bonus.isExploding() && asteroid.overlaps(bonus) && asteroid.collide(bonus)) {
+                    Vector2f impactPoint = asteroid.impactPoint(bonus);
+                    for (int n = 0; n < SPARKLES_PER_IMPACT; n++) {
+                        sparkles.getSprites().add(new Sparkle(impactPoint, random));
+                    }
                 }
             }
         }
     }
 
-    private void updateAsteroids(long timeSlice) {
+    private void updateBonuses(long timeSlice) {
 
-        // Iterate over all the asteroids
-        for (Asteroid asteroid : asteroids.getSprites()) {
+        // Iterate over all the bonuses
+        for (Bonus bonus : bonuses.getSprites()) {
 
-            // Update each asteroid
-            asteroid.update(timeSlice);
+            // Update each bonus
+            bonus.update(timeSlice);
         }
 
-        updateAsteroidsCreation();
-        updateAsteroidsCollisions();
-    }
+        // Iterate over all the bonuses
+        Iterator<Bonus> bonusIterator = bonuses.getSprites().iterator();
+        while (bonusIterator.hasNext()) {
 
-    private void updateBonuses() {
-        bonuses.getSprites().clear();
-        if (touchscreenPressed) {
-            bonuses.getSprites().add(new Bonus(getCamera().plus(convertScreenToWorld(touchscreen))));
+            // Remove the bonuses which are too far
+            Bonus bonus = bonusIterator.next();
+            if (bonus.isOutOfScope(this) || bonus.isExpired()) {
+                bonusIterator.remove();
+            }
+        }
+
+        // Add bonuses if we have space
+        while (bonuses.getSprites().size() < BONUS_MAX_COUNT) {
+            bonuses.getSprites().add(Bonus.spawn(this, random));
+        }
+
+        // Iterate over bonuses pairs
+        for (int i = 0; i < bonuses.getSprites().size(); i++) {
+            Bonus bonus1 = bonuses.getSprites().get(i);
+            for (int j = i + 1; j < bonuses.getSprites().size(); j++) {
+                Bonus bonus2 = bonuses.getSprites().get(j);
+
+                // Check bonuses pair for collision
+                if (!bonus1.isExploding() && !bonus2.isExploding() &&
+                        bonus1.overlaps(bonus2) && bonus1.collide(bonus2)) {
+                    Vector2f impactPoint = bonus1.impactPoint(bonus2);
+                    for (int n = 0; n < SPARKLES_PER_IMPACT; n++) {
+                        sparkles.getSprites().add(new Sparkle(impactPoint, random));
+                    }
+                }
+            }
         }
     }
 }
