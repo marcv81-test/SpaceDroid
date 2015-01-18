@@ -69,6 +69,11 @@ class GameRenderer extends Renderer {
     private static final int BONUS_MAX_COUNT = 3;
     private static final int IMPACT_VIBRATION_TIME = 25;
 
+    private final Random random = new Random();
+
+    private AsteroidFactory asteroidFactory = new AsteroidFactory(this, random);
+    private BonusFactory bonusFactory = new BonusFactory(this, random);
+
     private boolean paused = false;
 
     private final Vibrator vibrator;
@@ -76,8 +81,6 @@ class GameRenderer extends Renderer {
     // Touchscreen status
     private Vector2f touchscreen = new Vector2f(0f, 0f);
     private boolean touchscreenPressed = false;
-
-    private final Random random = new Random();
 
     // Sprites groups
     private final SpriteGroup<Background> backgrounds = new SpriteGroup<>(
@@ -250,7 +253,7 @@ class GameRenderer extends Renderer {
 
         // Add asteroids if we have space
         while (asteroids.getSprites().size() < ASTEROID_MAX_COUNT) {
-            asteroids.getSprites().add(Asteroid.spawn(this, random));
+            asteroids.getSprites().add(asteroidFactory.create());
         }
 
         // Iterate over asteroids pairs
@@ -300,7 +303,7 @@ class GameRenderer extends Renderer {
 
         // Add bonuses if we have space
         while (bonuses.getSprites().size() < BONUS_MAX_COUNT) {
-            bonuses.getSprites().add(Bonus.spawn(this, random));
+            bonuses.getSprites().add(bonusFactory.create());
         }
 
         // Iterate over bonuses pairs
