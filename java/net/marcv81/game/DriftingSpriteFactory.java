@@ -5,7 +5,7 @@ import net.marcv81.gfx2d.Vector2f;
 
 import java.util.Random;
 
-public abstract class DriftingSpriteFactory {
+public abstract class DriftingSpriteFactory<T extends DriftingSprite> {
 
     private static final float TAU = 6.2831853071f;
     private static final float SPRITE_SPAWNING_DISTANCE = 0.5f;
@@ -15,6 +15,7 @@ public abstract class DriftingSpriteFactory {
 
     protected abstract float getMinSpeed();
     protected abstract float getMaxSpeed();
+    protected abstract T create();
 
     public DriftingSpriteFactory(Renderer renderer, Random random) {
         this.renderer = renderer;

@@ -4,7 +4,7 @@ import net.marcv81.gfx2d.Renderer;
 
 import java.util.Random;
 
-public class AsteroidFactory extends DriftingSpriteFactory {
+public class AsteroidFactory extends DriftingSpriteFactory<Asteroid> {
 
     private static final float ASTEROID_MIN_SPEED = 0.1f;
     private static final float ASTEROID_MAX_SPEED = 0.5f;
@@ -23,6 +23,7 @@ public class AsteroidFactory extends DriftingSpriteFactory {
         return ASTEROID_MAX_SPEED;
     }
 
+    @Override
     public Asteroid create() {
         return new Asteroid(randomPosition(), randomSpeed(), random);
     }

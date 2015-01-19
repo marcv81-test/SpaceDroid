@@ -4,7 +4,7 @@ import net.marcv81.gfx2d.Renderer;
 
 import java.util.Random;
 
-public class BonusFactory extends DriftingSpriteFactory {
+public class BonusFactory extends DriftingSpriteFactory<Bonus> {
 
     private static final float BONUS_MIN_SPEED = 0.1f;
     private static final float BONUS_MAX_SPEED = 0.25f;
@@ -23,6 +23,7 @@ public class BonusFactory extends DriftingSpriteFactory {
         return BONUS_MAX_SPEED;
     }
 
+    @Override
     public Bonus create() {
         return new Bonus(randomPosition(), randomSpeed());
     }
