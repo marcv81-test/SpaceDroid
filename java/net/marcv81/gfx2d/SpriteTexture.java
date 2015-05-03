@@ -12,7 +12,7 @@ import java.nio.FloatBuffer;
 
 public class SpriteTexture {
 
-    private final int resourceId;
+    private final String filename;
 
     private final FloatBuffer[] textureCoordinatesBuffers;
     private final int totalAnimations;
@@ -20,7 +20,7 @@ public class SpriteTexture {
     private int textureName;
 
     // Constructor
-    public SpriteTexture(int resourceId, int animationsX, int animationsY) {
+    public SpriteTexture(String filename, int animationsX, int animationsY) {
 
         // Create texture coordinates buffers
         // There may be several buffers for different graphics (for sprite animation)
@@ -43,13 +43,16 @@ public class SpriteTexture {
             }
         }
 
-        // Resource ID to load the texture bitmap
-        this.resourceId = resourceId;
+        // Resource filename to load the texture bitmap
+        this.filename = filename;
     }
 
     // Load the texture from the bitmap resource
     public void load(GL10 gl, Context context) {
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId);
+
+        int id = context.getResources().getIdentifier(this.filename, "drawable", context.getPackageName());
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), id);
+
         int[] names = new int[1];
         gl.glGenTextures(1, names, 0);
         textureName = names[0];
