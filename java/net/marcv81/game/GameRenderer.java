@@ -12,7 +12,7 @@ class GameRenderer extends Renderer {
 
     // Background texture
     private static final String BACKGROUND_RESOURCE = "stars";
-    public static final float BACKGROUND_SIZE = 4f;
+    private static final float BACKGROUND_SIZE = 4f;
     private static final int BACKGROUND_ANIMATIONS_X = 1;
     private static final int BACKGROUND_ANIMATIONS_Y = 1;
     private static final boolean BACKGROUND_SUPPORT_ANGLE = false;
