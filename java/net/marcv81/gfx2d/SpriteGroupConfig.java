@@ -3,19 +3,19 @@ package net.marcv81.gfx2d;
 public class SpriteGroupConfig {
 
     private String textureFilename;
-    private int animationX;
-    private int animationY;
+    private int animationsX;
+    private int animationsY;
     private float size;
     private boolean supportAngle;
     private boolean supportTransparency;
     private boolean supportScaling;
 
-    public SpriteGroupConfig(String textureFilename, int animationX, int animationY, float size,
+    public SpriteGroupConfig(String textureFilename, int animationsX, int animationsY, float size,
                              boolean supportAngle, boolean supportTransparency, boolean supportScaling) {
 
         this.textureFilename = textureFilename;
-        this.animationX = animationX;
-        this.animationY = animationY;
+        this.animationsX = animationsX;
+        this.animationsY = animationsY;
         this.size = size;
         this.supportAngle = supportAngle;
         this.supportTransparency = supportTransparency;
@@ -26,12 +26,12 @@ public class SpriteGroupConfig {
         return textureFilename;
     }
 
-    public int getAnimationX() {
-        return animationX;
+    public int getAnimationsX() {
+        return animationsX;
     }
 
-    public int getAnimationY() {
-        return animationY;
+    public int getAnimationsY() {
+        return animationsY;
     }
 
     public float getSize() {

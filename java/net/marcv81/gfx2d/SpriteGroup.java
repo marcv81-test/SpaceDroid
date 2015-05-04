@@ -21,7 +21,7 @@ public class SpriteGroup<T extends Sprite> {
 
         // Instantiate texture and geometry
         this.texture = new SpriteTexture(config.getTextureFilename(),
-                config.getAnimationX(), config.getAnimationY());
+                config.getAnimationsX(), config.getAnimationsY());
         this.geometry = new SpriteGeometry(config.getSize());
 
         // Set sprite drawing capabilities
