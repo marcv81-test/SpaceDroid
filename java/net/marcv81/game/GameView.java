@@ -7,20 +7,23 @@ import net.marcv81.gfx2d.Vector2f;
 
 class GameView extends GLSurfaceView {
 
-    private final GameRenderer renderer;
+    private final net.marcv81.gfx2d.Renderer renderer;
+    private final GameEngine engine;
 
     GameView(Context context) {
         super(context);
-        renderer = new GameRenderer(context);
+        renderer = new net.marcv81.gfx2d.Renderer(context);
+        engine = new GameEngine(context, renderer);
+        renderer.setEngine(engine);
         setRenderer(renderer);
     }
 
     void setPaused(boolean paused) {
-        renderer.setPaused(paused);
+        engine.setPaused(paused);
     }
 
     boolean getPaused() {
-        return renderer.getPaused();
+        return engine.getPaused();
     }
 
     @Override
@@ -30,14 +33,14 @@ class GameView extends GLSurfaceView {
         float y = e.getY();
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                renderer.setTouchscreenPressed(true);
-                renderer.setTouchscreen(new Vector2f(x, y));
+                engine.setTouchscreenPressed(true);
+                engine.setTouchscreen(new Vector2f(x, y));
                 break;
             case MotionEvent.ACTION_MOVE:
-                renderer.setTouchscreen(new Vector2f(x, y));
+                engine.setTouchscreen(new Vector2f(x, y));
                 break;
             case MotionEvent.ACTION_UP:
-                renderer.setTouchscreenPressed(false);
+                engine.setTouchscreenPressed(false);
                 break;
             default:
                 break;

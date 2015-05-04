@@ -7,10 +7,12 @@ import android.opengl.GLU;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public abstract class Renderer implements GLSurfaceView.Renderer {
+import org.json.*;
 
-    private static final long MIN_TIME_SLICE = 20; // 50 FPS
-    private static final long MAX_TIME_SLICE = 50; // 20 FPS
+import java.io.*;
+import java.util.*;
+
+public class Renderer implements GLSurfaceView.Renderer {
 
     private static final float SPRITE_DEPTH = 0f;
     private static final float CAMERA_DEPTH = -3f;
@@ -18,22 +20,25 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
 
     private final Context context;
 
+    private final HashMap<String, SpriteGroup> spriteGroups = new HashMap<>();
+
     private Vector2f camera = new Vector2f(0f, 0f);
     private Vector2f size = new Vector2f(0f, 0f);
 
-    private long previousTime = 0;
-
-    // Return all the textures
-    protected abstract SpriteTexture[] getTextures();
-
-    // Update the engine
-    protected abstract void update(long timeSlice);
-
-    protected abstract void draw(GL10 gl);
+    private Engine engine;
 
     // Constructor
-    protected Renderer(Context context) {
+    public Renderer(Context context) {
         this.context = context;
+        LoadSpriteGroups(context);
+    }
+
+    public void setEngine(Engine engine) {
+        this.engine = engine;
+    }
+
+    public void setSprites(String str, List<? extends Sprite> list) {
+        spriteGroups.get(str).setSprites(list);
     }
 
     // Set the X and Y camera coordinates
@@ -41,6 +46,7 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
         camera.set(position);
     }
 
+    // Get the X and Y camera coordinates
     public Vector2f getCamera() {
         return new Vector2f(camera);
     }
@@ -85,8 +91,8 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
         gl.glDepthFunc(GL10.GL_LEQUAL);
 
         // Load the textures
-        for (SpriteTexture texture : getTextures()) {
-            texture.load(gl, context);
+        for (SpriteGroup spriteGroup : spriteGroups.values()) {
+            spriteGroup.getTexture().load(gl, context);
         }
     }
 
@@ -110,30 +116,8 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
     @Override
     public final void onDrawFrame(GL10 gl) {
 
-        long currentTime = System.currentTimeMillis();
-        long timeSlice = currentTime - previousTime;
-
-        // Wait until the time slice is long enough
-        while (timeSlice < MIN_TIME_SLICE) {
-            try {
-                Thread.sleep(MIN_TIME_SLICE - timeSlice);
-            } catch (InterruptedException e) {
-                // Don't care
-            }
-            currentTime = System.currentTimeMillis();
-            timeSlice = currentTime - previousTime;
-        }
-
-        // Slow the game down if the time slice is too long
-        if (timeSlice > MAX_TIME_SLICE) {
-            timeSlice = MAX_TIME_SLICE;
-        }
-
-        // Update the engine
-        update(timeSlice);
-
-        // Get ready to calculate the next time slice
-        previousTime = currentTime;
+        // Call secret update (engine)
+        engine.update();
 
         // Prepare to draw the sprites
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
@@ -144,8 +128,58 @@ public abstract class Renderer implements GLSurfaceView.Renderer {
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
         gl.glFrontFace(GL10.GL_CW);
-        draw(gl);
+        for (SpriteGroup spriteGroup : spriteGroups.values()) {
+            spriteGroup.draw(gl);
+        }
         gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
         gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+    }
+
+    private void LoadSpriteGroups(Context context) {
+
+        try {
+            // Open sprites JSON definition
+            int id = context.getResources().getIdentifier("sprites", "raw", context.getPackageName());
+            InputStream inputStream = context.getResources().openRawResource(id);
+
+            // Read InputStream
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            StringBuilder stringBuilder = new StringBuilder();
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String read = bufferedReader.readLine();
+            while (read != null) {
+                stringBuilder.append(read);
+                read = bufferedReader.readLine();
+            }
+
+            // Instantiate JSONObject from String
+            JSONObject json = new JSONObject(stringBuilder.toString());
+
+            // Instantiate SpriteGroupConfigs
+            JSONArray array = json.getJSONArray("sprites");
+            for (int i = 0; i < array.length(); i++) {
+
+                String name = array.getJSONObject(i).getString("name");
+                String textureFilename = array.getJSONObject(i).getString("textureFilename");
+                int animationsX = array.getJSONObject(i).getInt("animationsX");
+                int animationsY = array.getJSONObject(i).getInt("animationsY");
+                float size = (float) array.getJSONObject(i).getDouble("size");
+                boolean supportAngle = array.getJSONObject(i).getBoolean("supportAngle");
+                boolean supportTransparency = array.getJSONObject(i).getBoolean("supportTransparency");
+                boolean supportScaling = array.getJSONObject(i).getBoolean("supportScaling");
+
+                SpriteTexture texture = new SpriteTexture(textureFilename, animationsX, animationsY);
+                SpriteGeometry geometry = new SpriteGeometry(size);
+                SpriteGroup spriteGroup = new SpriteGroup(texture, geometry,
+                        supportAngle, supportTransparency, supportScaling);
+
+                spriteGroups.put(name, spriteGroup);
+            }
+        }
+
+        // Rethrow checked exceptions as runtime exceptions
+        catch (JSONException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

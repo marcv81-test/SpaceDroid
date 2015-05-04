@@ -4,9 +4,10 @@ import javax.microedition.khronos.opengles.GL10;
 import java.util.LinkedList;
 import java.util.List;
 
-public class SpriteGroup<T extends Sprite> {
+public class SpriteGroup {
 
-    private List<T> sprites = new LinkedList<T>();
+    private List<? extends Sprite> sprites = new LinkedList<>();
+
     private final SpriteTexture texture;
     private final SpriteGeometry geometry;
 
@@ -28,8 +29,8 @@ public class SpriteGroup<T extends Sprite> {
         this.supportAnimation = (texture.getTotalAnimations() > 1);
     }
 
-    public List<T> getSprites() {
-        return sprites;
+    public void setSprites(List<? extends Sprite> sprites) {
+        this.sprites = sprites;
     }
 
     public SpriteTexture getTexture() {
