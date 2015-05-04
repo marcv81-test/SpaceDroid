@@ -6,64 +6,12 @@ import net.marcv81.gfx2d.*;
 import javax.microedition.khronos.opengles.GL10;
 import java.util.Iterator;
 import java.util.Random;
+
 import android.os.Vibrator;
 
 class GameRenderer extends Renderer {
 
-    // Background texture
-    private static final String BACKGROUND_RESOURCE = "stars";
     private static final float BACKGROUND_SIZE = 4f;
-    private static final int BACKGROUND_ANIMATIONS_X = 1;
-    private static final int BACKGROUND_ANIMATIONS_Y = 1;
-    private static final boolean BACKGROUND_SUPPORT_ANGLE = false;
-    private static final boolean BACKGROUND_SUPPORT_TRANSPARENCY = false;
-    private static final boolean BACKGROUND_SUPPORT_SCALING = false;
-
-    // Player texture
-    private static final String PLAYER_RESOURCE = "player";
-    private static final float PLAYER_SIZE = 0.2f;
-    private static final int PLAYER_ANIMATIONS_X = 1;
-    private static final int PLAYER_ANIMATIONS_Y = 1;
-    private static final boolean PLAYER_SUPPORT_ANGLE = true;
-    private static final boolean PLAYER_SUPPORT_TRANSPARENCY = false;
-    private static final boolean PLAYER_SUPPORT_SCALING = false;
-
-    // Asteroid texture
-    private static final String ASTEROID_RESOURCE = "asteroid";
-    private static final float ASTEROID_SIZE = 0.15f;
-    private static final int ASTEROID_ANIMATIONS_X = 8;
-    private static final int ASTEROID_ANIMATIONS_Y = 8;
-    private static final boolean ASTEROID_SUPPORT_ANGLE = true;
-    private static final boolean ASTEROID_SUPPORT_TRANSPARENCY = false;
-    private static final boolean ASTEROID_SUPPORT_SCALING = true;
-
-    // Smoke texture
-    private static final String SMOKE_RESOURCE = "smoke";
-    private static final float SMOKE_SIZE = 0.1f;
-    private static final int SMOKE_ANIMATIONS_X = 2;
-    private static final int SMOKE_ANIMATIONS_Y = 2;
-    private static final boolean SMOKE_SUPPORT_ANGLE = true;
-    private static final boolean SMOKE_SUPPORT_TRANSPARENCY = true;
-    private static final boolean SMOKE_SUPPORT_SCALING = true;
-
-    // Sparkle texture
-    private static final String SPARKLE_RESOURCE = "sparkle";
-    private static final float SPARKLE_SIZE = 0.05f;
-    private static final int SPARKLE_ANIMATIONS_X = 1;
-    private static final int SPARKLE_ANIMATIONS_Y = 1;
-    private static final boolean SPARKLE_SUPPORT_ANGLE = false;
-    private static final boolean SPARKLE_SUPPORT_TRANSPARENCY = true;
-    private static final boolean SPARKLE_SUPPORT_SCALING = false;
-
-    // Bonus texture
-    private static final String BONUS_RESOURCE = "bonus";
-    private static final float BONUS_SIZE = 0.15f;
-    private static final int BONUS_ANIMATIONS_X = 1;
-    private static final int BONUS_ANIMATIONS_Y = 1;
-    private static final boolean BONUS_SUPPORT_ANGLE = false;
-    private static final boolean BONUS_SUPPORT_TRANSPARENCY = true;
-    private static final boolean BONUS_SUPPORT_SCALING = true;
-
     private static final int SPARKLES_PER_IMPACT = 5;
     private static final int ASTEROID_MAX_COUNT = 20;
     private static final int BONUS_MAX_COUNT = 3;
@@ -83,37 +31,31 @@ class GameRenderer extends Renderer {
     private boolean touchscreenPressed = false;
 
     // Sprites groups
-    private final SpriteGroup<Background> backgrounds = new SpriteGroup<>(new SpriteGroupConfig(
-            BACKGROUND_RESOURCE, BACKGROUND_ANIMATIONS_X, BACKGROUND_ANIMATIONS_Y, BACKGROUND_SIZE,
-            BACKGROUND_SUPPORT_ANGLE, BACKGROUND_SUPPORT_TRANSPARENCY, BACKGROUND_SUPPORT_SCALING
-    ));
-    private final SpriteGroup<Player> players = new SpriteGroup<>(new SpriteGroupConfig(
-            PLAYER_RESOURCE, PLAYER_ANIMATIONS_X, PLAYER_ANIMATIONS_Y, PLAYER_SIZE,
-            PLAYER_SUPPORT_ANGLE, PLAYER_SUPPORT_TRANSPARENCY, PLAYER_SUPPORT_SCALING
-    ));
-    private final SpriteGroup<Asteroid> asteroids = new SpriteGroup<>(new SpriteGroupConfig(
-            ASTEROID_RESOURCE, ASTEROID_ANIMATIONS_X, ASTEROID_ANIMATIONS_Y, ASTEROID_SIZE,
-            ASTEROID_SUPPORT_ANGLE, ASTEROID_SUPPORT_TRANSPARENCY, ASTEROID_SUPPORT_SCALING
-    ));
-    private final ParticleGroup<Smoke> smokes = new ParticleGroup<>(new SpriteGroupConfig(
-            SMOKE_RESOURCE, SMOKE_ANIMATIONS_X, SMOKE_ANIMATIONS_Y, SMOKE_SIZE,
-            SMOKE_SUPPORT_ANGLE, SMOKE_SUPPORT_TRANSPARENCY, SMOKE_SUPPORT_SCALING
-    ));
-    private final ParticleGroup<Sparkle> sparkles = new ParticleGroup<>(new SpriteGroupConfig(
-            SPARKLE_RESOURCE, SPARKLE_ANIMATIONS_X, SPARKLE_ANIMATIONS_Y, SPARKLE_SIZE,
-            SPARKLE_SUPPORT_ANGLE, SPARKLE_SUPPORT_TRANSPARENCY, SPARKLE_SUPPORT_SCALING
-    ));
-    private final SpriteGroup<Bonus> bonuses = new SpriteGroup<>(new SpriteGroupConfig(
-            BONUS_RESOURCE, BONUS_ANIMATIONS_X, BONUS_ANIMATIONS_Y, BONUS_SIZE,
-            BONUS_SUPPORT_ANGLE, BONUS_SUPPORT_TRANSPARENCY, BONUS_SUPPORT_SCALING
-    ));
+    private SpriteGroup<Background> backgrounds;
+    private SpriteGroup<Player> players;
+    private SpriteGroup<Asteroid> asteroids;
+    private ParticleGroup<Smoke> smokes;
+    private ParticleGroup<Sparkle> sparkles;
+    private SpriteGroup<Bonus> bonuses;
 
     Player player = new Player();
 
     // Constructor
     GameRenderer(Context context) {
+
         super(context);
+
+        SpriteGroupConfigReader spriteGroupConfigs = new SpriteGroupConfigReader(context);
+
+        backgrounds = new SpriteGroup<>(spriteGroupConfigs.getConfig("background"));
+        players = new SpriteGroup<>(spriteGroupConfigs.getConfig("player"));
+        asteroids = new SpriteGroup<>(spriteGroupConfigs.getConfig("asteroid"));
+        smokes = new ParticleGroup<>(spriteGroupConfigs.getConfig("smoke"));
+        sparkles = new ParticleGroup<>(spriteGroupConfigs.getConfig("sparkle"));
+        bonuses = new SpriteGroup<>(spriteGroupConfigs.getConfig("bonus"));
+
         players.getSprites().add(player);
+
         vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
