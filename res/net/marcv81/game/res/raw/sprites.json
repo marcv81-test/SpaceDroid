@@ -35,7 +35,7 @@
       "textureFilename": "smoke",
       "animationsX": "2",
       "animationsY": "2",
-      "size": "0.05",
+      "size": "0.1",
       "supportAngle": "true",
       "supportTransparency": "true",
       "supportScaling": "true"
