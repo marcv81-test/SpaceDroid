@@ -17,17 +17,14 @@ public class SpriteGroup<T extends Sprite> {
     private final boolean supportScaling;
 
     // Constructor
-    public SpriteGroup(SpriteGroupConfig config) {
+    public SpriteGroup(SpriteTexture texture, SpriteGeometry geometry,
+                       boolean supportAngle, boolean supportTransparency, boolean supportScaling) {
 
-        // Instantiate texture and geometry
-        this.texture = new SpriteTexture(config.getTextureFilename(),
-                config.getAnimationsX(), config.getAnimationsY());
-        this.geometry = new SpriteGeometry(config.getSize());
-
-        // Set sprite drawing capabilities
-        this.supportAngle = config.isAngleSupported();
-        this.supportTransparency = config.isTransparencySupported();
-        this.supportScaling = config.isScalingSupported();
+        this.texture = texture;
+        this.geometry = geometry;
+        this.supportAngle = supportAngle;
+        this.supportTransparency = supportTransparency;
+        this.supportScaling = supportScaling;
         this.supportAnimation = (texture.getTotalAnimations() > 1);
     }
 

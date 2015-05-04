@@ -34,8 +34,8 @@ class GameRenderer extends Renderer {
     private SpriteGroup<Background> backgrounds;
     private SpriteGroup<Player> players;
     private SpriteGroup<Asteroid> asteroids;
-    private ParticleGroup<Smoke> smokes;
-    private ParticleGroup<Sparkle> sparkles;
+    private SpriteGroup<Smoke> smokes;
+    private SpriteGroup<Sparkle> sparkles;
     private SpriteGroup<Bonus> bonuses;
 
     Player player = new Player();
@@ -45,14 +45,14 @@ class GameRenderer extends Renderer {
 
         super(context);
 
-        SpriteGroupConfigReader spriteGroupConfigs = new SpriteGroupConfigReader(context);
+        SpriteGroupLoader spriteGroupConfigs = new SpriteGroupLoader(context);
 
-        backgrounds = new SpriteGroup<>(spriteGroupConfigs.getConfig("background"));
-        players = new SpriteGroup<>(spriteGroupConfigs.getConfig("player"));
-        asteroids = new SpriteGroup<>(spriteGroupConfigs.getConfig("asteroid"));
-        smokes = new ParticleGroup<>(spriteGroupConfigs.getConfig("smoke"));
-        sparkles = new ParticleGroup<>(spriteGroupConfigs.getConfig("sparkle"));
-        bonuses = new SpriteGroup<>(spriteGroupConfigs.getConfig("bonus"));
+        backgrounds = spriteGroupConfigs.getSpriteGroup("background");
+        players = spriteGroupConfigs.getSpriteGroup("player");
+        asteroids = spriteGroupConfigs.getSpriteGroup("asteroid");
+        smokes = spriteGroupConfigs.getSpriteGroup("smoke");
+        sparkles = spriteGroupConfigs.getSpriteGroup("sparkle");
+        bonuses = spriteGroupConfigs.getSpriteGroup("bonus");
 
         players.getSprites().add(player);
 
@@ -91,8 +91,8 @@ class GameRenderer extends Renderer {
             updateBackground();
             updatePlayer(timeSlice);
             updateAsteroids(timeSlice);
-            smokes.update(timeSlice);
-            sparkles.update(timeSlice);
+            updateParticles(timeSlice, smokes);
+            updateParticles(timeSlice, sparkles);
             updateBonuses(timeSlice);
         }
     }
@@ -253,6 +253,23 @@ class GameRenderer extends Renderer {
                         bonus1.overlaps(bonus2) && bonus1.collide(bonus2)) {
                     createImpact(bonus1, bonus2);
                 }
+            }
+        }
+    }
+
+    public <T extends Particle> void updateParticles(long timeSlice, SpriteGroup<T> spriteGroup) {
+
+        // Iterate over all the particles
+        Iterator<T> iterator = spriteGroup.getSprites().iterator();
+        while (iterator.hasNext()) {
+
+            // Update each particle
+            T particle = iterator.next();
+            particle.update(timeSlice);
+
+            // Remove the expired particles
+            if (particle.isExpired()) {
+                iterator.remove();
             }
         }
     }

@@ -6,14 +6,14 @@ import org.json.*;
 import java.io.*;
 import java.util.HashMap;
 
-public class SpriteGroupConfigReader {
+public class SpriteGroupLoader {
 
-    private HashMap<String, SpriteGroupConfig> configs = new HashMap<>();
+    private HashMap<String, SpriteGroup> configs = new HashMap<>();
 
-    public SpriteGroupConfigReader(Context context) {
+    public SpriteGroupLoader(Context context) {
 
         try {
-            // Open sprites.json
+            // Open graphics.json
             int id = context.getResources().getIdentifier("sprites", "raw", context.getPackageName());
             InputStream inputStream = context.getResources().openRawResource(id);
 
@@ -43,11 +43,12 @@ public class SpriteGroupConfigReader {
                 boolean supportTransparency = array.getJSONObject(i).getBoolean("supportTransparency");
                 boolean supportScaling = array.getJSONObject(i).getBoolean("supportScaling");
 
-                SpriteGroupConfig config = new SpriteGroupConfig(
-                        textureFilename, animationsX, animationsY, size,
+                SpriteTexture texture = new SpriteTexture(textureFilename, animationsX, animationsY);
+                SpriteGeometry geometry = new SpriteGeometry(size);
+                SpriteGroup spriteGroup = new SpriteGroup(texture, geometry,
                         supportAngle, supportTransparency, supportScaling);
 
-                configs.put(name, config);
+                configs.put(name, spriteGroup);
             }
         }
 
@@ -57,7 +58,7 @@ public class SpriteGroupConfigReader {
         }
     }
 
-    public SpriteGroupConfig getConfig(String name) {
+    public SpriteGroup getSpriteGroup(String name) {
         return configs.get(name);
     }
 }

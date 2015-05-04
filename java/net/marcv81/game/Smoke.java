@@ -1,6 +1,5 @@
 package net.marcv81.game;
 
-import net.marcv81.gfx2d.Particle;
 import net.marcv81.gfx2d.Vector2f;
 
 import java.util.Random;
