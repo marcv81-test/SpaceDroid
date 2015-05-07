@@ -1,6 +1,6 @@
 package net.marcv81.game;
 
-import net.marcv81.gfx2d.Renderer;
+import net.marcv81.gfx2d.Gfx2dView;
 
 import java.util.Random;
 
@@ -9,8 +9,8 @@ public class BonusFactory extends DriftingSpriteFactory<Bonus> {
     private static final float BONUS_MIN_SPEED = 0.1f;
     private static final float BONUS_MAX_SPEED = 0.25f;
 
-    public BonusFactory(Renderer renderer, Random random) {
-        super(renderer, random);
+    public BonusFactory(Gfx2dView view, Random random) {
+        super(view, random);
     }
 
     @Override

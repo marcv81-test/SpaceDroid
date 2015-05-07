@@ -1,6 +1,6 @@
 package net.marcv81.game;
 
-import net.marcv81.gfx2d.Renderer;
+import net.marcv81.gfx2d.Gfx2dView;
 import net.marcv81.gfx2d.Sprite;
 import net.marcv81.gfx2d.Vector2f;
 
@@ -76,11 +76,11 @@ public abstract class DriftingSprite extends Sprite {
         }
     }
 
-    public boolean isOutOfScope(Renderer renderer) {
+    public boolean isOutOfScope(Gfx2dView view) {
         Vector2f position = getPosition();
-        return position.getY() >= renderer.getTop() + SPRITE_REMOVAL_DISTANCE
-                || position.getY() <= renderer.getBottom() - SPRITE_REMOVAL_DISTANCE
-                || position.getX() >= renderer.getRight() + SPRITE_REMOVAL_DISTANCE
-                || position.getX() <= renderer.getLeft() - SPRITE_REMOVAL_DISTANCE;
+        return position.getY() >= view.getWorldTop() + SPRITE_REMOVAL_DISTANCE
+                || position.getY() <= view.getWorldBottom() - SPRITE_REMOVAL_DISTANCE
+                || position.getX() >= view.getWorldRight() + SPRITE_REMOVAL_DISTANCE
+                || position.getX() <= view.getWorldLeft() - SPRITE_REMOVAL_DISTANCE;
     }
 }

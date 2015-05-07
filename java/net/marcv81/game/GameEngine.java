@@ -2,13 +2,14 @@ package net.marcv81.game;
 
 import android.content.Context;
 import android.os.Vibrator;
-import net.marcv81.gfx2d.Engine;
-import net.marcv81.gfx2d.Renderer;
+import net.marcv81.gfx2d.Gfx2dEngine;
+import net.marcv81.gfx2d.Gfx2dView;
+import net.marcv81.gfx2d.SpriteGroup;
 import net.marcv81.gfx2d.Vector2f;
 
 import java.util.*;
 
-public class GameEngine extends Engine {
+public class GameEngine extends Gfx2dEngine {
 
     private static final float BACKGROUND_SIZE = 4f;
     private static final int SPARKLES_PER_IMPACT = 5;
@@ -16,58 +17,64 @@ public class GameEngine extends Engine {
     private static final int BONUS_MAX_COUNT = 3;
     private static final int IMPACT_VIBRATION_TIME = 25;
 
-    private static final String SPRITEGROUP_BACKGROUND = "background";
-    private static final String SPRITEGROUP_PLAYER = "player";
-    private static final String SPRITEGROUP_ASTEROID = "asteroid";
-    private static final String SPRITEGROUP_SMOKE = "smoke";
-    private static final String SPRITEGROUP_SPARKLE = "sparkle";
-    private static final String SPRITEGROUP_BONUS = "bonus";
+    Player player = new Player();
 
-    private final Vibrator vibrator;
-    private final Renderer renderer;
-
-    // Touchscreen status
-    private Vector2f touchscreen = new Vector2f(0f, 0f);
-    private boolean touchscreenPressed = false;
-
-    private boolean paused = false;
-
-    private final Random random = new Random();
-
-    private AsteroidFactory asteroidFactory;
-    private BonusFactory bonusFactory;
-
+    // Sprites lists
     private List<Background> backgrounds = new LinkedList<>();
-    private List<Player> players = new LinkedList<>();
+    private List<Player> players = new LinkedList<>(Collections.singletonList(player));
     private List<Asteroid> asteroids = new LinkedList<>();
     private List<Smoke> smokes = new LinkedList<>();
     private List<Sparkle> sparkles = new LinkedList<>();
     private List<Bonus> bonuses = new LinkedList<>();
 
-    Player player = new Player();
+    private AsteroidFactory asteroidFactory;
+    private BonusFactory bonusFactory;
 
-    public GameEngine(Context context, Renderer renderer) {
+    private boolean paused = false;
 
-        this.renderer = renderer;
+    private final Random random = new Random();
+    private final Vibrator vibrator;
 
-        asteroidFactory = new AsteroidFactory(renderer, random);
-        bonusFactory = new BonusFactory(renderer, random);
+    public List<Background> getBackgrounds() {
+        return backgrounds;
+    }
 
-        renderer.setSprites(SPRITEGROUP_BACKGROUND, backgrounds);
-        renderer.setSprites(SPRITEGROUP_PLAYER, players);
-        renderer.setSprites(SPRITEGROUP_ASTEROID, asteroids);
-        renderer.setSprites(SPRITEGROUP_SMOKE, smokes);
-        renderer.setSprites(SPRITEGROUP_SPARKLE, sparkles);
-        renderer.setSprites(SPRITEGROUP_BONUS, bonuses);
+    public List<Player> getPlayers() {
+        return players;
+    }
 
-        players.add(player);
+    public List<Asteroid> getAsteroids() {
+        return asteroids;
+    }
 
+    public List<Smoke> getSmokes() {
+        return smokes;
+    }
+
+    public List<Sparkle> getSparkles() {
+        return sparkles;
+    }
+
+    public List<Bonus> getBonuses() {
+        return bonuses;
+    }
+
+    public GameEngine(Context context) {
         vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     @Override
+    public void setView(Gfx2dView view, List<SpriteGroup> spriteGroups) {
+
+        super.setView(view, spriteGroups);
+
+        asteroidFactory = new AsteroidFactory(view, random);
+        bonusFactory = new BonusFactory(view, random);
+    }
+
+    @Override
     protected void update(long timeSlice) {
-        if (paused && touchscreenPressed) {
+        if (paused && view.isPointerDown()) {
             paused = false;
         }
         if (!paused) {
@@ -84,16 +91,8 @@ public class GameEngine extends Engine {
         this.paused = paused;
     }
 
-    public boolean getPaused() {
-        return this.paused;
-    }
-
-    void setTouchscreenPressed(boolean b) {
-        this.touchscreenPressed = b;
-    }
-
-    void setTouchscreen(Vector2f v) {
-        this.touchscreen.set(v);
+    public boolean isPaused() {
+        return paused;
     }
 
     private void updateBackground() {
@@ -114,11 +113,11 @@ public class GameEngine extends Engine {
 
     private void updatePlayer(long timeSlice) {
 
-        // If touching the screen
-        if (touchscreenPressed) {
+        // If pointer is down
+        if (view.isPointerDown()) {
 
-            // Set the acceleration to the normalised touchscreen vector
-            Vector2f v = renderer.convertScreenToWorld(touchscreen);
+            // Set the acceleration to the normalised pointer vector
+            Vector2f v = view.getPointer();
             v.divide(v.norm());
             player.setAcceleration(v);
 
@@ -153,7 +152,7 @@ public class GameEngine extends Engine {
         player.update(timeSlice);
 
         // Update the camera position
-        renderer.setCamera(player.getPosition());
+        view.setCamera(player.getPosition());
     }
 
     private void updateAsteroids(long timeSlice) {
@@ -171,7 +170,7 @@ public class GameEngine extends Engine {
 
             // Remove the asteroids which are too far
             Asteroid asteroid = asteroidIterator.next();
-            if (asteroid.isOutOfScope(renderer)) {
+            if (asteroid.isOutOfScope(view)) {
                 asteroidIterator.remove();
             }
         }
@@ -221,7 +220,7 @@ public class GameEngine extends Engine {
 
             // Remove the bonuses which are too far
             Bonus bonus = bonusIterator.next();
-            if (bonus.isOutOfScope(renderer) || bonus.isExpired()) {
+            if (bonus.isOutOfScope(view) || bonus.isExpired()) {
                 bonusIterator.remove();
             }
         }

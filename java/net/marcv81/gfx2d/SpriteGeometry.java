@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-public class SpriteGeometry {
+public final class SpriteGeometry {
 
     private static final int COORDINATES_PER_VERTEX = 3;
 

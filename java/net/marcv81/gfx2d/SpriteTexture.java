@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-public class SpriteTexture {
+public final class SpriteTexture {
 
     private final String filename;
 

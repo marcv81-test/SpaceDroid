@@ -1,12 +1,9 @@
 package net.marcv81.gfx2d;
 
 import javax.microedition.khronos.opengles.GL10;
-import java.util.LinkedList;
 import java.util.List;
 
-public class SpriteGroup {
-
-    private List<? extends Sprite> sprites = new LinkedList<>();
+public final class SpriteGroup {
 
     private final SpriteTexture texture;
     private final SpriteGeometry geometry;
@@ -17,19 +14,21 @@ public class SpriteGroup {
     private final boolean supportAnimation;
     private final boolean supportScaling;
 
+    private final List<? extends Sprite> sprites;
+
     // Constructor
     public SpriteGroup(SpriteTexture texture, SpriteGeometry geometry,
-                       boolean supportAngle, boolean supportTransparency, boolean supportScaling) {
+                       boolean supportAngle, boolean supportTransparency, boolean supportScaling,
+                       List<? extends Sprite> sprites) {
 
         this.texture = texture;
         this.geometry = geometry;
+
         this.supportAngle = supportAngle;
         this.supportTransparency = supportTransparency;
         this.supportScaling = supportScaling;
         this.supportAnimation = (texture.getTotalAnimations() > 1);
-    }
 
-    public void setSprites(List<? extends Sprite> sprites) {
         this.sprites = sprites;
     }
 

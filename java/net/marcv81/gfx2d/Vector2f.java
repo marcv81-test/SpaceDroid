@@ -1,6 +1,6 @@
 package net.marcv81.gfx2d;
 
-public class Vector2f {
+public final class Vector2f {
 
     private float x, y;
 
