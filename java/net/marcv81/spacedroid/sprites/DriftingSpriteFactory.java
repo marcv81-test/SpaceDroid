@@ -1,6 +1,6 @@
-package net.marcv81.game;
+package net.marcv81.spacedroid.sprites;
 
-import net.marcv81.gfx2d.Gfx2dView;
+import net.marcv81.gfx2d.GameView;
 import net.marcv81.gfx2d.Vector2f;
 
 import java.util.Random;
@@ -10,14 +10,14 @@ public abstract class DriftingSpriteFactory<T extends DriftingSprite> {
     private static final float TAU = 6.2831853071f;
     private static final float SPRITE_SPAWNING_DISTANCE = 0.5f;
 
-    private final Gfx2dView view;
+    private final GameView view;
     protected final Random random;
 
     protected abstract float getMinSpeed();
     protected abstract float getMaxSpeed();
     protected abstract T create();
 
-    public DriftingSpriteFactory(Gfx2dView view, Random random) {
+    public DriftingSpriteFactory(GameView view, Random random) {
         this.view = view;
         this.random = random;
     }

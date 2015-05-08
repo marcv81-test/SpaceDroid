@@ -6,7 +6,7 @@ import android.view.MotionEvent;
 
 import java.util.List;
 
-public final class Gfx2dView extends GLSurfaceView {
+public final class GameView extends GLSurfaceView {
 
     // Camera
     private Vector2f camera = new Vector2f(0f, 0f);
@@ -16,12 +16,12 @@ public final class Gfx2dView extends GLSurfaceView {
     private Vector2f pointer = new Vector2f(0f, 0f);
     private boolean pointerDown = false;
 
-    public Gfx2dView(Context context) {
+    public GameView(Context context) {
         super(context);
     }
 
-    public void setRenderer(Gfx2dEngine engine, List<SpriteGroup> spriteGroups) {
-        setRenderer(new Gfx2dRenderer(getContext(), engine, this, spriteGroups));
+    public void setRenderer(GameEngine engine, List<SpriteRenderer> spriteGroups) {
+        setRenderer(new GameRenderer(getContext(), engine, this, spriteGroups));
     }
 
     // Set the X and Y camera coordinates

@@ -1,26 +1,26 @@
 package net.marcv81.gfx2d;
 
 import android.content.Context;
-import android.opengl.GLSurfaceView.Renderer;
+import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import java.util.List;
 
-public final class Gfx2dRenderer implements Renderer {
+public final class GameRenderer implements GLSurfaceView.Renderer {
 
     private static final float SPRITE_DEPTH = 0f;
     private static final float CAMERA_DEPTH = -3f;
     private static final float EPSILON = 0.1f;
 
     private final Context context;
-    private final Gfx2dEngine engine;
-    private final Gfx2dView view;
-    private final List<SpriteGroup> spriteGroups;
+    private final GameEngine engine;
+    private final GameView view;
+    private final List<SpriteRenderer> spriteGroups;
 
     // Constructor
-    public Gfx2dRenderer(Context context, Gfx2dEngine engine, Gfx2dView view, List<SpriteGroup> spriteGroups) {
+    public GameRenderer(Context context, GameEngine engine, GameView view, List<SpriteRenderer> spriteGroups) {
         this.context = context;
         this.engine = engine;
         this.view = view;
@@ -41,7 +41,7 @@ public final class Gfx2dRenderer implements Renderer {
         gl.glDepthFunc(GL10.GL_LEQUAL);
 
         // Load the textures
-        for (SpriteGroup spriteGroup : spriteGroups) {
+        for (SpriteRenderer spriteGroup : spriteGroups) {
             spriteGroup.getTexture().load(gl, context);
         }
     }
@@ -78,7 +78,7 @@ public final class Gfx2dRenderer implements Renderer {
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
         gl.glFrontFace(GL10.GL_CW);
-        for (SpriteGroup spriteGroup : spriteGroups) {
+        for (SpriteRenderer spriteGroup : spriteGroups) {
             spriteGroup.draw(gl);
         }
         gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);

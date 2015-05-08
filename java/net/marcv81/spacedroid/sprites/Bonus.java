@@ -1,8 +1,8 @@
-package net.marcv81.game;
+package net.marcv81.spacedroid.sprites;
 
 import net.marcv81.gfx2d.Vector2f;
 
-public class Bonus extends DriftingSprite {
+public final class Bonus extends DriftingSprite {
 
     private static final float BONUS_MASS = 1f;
     private static final float BONUS_DIAMETER = 0.12f;

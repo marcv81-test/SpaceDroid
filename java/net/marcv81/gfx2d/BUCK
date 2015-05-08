@@ -1,10 +1,9 @@
 android_library(
-  name = 'gfx2d',
+  name = 'lib',
   srcs = glob(['*.java']),
   visibility = [ 'PUBLIC' ],
 )
 
 project_config(
-  src_target = ':gfx2d',
+  src_target = '//java/net/marcv81/gfx2d:lib',
 )
-

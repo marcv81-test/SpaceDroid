@@ -3,7 +3,7 @@ package net.marcv81.gfx2d;
 import javax.microedition.khronos.opengles.GL10;
 import java.util.List;
 
-public final class SpriteGroup {
+public final class SpriteRenderer {
 
     private final SpriteTexture texture;
     private final SpriteGeometry geometry;
@@ -17,9 +17,9 @@ public final class SpriteGroup {
     private final List<? extends Sprite> sprites;
 
     // Constructor
-    public SpriteGroup(SpriteTexture texture, SpriteGeometry geometry,
-                       boolean supportAngle, boolean supportTransparency, boolean supportScaling,
-                       List<? extends Sprite> sprites) {
+    public SpriteRenderer(SpriteTexture texture, SpriteGeometry geometry,
+                          boolean supportAngle, boolean supportTransparency, boolean supportScaling,
+                          List<? extends Sprite> sprites) {
 
         this.texture = texture;
         this.geometry = geometry;

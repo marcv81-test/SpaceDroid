@@ -2,16 +2,16 @@ package net.marcv81.gfx2d;
 
 import java.util.List;
 
-public abstract class Gfx2dEngine {
+public abstract class GameEngine {
 
     private static final long MIN_TIME_SLICE = 20; // 50 FPS
     private static final long MAX_TIME_SLICE = 50; // 20 FPS
 
     private long previousTime = 0;
 
-    protected Gfx2dView view;
+    protected GameView view;
 
-    public void setView(Gfx2dView view, List<SpriteGroup> spriteGroups) {
+    public void setView(GameView view, List<SpriteRenderer> spriteGroups) {
         this.view = view;
         this.view.setRenderer(this, spriteGroups);
     }

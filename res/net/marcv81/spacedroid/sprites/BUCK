@@ -1,0 +1,8 @@
+android_resource(
+  name = 'res',
+  res = 'res',
+  package = 'net.marcv81.spacedroid.sprites',
+  visibility = [
+    '//java/net/marcv81/spacedroid/sprites:lib',
+  ],
+)

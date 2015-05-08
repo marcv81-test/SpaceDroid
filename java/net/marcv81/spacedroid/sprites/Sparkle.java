@@ -1,10 +1,10 @@
-package net.marcv81.game;
+package net.marcv81.spacedroid.sprites;
 
 import net.marcv81.gfx2d.Vector2f;
 
 import java.util.Random;
 
-public class Sparkle extends Particle {
+public final class Sparkle extends Particle {
 
     private static final float SPARKLE_FRICTION = 3.5f;
     private static final float SPARKLE_MIN_DISPERSION = 0.8f;

@@ -1,4 +1,4 @@
-package net.marcv81.gfx2d;
+package net.marcv81.spacedroid;
 
 import android.app.Activity;
 import android.os.Bundle;

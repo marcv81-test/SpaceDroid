@@ -1,10 +1,10 @@
-package net.marcv81.game;
+package net.marcv81.spacedroid.sprites;
 
 import net.marcv81.gfx2d.Vector2f;
 
 import java.util.Random;
 
-class Asteroid extends DriftingSprite {
+public final class Asteroid extends DriftingSprite {
 
     private static final int ASTEROID_ANIMATIONS = 32;
     private static final int ASTEROID_ANIMATIONS_TYPES = 2;

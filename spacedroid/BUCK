@@ -1,11 +1,10 @@
 android_binary(
-  name = 'game',
+  name = 'bin',
   manifest = 'AndroidManifest.xml',
   keystore = ':debug_keystore',
   deps = [
-    '//java/net/marcv81/gfx2d:gfx2d',
-    '//java/net/marcv81/game:game',
-    '//app:res',
+    '//java/net/marcv81/spacedroid:lib',
+    '//spacedroid:res',
   ],
 )
 
@@ -14,7 +13,7 @@ android_resource(
   res = 'res',
   manifest = 'AndroidManifest.xml',
   visibility = [
-    '//app:game',
+    '//spacedroid:bin',
   ],
 )
 
@@ -25,5 +24,5 @@ keystore(
 )
 
 project_config(
-  src_target = ':game',
+  src_target = '//spacedroid:bin',
 )

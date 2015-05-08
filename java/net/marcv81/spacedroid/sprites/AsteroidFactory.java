@@ -1,15 +1,15 @@
-package net.marcv81.game;
+package net.marcv81.spacedroid.sprites;
 
-import net.marcv81.gfx2d.Gfx2dView;
+import net.marcv81.gfx2d.GameView;
 
 import java.util.Random;
 
-public class AsteroidFactory extends DriftingSpriteFactory<Asteroid> {
+public final class AsteroidFactory extends DriftingSpriteFactory<Asteroid> {
 
     private static final float ASTEROID_MIN_SPEED = 0.1f;
     private static final float ASTEROID_MAX_SPEED = 0.5f;
 
-    public AsteroidFactory(Gfx2dView view, Random random) {
+    public AsteroidFactory(GameView view, Random random) {
         super(view, random);
     }
 

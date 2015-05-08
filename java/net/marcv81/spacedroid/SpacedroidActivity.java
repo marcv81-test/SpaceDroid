@@ -1,4 +1,4 @@
-package net.marcv81.game;
+package net.marcv81.spacedroid;
 
 import net.marcv81.gfx2d.*;
 import android.os.Bundle;
@@ -6,52 +6,52 @@ import android.os.Bundle;
 import java.util.LinkedList;
 import java.util.List;
 
-public class GameActivity extends DebugActivity {
+public final class SpacedroidActivity extends DebugActivity {
 
-    private Gfx2dView view;
-    private GameEngine engine;
+    private GameView view;
+    private SpacedroidEngine engine;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
-        engine = new GameEngine(this);
-        view = new Gfx2dView(this);
+        engine = new SpacedroidEngine(this);
+        view = new GameView(this);
 
         // Create rendering group for each sprite type
-        List<SpriteGroup> spriteGroups = new LinkedList<>();
-        spriteGroups.add(new SpriteGroup(
+        List<SpriteRenderer> spriteGroups = new LinkedList<>();
+        spriteGroups.add(new SpriteRenderer(
                 new SpriteTexture("stars", 1, 1),
                 new SpriteGeometry(4f),
                 false, false, false,
                 engine.getBackgrounds()
         ));
-        spriteGroups.add(new SpriteGroup(
+        spriteGroups.add(new SpriteRenderer(
                 new SpriteTexture("player", 1, 1),
                 new SpriteGeometry(0.2f),
                 true, false, false,
                 engine.getPlayers()
         ));
-        spriteGroups.add(new SpriteGroup(
+        spriteGroups.add(new SpriteRenderer(
                 new SpriteTexture("asteroid", 8, 8),
                 new SpriteGeometry(0.15f),
                 true, false, true,
                 engine.getAsteroids()
         ));
-        spriteGroups.add(new SpriteGroup(
+        spriteGroups.add(new SpriteRenderer(
                 new SpriteTexture("smoke", 2, 2),
                 new SpriteGeometry(0.1f),
                 true, true, true,
                 engine.getSmokes()
         ));
-        spriteGroups.add(new SpriteGroup(
+        spriteGroups.add(new SpriteRenderer(
                 new SpriteTexture("sparkle", 1, 1),
                 new SpriteGeometry(0.05f),
                 false, true, false,
                 engine.getSparkles()
         ));
-        spriteGroups.add(new SpriteGroup(
+        spriteGroups.add(new SpriteRenderer(
                 new SpriteTexture("bonus", 1, 1),
                 new SpriteGeometry(0.15f),
                 false, true, true,

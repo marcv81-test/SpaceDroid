@@ -1,8 +1,8 @@
-package net.marcv81.game;
+package net.marcv81.spacedroid.sprites;
 
 import net.marcv81.gfx2d.Vector2f;
 
-public class Player extends DriftingSprite {
+public final class Player extends DriftingSprite {
 
     private static final float PLAYER_ACCELERATION_MULTIPLIER = 3f;
     private static final float PLAYER_FRICTION = 0.8f;

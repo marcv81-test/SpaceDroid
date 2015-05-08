@@ -1,4 +1,4 @@
-package net.marcv81.game;
+package net.marcv81.spacedroid.sprites;
 
 import net.marcv81.gfx2d.Sprite;
 import net.marcv81.gfx2d.Vector2f;

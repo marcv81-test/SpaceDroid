@@ -1,15 +1,16 @@
-package net.marcv81.game;
+package net.marcv81.spacedroid;
 
 import android.content.Context;
 import android.os.Vibrator;
-import net.marcv81.gfx2d.Gfx2dEngine;
-import net.marcv81.gfx2d.Gfx2dView;
-import net.marcv81.gfx2d.SpriteGroup;
+import net.marcv81.spacedroid.sprites.*;
+import net.marcv81.gfx2d.GameEngine;
+import net.marcv81.gfx2d.GameView;
+import net.marcv81.gfx2d.SpriteRenderer;
 import net.marcv81.gfx2d.Vector2f;
 
 import java.util.*;
 
-public class GameEngine extends Gfx2dEngine {
+public final class SpacedroidEngine extends GameEngine {
 
     private static final float BACKGROUND_SIZE = 4f;
     private static final int SPARKLES_PER_IMPACT = 5;
@@ -59,12 +60,12 @@ public class GameEngine extends Gfx2dEngine {
         return bonuses;
     }
 
-    public GameEngine(Context context) {
+    public SpacedroidEngine(Context context) {
         vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     @Override
-    public void setView(Gfx2dView view, List<SpriteGroup> spriteGroups) {
+    public void setView(GameView view, List<SpriteRenderer> spriteGroups) {
 
         super.setView(view, spriteGroups);
 
