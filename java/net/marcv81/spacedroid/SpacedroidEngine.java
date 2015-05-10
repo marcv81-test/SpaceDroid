@@ -65,17 +65,17 @@ public final class SpacedroidEngine extends GameEngine {
     }
 
     @Override
-    public void setView(GameView view, List<SpriteRenderer> spriteGroups) {
+    public void setGameView(GameView gameView) {
 
-        super.setView(view, spriteGroups);
+        super.setGameView(gameView);
 
-        asteroidFactory = new AsteroidFactory(view, random);
-        bonusFactory = new BonusFactory(view, random);
+        asteroidFactory = new AsteroidFactory(gameView, random);
+        bonusFactory = new BonusFactory(gameView, random);
     }
 
     @Override
     protected void update(long timeSlice) {
-        if (paused && view.isPointerDown()) {
+        if (paused && gameView.isPointerActive()) {
             paused = false;
         }
         if (!paused) {
@@ -115,10 +115,10 @@ public final class SpacedroidEngine extends GameEngine {
     private void updatePlayer(long timeSlice) {
 
         // If pointer is down
-        if (view.isPointerDown()) {
+        if (gameView.isPointerActive()) {
 
             // Set the acceleration to the normalised pointer vector
-            Vector2f v = view.getPointer();
+            Vector2f v = gameView.getPointer();
             v.divide(v.norm());
             player.setAcceleration(v);
 
@@ -153,7 +153,7 @@ public final class SpacedroidEngine extends GameEngine {
         player.update(timeSlice);
 
         // Update the camera position
-        view.setCamera(player.getPosition());
+        gameView.setCamera(player.getPosition());
     }
 
     private void updateAsteroids(long timeSlice) {
@@ -171,7 +171,7 @@ public final class SpacedroidEngine extends GameEngine {
 
             // Remove the asteroids which are too far
             Asteroid asteroid = asteroidIterator.next();
-            if (asteroid.isOutOfScope(view)) {
+            if (asteroid.isOutOfScope(gameView)) {
                 asteroidIterator.remove();
             }
         }
@@ -221,7 +221,7 @@ public final class SpacedroidEngine extends GameEngine {
 
             // Remove the bonuses which are too far
             Bonus bonus = bonusIterator.next();
-            if (bonus.isOutOfScope(view) || bonus.isExpired()) {
+            if (bonus.isOutOfScope(gameView) || bonus.isExpired()) {
                 bonusIterator.remove();
             }
         }

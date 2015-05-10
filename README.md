@@ -1,3 +1,8 @@
+Intro
+=====
+
+The game does not rely on any third-party framework because I wanted to learn OpenGL ES.
+
 Build
 =====
 

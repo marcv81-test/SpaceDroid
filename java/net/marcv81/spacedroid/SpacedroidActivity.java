@@ -8,16 +8,15 @@ import java.util.List;
 
 public final class SpacedroidActivity extends DebugActivity {
 
-    private GameView view;
-    private SpacedroidEngine engine;
+    private GameView gameView;
+    private SpacedroidEngine gameEngine;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
-        engine = new SpacedroidEngine(this);
-        view = new GameView(this);
+        gameEngine = new SpacedroidEngine(this);
 
         // Create rendering group for each sprite type
         List<SpriteRenderer> spriteGroups = new LinkedList<>();
@@ -25,63 +24,66 @@ public final class SpacedroidActivity extends DebugActivity {
                 new SpriteTexture("stars", 1, 1),
                 new SpriteGeometry(4f),
                 false, false, false,
-                engine.getBackgrounds()
+                gameEngine.getBackgrounds()
         ));
         spriteGroups.add(new SpriteRenderer(
                 new SpriteTexture("player", 1, 1),
                 new SpriteGeometry(0.2f),
                 true, false, false,
-                engine.getPlayers()
+                gameEngine.getPlayers()
         ));
         spriteGroups.add(new SpriteRenderer(
                 new SpriteTexture("asteroid", 8, 8),
                 new SpriteGeometry(0.15f),
                 true, false, true,
-                engine.getAsteroids()
+                gameEngine.getAsteroids()
         ));
         spriteGroups.add(new SpriteRenderer(
                 new SpriteTexture("smoke", 2, 2),
                 new SpriteGeometry(0.1f),
                 true, true, true,
-                engine.getSmokes()
+                gameEngine.getSmokes()
         ));
         spriteGroups.add(new SpriteRenderer(
                 new SpriteTexture("sparkle", 1, 1),
                 new SpriteGeometry(0.05f),
                 false, true, false,
-                engine.getSparkles()
+                gameEngine.getSparkles()
         ));
         spriteGroups.add(new SpriteRenderer(
                 new SpriteTexture("bonus", 1, 1),
                 new SpriteGeometry(0.15f),
                 false, true, true,
-                engine.getBonuses()
+                gameEngine.getBonuses()
         ));
 
-        // Start engine and renderer
-        engine.setView(view, spriteGroups);
-        setContentView(view);
+        // Start gameEngine and renderer
+        gameView = new GameView(this, gameEngine, spriteGroups);
+        gameEngine.setGameView(gameView);
+
+        gameView.setRenderer();
+        setContentView(gameView);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        view.onPause();
+        gameView.onPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        view.onResume();
+        gameView.onResume();
     }
 
     @Override
     public void onBackPressed() {
-        if(engine != null) {
-            if (engine.isPaused()) {
+        if (gameEngine != null) {
+            if (gameEngine.isPaused()) {
                 finish();
             } else {
-                engine.setPaused(true);
+                gameEngine.setPaused(true);
             }
         }
     }

@@ -2,45 +2,125 @@ package net.marcv81.gfx2d;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.opengl.GLU;
 import android.view.MotionEvent;
 
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
 import java.util.List;
 
-public final class GameView extends GLSurfaceView {
+/**
+ * This class handles OpenGL ES 2D game views. It allows to move the camera
+ * and track the pointer position.
+ */
+public final class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
-    // Camera
-    private Vector2f camera = new Vector2f(0f, 0f);
-    private Vector2f size = new Vector2f (0f, 0f);
+    private static final float SPRITE_DEPTH = 0f;
+    private static final float CAMERA_DEPTH = -3f;
+    private static final float EPSILON = 0.1f;
 
-    // Pointer
-    private Vector2f pointer = new Vector2f(0f, 0f);
-    private boolean pointerDown = false;
+    /**
+     * GameView size in pixels.
+     */
+    private final Vector2f size = new Vector2f(0f, 0f);
 
-    public GameView(Context context) {
+    /**
+     * Camera position in world coordinates.
+     */
+    private final Vector2f camera = new Vector2f(0f, 0f);
+
+    /**
+     * Pointer position in world coordinates.
+     */
+    private final Vector2f pointer = new Vector2f(0f, 0f);
+
+    /**
+     * Whether the pointer is currently active or not.
+     */
+    private boolean pointerActive = false;
+
+    /**
+     * SpriteRenderers used to render the different sprites.
+     */
+    private final List<SpriteRenderer> spriteRenderers;
+
+    /**
+     * GameEngine called back before rendering each frame.
+     */
+    private final GameEngine gameEngine;
+
+    /**
+     * Constructor.
+     */
+    public GameView(Context context, GameEngine gameEngine, List<SpriteRenderer> spriteRenderers) {
+
         super(context);
+
+        this.gameEngine = gameEngine;
+        this.spriteRenderers = spriteRenderers;
     }
 
-    public void setRenderer(GameEngine engine, List<SpriteRenderer> spriteGroups) {
-        setRenderer(new GameRenderer(getContext(), engine, this, spriteGroups));
+    /**
+     * Sets the renderer.
+     */
+    public void setRenderer() {
+        setRenderer(this);
     }
 
-    // Set the X and Y camera coordinates
-    public void setCamera(Vector2f position) {
-        camera.set(position);
-    }
-
-    // Get the X and Y camera coordinates
+    /**
+     * Gets the camera position in world coordinates.
+     */
     public Vector2f getCamera() {
         return new Vector2f(camera);
     }
 
-    // Get the X and Y pointer coordinates
-    public Vector2f getPointer() {
-        return pointer;
+    /**
+     * Sets the camera position in world coordinates.
+     */
+    public void setCamera(Vector2f position) {
+        camera.set(position);
     }
 
-    public boolean isPointerDown() {
-        return pointerDown;
+    /**
+     * Gets the pointer position in world coordinates.
+     */
+    public Vector2f getPointer() {
+        return new Vector2f(pointer);
+    }
+
+    /**
+     * Tests whether the pointer is currently active or not.
+     */
+    public boolean isPointerActive() {
+        return pointerActive;
+    }
+
+    /**
+     * Gets the abscissa of the right edge of this GameView in world coordinates.
+     */
+    public float getRightEdge() {
+        return camera.getX() + size.getX() / size.getY();
+    }
+
+    /**
+     * Gets the abscissa of the left edge of this GameView in world coordinates.
+     */
+    public float getLeftEdge() {
+        return camera.getX() - size.getX() / size.getY();
+    }
+
+    /**
+     * Gets the ordinate of the top edge of this GameView in world coordinates.
+     */
+    public float getTopEdge() {
+        return camera.getY() + 1.0f;
+    }
+
+    /**
+     * Gets the ordinate of the bottom edge of this GameView in world coordinates.
+     */
+    public float getBottomEdge() {
+        return camera.getY() - 1.0f;
     }
 
     @Override
@@ -51,14 +131,14 @@ public final class GameView extends GLSurfaceView {
 
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                pointerDown = true;
-                pointer = new Vector2f(screenToWorldX(x), screenToWorldY(y));
+                pointerActive = true;
+                pointer.set(new Vector2f(pixelsToWorldX(x), pixelsToWorldY(y)));
                 break;
             case MotionEvent.ACTION_MOVE:
-                pointer = new Vector2f(screenToWorldX(x), screenToWorldY(y));
+                pointer.set(new Vector2f(pixelsToWorldX(x), pixelsToWorldY(y)));
                 break;
             case MotionEvent.ACTION_UP:
-                pointerDown = false;
+                pointerActive = false;
                 break;
             default:
                 break;
@@ -67,33 +147,76 @@ public final class GameView extends GLSurfaceView {
         return true;
     }
 
-    public void setSize(Vector2f size) {
-        this.size = size;
+    @Override
+    public final void onSurfaceCreated(GL10 gl, EGLConfig config) {
+
+        // Prepare the renderer
+        gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        gl.glEnable(GL10.GL_BLEND);
+        gl.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
+        gl.glEnable(GL10.GL_TEXTURE_2D);
+        gl.glShadeModel(GL10.GL_SMOOTH);
+        gl.glClearDepthf(1.0f);
+        gl.glEnable(GL10.GL_DEPTH_TEST);
+        gl.glDepthFunc(GL10.GL_LEQUAL);
+
+        // Load the textures
+        for (SpriteRenderer spriteGroup : spriteRenderers) {
+            spriteGroup.getTexture().load(gl, getContext());
+        }
     }
 
-    public float getWorldRight() {
-        return camera.getX() + size.getX() / size.getY();
+    @Override
+    public final void onSurfaceChanged(GL10 gl, int width, int height) {
+
+        // Update the gameView size
+        size.set(new Vector2f(width, height));
+
+        // Modify the surface according to the new width and height
+        gl.glViewport(0, 0, width, height);
+        gl.glMatrixMode(GL10.GL_PROJECTION);
+        gl.glLoadIdentity();
+        float ratio = (float) width / height;
+        gl.glOrthof(-ratio, ratio, -1.0f, 1.0f,
+                SPRITE_DEPTH - CAMERA_DEPTH - EPSILON,
+                SPRITE_DEPTH - CAMERA_DEPTH + EPSILON);
+        gl.glMatrixMode(GL10.GL_MODELVIEW);
     }
 
-    public float getWorldLeft() {
-        return camera.getX() - size.getX() / size.getY();
+    @Override
+    public final void onDrawFrame(GL10 gl) {
+
+        // Update the game engine
+        gameEngine.update();
+
+        // Prepare to draw the sprites
+        gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+        gl.glLoadIdentity();
+        GLU.gluLookAt(gl, camera.getX(), camera.getY(), CAMERA_DEPTH,
+                camera.getX(), camera.getY(), 0f, 0f, 1f, 0f);
+
+        // Draw the sprites
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+        gl.glFrontFace(GL10.GL_CW);
+        for (SpriteRenderer spriteGroup : spriteRenderers) {
+            spriteGroup.draw(gl);
+        }
+        gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
     }
 
-    public float getWorldTop() {
-        return camera.getY() + 1.0f;
-    }
-
-    public float getWorldBottom() {
-        return camera.getY() - 1.0f;
-    }
-
-    // Convert X coordinate from screen to world
-    public float screenToWorldX(float x) {
+    /**
+     * Converts abscissa from pixels to world coordinates.
+     */
+    private float pixelsToWorldX(float x) {
         return (-2f * x + size.getX()) / size.getY();
     }
 
-    // Convert Y coordinate from screen to world
-    public float screenToWorldY(float y) {
+    /**
+     * Converts ordinate from pixels to world coordinates.
+     */
+    private float pixelsToWorldY(float y) {
         return (-2f * y + size.getY()) / size.getY();
     }
 }

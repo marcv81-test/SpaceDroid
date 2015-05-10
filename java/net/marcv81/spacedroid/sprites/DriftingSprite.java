@@ -78,9 +78,9 @@ public abstract class DriftingSprite extends Sprite {
 
     public boolean isOutOfScope(GameView view) {
         Vector2f position = getPosition();
-        return position.getY() >= view.getWorldTop() + SPRITE_REMOVAL_DISTANCE
-                || position.getY() <= view.getWorldBottom() - SPRITE_REMOVAL_DISTANCE
-                || position.getX() >= view.getWorldRight() + SPRITE_REMOVAL_DISTANCE
-                || position.getX() <= view.getWorldLeft() - SPRITE_REMOVAL_DISTANCE;
+        return position.getY() >= view.getTopEdge() + SPRITE_REMOVAL_DISTANCE
+                || position.getY() <= view.getBottomEdge() - SPRITE_REMOVAL_DISTANCE
+                || position.getX() >= view.getRightEdge() + SPRITE_REMOVAL_DISTANCE
+                || position.getX() <= view.getLeftEdge() - SPRITE_REMOVAL_DISTANCE;
     }
 }

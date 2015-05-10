@@ -24,26 +24,26 @@ public abstract class DriftingSpriteFactory<T extends DriftingSprite> {
 
     private Vector2f randomLeftEdge() {
         return new Vector2f(
-                view.getWorldLeft() - SPRITE_SPAWNING_DISTANCE,
-                view.getWorldBottom() + random.nextFloat() * (view.getWorldTop() - view.getWorldBottom()));
+                view.getLeftEdge() - SPRITE_SPAWNING_DISTANCE,
+                view.getBottomEdge() + random.nextFloat() * (view.getTopEdge() - view.getBottomEdge()));
     }
 
     private Vector2f randomRightEdge() {
         return new Vector2f(
-                view.getWorldRight() + SPRITE_SPAWNING_DISTANCE,
-                view.getWorldBottom() + random.nextFloat() * (view.getWorldTop() - view.getWorldBottom()));
+                view.getRightEdge() + SPRITE_SPAWNING_DISTANCE,
+                view.getBottomEdge() + random.nextFloat() * (view.getTopEdge() - view.getBottomEdge()));
     }
 
     private Vector2f randomTopEdge() {
         return new Vector2f(
-                view.getWorldRight() + random.nextFloat() * (view.getWorldLeft() - view.getWorldRight()),
-                view.getWorldTop() + SPRITE_SPAWNING_DISTANCE);
+                view.getRightEdge() + random.nextFloat() * (view.getLeftEdge() - view.getRightEdge()),
+                view.getTopEdge() + SPRITE_SPAWNING_DISTANCE);
     }
 
     private Vector2f randomBottomEdge() {
         return new Vector2f(
-                view.getWorldRight() + random.nextFloat() * (view.getWorldLeft() - view.getWorldRight()),
-                view.getWorldBottom() - SPRITE_SPAWNING_DISTANCE);
+                view.getRightEdge() + random.nextFloat() * (view.getLeftEdge() - view.getRightEdge()),
+                view.getBottomEdge() - SPRITE_SPAWNING_DISTANCE);
     }
 
     protected Vector2f randomPosition() {
