@@ -1,0 +1,12 @@
+android_resource(
+  name = 'res',
+  res = 'res',
+  package = 'net.marcv81.spacedroid',
+  visibility = [
+    '//java/net/marcv81/spacedroid:lib',
+  ],
+)
+
+project_config(
+  src_target = '//res/net/marcv81/spacedroid:res',
+)

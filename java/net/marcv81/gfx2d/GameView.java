@@ -161,8 +161,8 @@ public final class GameView extends GLSurfaceView implements GLSurfaceView.Rende
         gl.glDepthFunc(GL10.GL_LEQUAL);
 
         // Load the textures
-        for (SpriteRenderer spriteGroup : spriteRenderers) {
-            spriteGroup.getTexture().load(gl, getContext());
+        for (SpriteRenderer spriteRenderer : spriteRenderers) {
+            spriteRenderer.loadTexture(gl, getContext());
         }
     }
 
@@ -199,8 +199,8 @@ public final class GameView extends GLSurfaceView implements GLSurfaceView.Rende
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
         gl.glFrontFace(GL10.GL_CW);
-        for (SpriteRenderer spriteGroup : spriteRenderers) {
-            spriteGroup.draw(gl);
+        for (SpriteRenderer spriteRenderer : spriteRenderers) {
+            spriteRenderer.draw(gl);
         }
         gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
         gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);

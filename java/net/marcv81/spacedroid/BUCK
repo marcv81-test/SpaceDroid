@@ -5,6 +5,7 @@ android_library(
   deps = [
     '//java/net/marcv81/gfx2d:lib',
     '//java/net/marcv81/spacedroid/sprites:lib',
+    '//res/net/marcv81/spacedroid:res',
   ],
 )
 

@@ -4,7 +4,6 @@ android_library(
   visibility = [ '//java/net/marcv81/spacedroid:lib' ],
   deps = [
     '//java/net/marcv81/gfx2d:lib',
-    '//res/net/marcv81/spacedroid/sprites:res',
   ],
 )
 

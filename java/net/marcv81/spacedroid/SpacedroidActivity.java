@@ -21,38 +21,38 @@ public final class SpacedroidActivity extends DebugActivity {
         // Create rendering group for each sprite type
         List<SpriteRenderer> spriteGroups = new LinkedList<>();
         spriteGroups.add(new SpriteRenderer(
-                new SpriteTexture("stars", 1, 1),
-                new SpriteGeometry(4f),
+                4f,
+                R.drawable.stars, 1, 1,
                 false, false, false,
                 gameEngine.getBackgrounds()
         ));
         spriteGroups.add(new SpriteRenderer(
-                new SpriteTexture("player", 1, 1),
-                new SpriteGeometry(0.2f),
+                0.2f,
+                R.drawable.player, 1, 1,
                 true, false, false,
                 gameEngine.getPlayers()
         ));
         spriteGroups.add(new SpriteRenderer(
-                new SpriteTexture("asteroid", 8, 8),
-                new SpriteGeometry(0.15f),
+                0.15f,
+                R.drawable.asteroid, 8, 8,
                 true, false, true,
                 gameEngine.getAsteroids()
         ));
         spriteGroups.add(new SpriteRenderer(
-                new SpriteTexture("smoke", 2, 2),
-                new SpriteGeometry(0.1f),
+                0.1f,
+                R.drawable.smoke, 2, 2,
                 true, true, true,
                 gameEngine.getSmokes()
         ));
         spriteGroups.add(new SpriteRenderer(
-                new SpriteTexture("sparkle", 1, 1),
-                new SpriteGeometry(0.05f),
+                0.05f,
+                R.drawable.sparkle, 1, 1,
                 false, true, false,
                 gameEngine.getSparkles()
         ));
         spriteGroups.add(new SpriteRenderer(
-                new SpriteTexture("bonus", 1, 1),
-                new SpriteGeometry(0.15f),
+                0.15f,
+                R.drawable.bonus, 1, 1,
                 false, true, true,
                 gameEngine.getBonuses()
         ));
