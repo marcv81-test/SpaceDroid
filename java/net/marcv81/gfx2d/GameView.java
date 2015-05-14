@@ -10,8 +10,10 @@ import javax.microedition.khronos.opengles.GL10;
 import java.util.List;
 
 /**
- * This class handles OpenGL ES 2D game views. It allows to move the camera
- * and track the pointer position.
+ * This class handles OpenGL ES 2D game views. It allows to move the camera and track the pointer
+ * position. The game world coordinates are such that the distance between the top and bottom edges
+ * of the view is exactly 2f. The distance between the left and right edges depends on the size
+ * ratio of the view.
  */
 public final class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
@@ -25,12 +27,12 @@ public final class GameView extends GLSurfaceView implements GLSurfaceView.Rende
     private final Vector2f size = new Vector2f(0f, 0f);
 
     /**
-     * Camera position in world coordinates.
+     * Camera position in game world coordinates.
      */
     private final Vector2f camera = new Vector2f(0f, 0f);
 
     /**
-     * Pointer position in world coordinates.
+     * Pointer position in game world coordinates.
      */
     private final Vector2f pointer = new Vector2f(0f, 0f);
 
@@ -68,21 +70,21 @@ public final class GameView extends GLSurfaceView implements GLSurfaceView.Rende
     }
 
     /**
-     * Gets the camera position in world coordinates.
+     * Gets the camera position in game world coordinates.
      */
     public Vector2f getCamera() {
         return new Vector2f(camera);
     }
 
     /**
-     * Sets the camera position in world coordinates.
+     * Sets the camera position in game world coordinates.
      */
     public void setCamera(Vector2f position) {
         camera.set(position);
     }
 
     /**
-     * Gets the pointer position in world coordinates.
+     * Gets the pointer position in game world coordinates.
      */
     public Vector2f getPointer() {
         return new Vector2f(pointer);
@@ -96,28 +98,28 @@ public final class GameView extends GLSurfaceView implements GLSurfaceView.Rende
     }
 
     /**
-     * Gets the abscissa of the right edge of this GameView in world coordinates.
+     * Gets the abscissa of the right edge of this GameView in game world coordinates.
      */
     public float getRightEdge() {
         return camera.getX() + size.getX() / size.getY();
     }
 
     /**
-     * Gets the abscissa of the left edge of this GameView in world coordinates.
+     * Gets the abscissa of the left edge of this GameView in game world coordinates.
      */
     public float getLeftEdge() {
         return camera.getX() - size.getX() / size.getY();
     }
 
     /**
-     * Gets the ordinate of the top edge of this GameView in world coordinates.
+     * Gets the ordinate of the top edge of this GameView in game world coordinates.
      */
     public float getTopEdge() {
         return camera.getY() + 1.0f;
     }
 
     /**
-     * Gets the ordinate of the bottom edge of this GameView in world coordinates.
+     * Gets the ordinate of the bottom edge of this GameView in game world coordinates.
      */
     public float getBottomEdge() {
         return camera.getY() - 1.0f;
@@ -207,14 +209,29 @@ public final class GameView extends GLSurfaceView implements GLSurfaceView.Rende
     }
 
     /**
-     * Converts abscissa from pixels to world coordinates.
+     * Checks if a Sprite is out of the scope of this GameView.
+     *
+     * @param sprite Sprite to check.
+     * @param margin Margin to add to the edges of this GameView to ensure
+     *               the Sprites are not considered out of scope too soon.
+     */
+    public boolean isOutOfScope(Sprite sprite, float margin) {
+        Vector2f position = sprite.getPosition();
+        return position.getY() >= getTopEdge() + margin
+                || position.getY() <= getBottomEdge() - margin
+                || position.getX() >= getRightEdge() + margin
+                || position.getX() <= getLeftEdge() - margin;
+    }
+
+    /**
+     * Converts abscissa from pixels to game world coordinates.
      */
     private float pixelsToWorldX(float x) {
         return (-2f * x + size.getX()) / size.getY();
     }
 
     /**
-     * Converts ordinate from pixels to world coordinates.
+     * Converts ordinate from pixels to game world coordinates.
      */
     private float pixelsToWorldY(float y) {
         return (-2f * y + size.getY()) / size.getY();

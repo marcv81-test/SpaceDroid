@@ -5,13 +5,13 @@ import android.os.Vibrator;
 import net.marcv81.spacedroid.sprites.*;
 import net.marcv81.gfx2d.GameEngine;
 import net.marcv81.gfx2d.GameView;
-import net.marcv81.gfx2d.SpriteRenderer;
 import net.marcv81.gfx2d.Vector2f;
 
 import java.util.*;
 
 public final class SpacedroidEngine extends GameEngine {
 
+    private static final float SPRITE_REMOVAL_DISTANCE = 0.75f;
     private static final float BACKGROUND_SIZE = 4f;
     private static final int SPARKLES_PER_IMPACT = 5;
     private static final int ASTEROID_MAX_COUNT = 20;
@@ -120,13 +120,13 @@ public final class SpacedroidEngine extends GameEngine {
             // Set the acceleration to the normalised pointer vector
             Vector2f v = gameView.getPointer();
             v.divide(v.norm());
-            player.setAcceleration(v);
+            player.setThrust(v);
 
             // Add smoke particles
             smokes.add(new Smoke(player.getExhaust(), random));
 
         } else {
-            player.setAcceleration(new Vector2f(0f, 0f));
+            player.setThrust(new Vector2f(0f, 0f));
         }
 
         // Iterate over asteroids
@@ -171,7 +171,7 @@ public final class SpacedroidEngine extends GameEngine {
 
             // Remove the asteroids which are too far
             Asteroid asteroid = asteroidIterator.next();
-            if (asteroid.isOutOfScope(gameView)) {
+            if (gameView.isOutOfScope(asteroid, SPRITE_REMOVAL_DISTANCE)) {
                 asteroidIterator.remove();
             }
         }
@@ -221,7 +221,7 @@ public final class SpacedroidEngine extends GameEngine {
 
             // Remove the bonuses which are too far
             Bonus bonus = bonusIterator.next();
-            if (bonus.isOutOfScope(gameView) || bonus.isExpired()) {
+            if (gameView.isOutOfScope(bonus, SPRITE_REMOVAL_DISTANCE) || bonus.isExpired()) {
                 bonusIterator.remove();
             }
         }

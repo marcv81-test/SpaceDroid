@@ -9,7 +9,7 @@ public class Sprite {
     protected static final float DEGREE_PER_RADIAN = 57.2957795f;
 
     /**
-     * Sprite position in world coordinates.
+     * Sprite position in game world coordinates.
      */
     private final Vector2f position = new Vector2f(0f, 0f);
 
