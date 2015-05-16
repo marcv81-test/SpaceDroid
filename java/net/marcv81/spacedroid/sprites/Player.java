@@ -22,7 +22,7 @@ public final class Player extends DriftingSprite {
 
     // Get the coordinates of the exhaust (to draw smoke)
     public Vector2f getExhaust() {
-        float exhaustAngle = (angle - PLAYER_SPRITE_ANGLE) / DEGREE_PER_RADIAN;
+        float exhaustAngle = (angle - PLAYER_SPRITE_ANGLE) / DEGREES_PER_RADIAN;
         return getPosition().plus((new Vector2f(exhaustAngle)).multiply(PLAYER_EXHAUST_DISTANCE));
     }
 
@@ -33,7 +33,7 @@ public final class Player extends DriftingSprite {
 
         // Update the drawing angle if accelerating
         if (v.norm() > 0.5f) {
-            angle = DEGREE_PER_RADIAN * v.angle() - PLAYER_SPRITE_ANGLE;
+            angle = DEGREES_PER_RADIAN * v.angle() - PLAYER_SPRITE_ANGLE;
         }
     }
 

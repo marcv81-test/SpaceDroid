@@ -40,7 +40,7 @@ public final class Smoke extends Particle {
     }
 
     @Override
-    public int getAnimation() {
+    public int getAnimationIndex() {
         return animation;
     }
 

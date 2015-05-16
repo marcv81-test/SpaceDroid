@@ -6,10 +6,10 @@ package net.marcv81.gfx2d;
 public class Sprite {
 
     protected static final float TAU = 6.2831853071f;
-    protected static final float DEGREE_PER_RADIAN = 57.2957795f;
+    protected static final float DEGREES_PER_RADIAN = 57.2957795f;
 
     /**
-     * Sprite position in game world coordinates.
+     * Position in game world coordinates.
      */
     private final Vector2f position = new Vector2f(0f, 0f);
 
@@ -21,14 +21,14 @@ public class Sprite {
     }
 
     /**
-     * Gets the Sprite position.
+     * Gets the position of this Sprite.
      */
     public Vector2f getPosition() {
         return new Vector2f(position);
     }
 
     /**
-     * Sets the Sprite position.
+     * Sets the position of this Sprite.
      */
     public void setPosition(Vector2f v) {
         position.set(v);
@@ -49,9 +49,9 @@ public class Sprite {
     }
 
     /**
-     * Returns the current animation. Override if this Sprite supports animations.
+     * Returns the current animation index. Override if this Sprite supports animations.
      */
-    public int getAnimation() {
+    public int getAnimationIndex() {
         return 0;
     }
 

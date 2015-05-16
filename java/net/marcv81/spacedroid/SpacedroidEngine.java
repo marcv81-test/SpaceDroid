@@ -144,8 +144,8 @@ public final class SpacedroidEngine extends GameEngine {
         for (Bonus bonus : bonuses) {
 
             // Check player and bonus for collision
-            if (!bonus.isExploding() && player.overlaps(bonus)) {
-                bonus.explode();
+            if (!bonus.hasBeenCollected() && player.overlaps(bonus)) {
+                bonus.collect();
             }
         }
 
@@ -199,7 +199,7 @@ public final class SpacedroidEngine extends GameEngine {
             for (Bonus bonus : bonuses) {
 
                 // Check asteroid and bonus for collision
-                if (!bonus.isExploding() && asteroid.overlaps(bonus) && asteroid.collide(bonus)) {
+                if (!bonus.hasBeenCollected() && asteroid.overlaps(bonus) && asteroid.collide(bonus)) {
                     createImpact(asteroid, bonus);
                 }
             }
@@ -238,7 +238,7 @@ public final class SpacedroidEngine extends GameEngine {
                 Bonus bonus2 = bonuses.get(j);
 
                 // Check bonuses pair for collision
-                if (!bonus1.isExploding() && !bonus2.isExploding() &&
+                if (!bonus1.hasBeenCollected() && !bonus2.hasBeenCollected() &&
                         bonus1.overlaps(bonus2) && bonus1.collide(bonus2)) {
                     createImpact(bonus1, bonus2);
                 }

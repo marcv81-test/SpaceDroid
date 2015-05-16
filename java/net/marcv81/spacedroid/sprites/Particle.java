@@ -9,7 +9,7 @@ import net.marcv81.gfx2d.Vector2f;
 public abstract class Particle extends Sprite {
 
     /**
-     * Age of this Particle.
+     * Age in milliseconds.
      */
     private long age = 0;
 
@@ -28,9 +28,6 @@ public abstract class Particle extends Sprite {
     public abstract long getLifespan();
 
     /**
-     * Gets the age of this Particle. The game engine shall dispose of Particles when their age
-     * is greater than their lifespan.
-     *
      * @return Age of this Particle  in milliseconds.
      */
     public long getAge() {
@@ -45,7 +42,8 @@ public abstract class Particle extends Sprite {
     }
 
     /**
-     * Checks whether this Particle has exceeded its lifespan or not.
+     * Checks whether this Particle has exceeded its lifespan or not. The game engine shall
+     * dispose of expired Particles.
      */
     public boolean isExpired() {
         return age >= getLifespan();

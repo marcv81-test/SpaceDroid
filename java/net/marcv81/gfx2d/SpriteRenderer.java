@@ -138,7 +138,7 @@ public final class SpriteRenderer {
             gl.glColor4f(1f, 1f, 1f, 1f);
         }
         if (!supportsAnimation) {
-            setAnimation(gl, 0);
+            setAnimationIndex(gl, 0);
         }
 
         for (Sprite sprite : sprites) {
@@ -154,7 +154,7 @@ public final class SpriteRenderer {
                 gl.glColor4f(transparency, transparency, transparency, transparency);
             }
             if (supportsAnimation) {
-                setAnimation(gl, sprite.getAnimation());
+                setAnimationIndex(gl, sprite.getAnimationIndex());
             }
             if (supportsScaling) {
                 float scale = sprite.getScale();
@@ -186,9 +186,9 @@ public final class SpriteRenderer {
     }
 
     /**
-     * Sets the index of the next animation to render.
+     * Sets the animation index to render next.
      */
-    private void setAnimation(GL10 gl, int i) {
+    private void setAnimationIndex(GL10 gl, int i) {
         gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureCoordinatesBuffers[i]);
     }
 }

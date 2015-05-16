@@ -10,7 +10,7 @@ import net.marcv81.gfx2d.Vector2f;
 public abstract class DriftingSprite extends Sprite {
 
     /**
-     * Speed of this DriftingSprite.
+     * Speed vector in game units.
      */
     private Vector2f speed;
 
@@ -97,8 +97,8 @@ public abstract class DriftingSprite extends Sprite {
     public boolean collide(DriftingSprite s) {
 
         // Calculate the collision delta vectors
-        Vector2f deltaSpeed = getSpeed().minus(s.getSpeed());
-        Vector2f deltaPosition = getPosition().minus(s.getPosition());
+        Vector2f deltaSpeed = this.getSpeed().minus(s.getSpeed());
+        Vector2f deltaPosition = this.getPosition().minus(s.getPosition());
 
         // Calculate the dot product between the delta vectors
         float dotProduct = deltaSpeed.dot(deltaPosition);
@@ -107,7 +107,7 @@ public abstract class DriftingSprite extends Sprite {
         if (dotProduct < 0f) {
 
             // Apply the deviation according to the equations of elastic collisions
-            float ratio = 2f * dotProduct / ((getMass() + s.getMass()) * deltaPosition.normSquare());
+            float ratio = 2f * dotProduct / ((this.getMass() + s.getMass()) * deltaPosition.normSquare());
             this.speed.plus((new Vector2f(deltaPosition)).multiply(-s.getMass() * ratio));
             s.speed.plus((new Vector2f(deltaPosition)).multiply(this.getMass() * ratio));
 
