@@ -11,11 +11,8 @@ import java.util.*;
 
 public final class SpacedroidEngine extends GameEngine {
 
-    private static final float SPRITE_REMOVAL_DISTANCE = 0.75f;
     private static final float BACKGROUND_SIZE = 4f;
     private static final int SPARKLES_PER_IMPACT = 5;
-    private static final int ASTEROID_MAX_COUNT = 20;
-    private static final int BONUS_MAX_COUNT = 3;
     private static final int IMPACT_VIBRATION_TIME = 25;
 
     Player player = new Player();
@@ -28,8 +25,7 @@ public final class SpacedroidEngine extends GameEngine {
     private List<Sparkle> sparkles = new LinkedList<>();
     private List<Bonus> bonuses = new LinkedList<>();
 
-    private AsteroidFactory asteroidFactory;
-    private BonusFactory bonusFactory;
+    private SpawnEngine spawnEngine;
 
     private boolean paused = false;
 
@@ -69,8 +65,7 @@ public final class SpacedroidEngine extends GameEngine {
 
         super.setGameView(gameView);
 
-        asteroidFactory = new AsteroidFactory(gameView, random);
-        bonusFactory = new BonusFactory(gameView, random);
+        spawnEngine = new SpawnEngine(this, gameView, random);
     }
 
     @Override
@@ -165,21 +160,11 @@ public final class SpacedroidEngine extends GameEngine {
             asteroid.update(timeSlice);
         }
 
-        // Iterate over all the asteroids
-        Iterator<Asteroid> asteroidIterator = asteroids.iterator();
-        while (asteroidIterator.hasNext()) {
-
-            // Remove the asteroids which are too far
-            Asteroid asteroid = asteroidIterator.next();
-            if (gameView.isOutOfScope(asteroid, SPRITE_REMOVAL_DISTANCE)) {
-                asteroidIterator.remove();
-            }
-        }
+        // Remove the asteroids which are out of scope
+        spawnEngine.destroyAsteroids();
 
         // Add asteroids if we have space
-        while (asteroids.size() < ASTEROID_MAX_COUNT) {
-            asteroids.add(asteroidFactory.create());
-        }
+        spawnEngine.spawnAsteroids();
 
         // Iterate over asteroids pairs
         for (int i = 0; i < asteroids.size(); i++) {
@@ -215,21 +200,11 @@ public final class SpacedroidEngine extends GameEngine {
             bonus.update(timeSlice);
         }
 
-        // Iterate over all the bonuses
-        Iterator<Bonus> bonusIterator = bonuses.iterator();
-        while (bonusIterator.hasNext()) {
-
-            // Remove the bonuses which are too far
-            Bonus bonus = bonusIterator.next();
-            if (gameView.isOutOfScope(bonus, SPRITE_REMOVAL_DISTANCE) || bonus.isExpired()) {
-                bonusIterator.remove();
-            }
-        }
+        // Remove the bonuses which are out of scope
+        spawnEngine.destroyBonuses();
 
         // Add bonuses if we have space
-        while (bonuses.size() < BONUS_MAX_COUNT) {
-            bonuses.add(bonusFactory.create());
-        }
+        spawnEngine.spawnBonuses();
 
         // Iterate over bonuses pairs
         for (int i = 0; i < bonuses.size(); i++) {

@@ -12,7 +12,7 @@ public abstract class DriftingSprite extends Sprite {
     /**
      * Speed vector in game units.
      */
-    private Vector2f speed;
+    private final Vector2f speed = new Vector2f(0f, 0f);
 
     /**
      * Constructor.
@@ -22,7 +22,7 @@ public abstract class DriftingSprite extends Sprite {
      */
     public DriftingSprite(Vector2f position, Vector2f speed) {
         super(position);
-        this.speed = new Vector2f(speed);
+        this.speed.set(speed);
     }
 
     /**
