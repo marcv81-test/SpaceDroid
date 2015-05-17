@@ -18,12 +18,12 @@ public final class SpacedroidEngine extends GameEngine {
     Player player = new Player();
 
     // Sprites lists
-    private List<Background> backgrounds = new LinkedList<>();
-    private List<Player> players = new LinkedList<>(Collections.singletonList(player));
-    private List<Asteroid> asteroids = new LinkedList<>();
-    private List<Smoke> smokes = new LinkedList<>();
-    private List<Sparkle> sparkles = new LinkedList<>();
-    private List<Bonus> bonuses = new LinkedList<>();
+    protected List<Background> backgrounds = new LinkedList<>();
+    protected List<Player> players = new LinkedList<>(Collections.singletonList(player));
+    protected List<Asteroid> asteroids = new LinkedList<>();
+    protected List<Smoke> smokes = new LinkedList<>();
+    protected List<Sparkle> sparkles = new LinkedList<>();
+    protected List<Bonus> bonuses = new LinkedList<>();
 
     private SpawnEngine spawnEngine;
 
@@ -31,30 +31,6 @@ public final class SpacedroidEngine extends GameEngine {
 
     private final Random random = new Random();
     private final Vibrator vibrator;
-
-    public List<Background> getBackgrounds() {
-        return backgrounds;
-    }
-
-    public List<Player> getPlayers() {
-        return players;
-    }
-
-    public List<Asteroid> getAsteroids() {
-        return asteroids;
-    }
-
-    public List<Smoke> getSmokes() {
-        return smokes;
-    }
-
-    public List<Sparkle> getSparkles() {
-        return sparkles;
-    }
-
-    public List<Bonus> getBonuses() {
-        return bonuses;
-    }
 
     public SpacedroidEngine(Context context) {
         vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
@@ -164,7 +140,7 @@ public final class SpacedroidEngine extends GameEngine {
         spawnEngine.destroyAsteroids();
 
         // Add asteroids if we have space
-        spawnEngine.spawnAsteroids();
+        spawnEngine.createAsteroids();
 
         // Iterate over asteroids pairs
         for (int i = 0; i < asteroids.size(); i++) {
@@ -203,8 +179,19 @@ public final class SpacedroidEngine extends GameEngine {
         // Remove the bonuses which are out of scope
         spawnEngine.destroyBonuses();
 
+        // Iterate over all the bonuses
+        Iterator<Bonus> bonusIterator = bonuses.iterator();
+        while (bonusIterator.hasNext()) {
+
+            // Remove the bonuses which have expired
+            Bonus bonus = bonusIterator.next();
+            if (bonus.isExpired()) {
+                bonusIterator.remove();
+            }
+        }
+
         // Add bonuses if we have space
-        spawnEngine.spawnBonuses();
+        spawnEngine.createBonuses();
 
         // Iterate over bonuses pairs
         for (int i = 0; i < bonuses.size(); i++) {

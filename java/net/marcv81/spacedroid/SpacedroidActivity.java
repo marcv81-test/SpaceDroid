@@ -24,37 +24,37 @@ public final class SpacedroidActivity extends DebugActivity {
                 4f,
                 R.drawable.stars, 1, 1,
                 false, false, false,
-                gameEngine.getBackgrounds()
+                gameEngine.backgrounds
         ));
         spriteGroups.add(new SpriteRenderer(
                 0.2f,
                 R.drawable.player, 1, 1,
                 true, false, false,
-                gameEngine.getPlayers()
+                gameEngine.players
         ));
         spriteGroups.add(new SpriteRenderer(
                 0.15f,
                 R.drawable.asteroid, 8, 8,
                 true, false, true,
-                gameEngine.getAsteroids()
+                gameEngine.asteroids
         ));
         spriteGroups.add(new SpriteRenderer(
                 0.1f,
                 R.drawable.smoke, 2, 2,
                 true, true, true,
-                gameEngine.getSmokes()
+                gameEngine.smokes
         ));
         spriteGroups.add(new SpriteRenderer(
                 0.05f,
                 R.drawable.sparkle, 1, 1,
                 false, true, false,
-                gameEngine.getSparkles()
+                gameEngine.sparkles
         ));
         spriteGroups.add(new SpriteRenderer(
                 0.15f,
                 R.drawable.bonus, 1, 1,
                 false, true, true,
-                gameEngine.getBonuses()
+                gameEngine.bonuses
         ));
 
         // Start gameEngine and renderer
