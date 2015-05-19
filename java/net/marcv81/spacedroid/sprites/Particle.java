@@ -35,9 +35,9 @@ public abstract class Particle extends Sprite {
     }
 
     /**
-     * @return Age of this Particle as a percentage of its lifespan, between 0f and 1f.
+     * @return Age of this Particle as a ratio of its lifespan, between 0f and 1f.
      */
-    public float getAgePercent() {
+    public float getAgeRatio() {
         return (float) age / getLifespan();
     }
 

@@ -11,6 +11,7 @@ import java.util.*;
 
 public final class SpacedroidEngine extends GameEngine {
 
+    private static final float PLAYER_THRUST_MULTIPLIER = 3f;
     private static final float BACKGROUND_SIZE = 4f;
     private static final int SPARKLES_PER_IMPACT = 5;
     private static final int IMPACT_VIBRATION_TIME = 25;
@@ -91,7 +92,7 @@ public final class SpacedroidEngine extends GameEngine {
             // Set the acceleration to the normalised pointer vector
             Vector2f v = gameView.getPointer();
             v.divide(v.norm());
-            player.setThrust(v);
+            player.setThrust(v.multiply(PLAYER_THRUST_MULTIPLIER));
 
             // Add smoke particles
             smokes.add(new Smoke(player.getExhaust(), random));
