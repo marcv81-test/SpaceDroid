@@ -1,103 +1,94 @@
 package net.marcv81.spacedroid.sprites;
 
+import net.marcv81.gfx2d.Sprite;
 import net.marcv81.gfx2d.Vector2f;
 
 /**
- * This class handles bonuses. When collected they fade out and grow for 500 milliseconds.
+ * This class handles collectible bonuses.
  */
-public final class Bonus extends DriftingSprite {
+public final class Bonus implements Sprite, Updatable, Collidable, Expirable {
 
+    private static final float BONUS_RADIUS = 0.06f;
     private static final float BONUS_MASS = 1f;
-    private static final float BONUS_DIAMETER = 0.12f;
 
-    private static final long BONUS_ANIMATION_DURATION = 500;
-    private static final float BONUS_ANIMATION_MAX_SCALE = 4f;
+    private static final long BONUS_EXPIRATION_DURATION = 500;
+    private static final float BONUS_EXPIRATION_SCALE = 4f;
 
-    /**
-     * Age in milliseconds. Used to render the Bonus collection animation.
-     */
-    private long age = 0;
+    public Collider collider;
+    public Expirer expirer;
 
-    /**
-     * Lifespan in milliseconds. Used to render the Bonus collection animation.
-     * Remains set to 0 until this Bonus is collected.
-     */
-    private long lifespan = 0;
+    private boolean solid = true;
 
-    /**
-     * Constructor.
-     */
     public Bonus(Vector2f position, Vector2f speed) {
-        super(position, speed);
+        this.collider = new Collider(position, speed, BONUS_RADIUS, BONUS_MASS);
+        this.expirer = new Expirer();
     }
 
-    @Override
-    public float getMass() {
-        return BONUS_MASS;
+    public Vector2f getPosition() {
+        return collider.getPosition();
     }
 
-    @Override
-    public float getDiameter() {
-        return BONUS_DIAMETER;
+    public int getAnimationIndex() {
+        return 0;
+    }
+
+    public float getAngle() {
+        return 0;
     }
 
     /**
-     * Gets the transparency of this Bonus. Usually opaque but fading out when collected.
+     * Opaque when living, fading out when expiring.
      */
-    @Override
     public float getTransparency() {
-        if (!hasBeenCollected()) {
-            return 1f;
-        } else {
-            return (lifespan - age) / (float) BONUS_ANIMATION_DURATION;
-        }
+        return 1f - expirer.getDeclineRatio();
     }
 
     /**
-     * Gets the scale of this Bonus. Usually 1f but getting bigger when collected.
+     * 1f when living, getting bigger when expiring.
      */
-    @Override
     public float getScale() {
-        if (!hasBeenCollected()) {
-            return 1f;
-        } else {
-            return BONUS_ANIMATION_MAX_SCALE - ((BONUS_ANIMATION_MAX_SCALE - 1f)
-                    * (lifespan - age) / (float) BONUS_ANIMATION_DURATION);
-        }
+        return 1f + (BONUS_EXPIRATION_SCALE - 1f) * expirer.getDeclineRatio();
     }
 
-    /**
-     * Collects this Bonus. Sets the lifespan, which triggers the Bonus collection animation.
-     */
     public void collect() {
-        if (!hasBeenCollected()) {
-            lifespan = age + BONUS_ANIMATION_DURATION;
-        }
+        expirer.decline(BONUS_EXPIRATION_DURATION);
+        solid = false;
     }
 
-    /**
-     * Checks whether this Bonus has already been collected or not yet.
-     */
-    public boolean hasBeenCollected() {
-        return lifespan > 0;
-    }
-
-    /**
-     * Checks whether this Bonus has exceeded its lifespan or not. The game engine shall dispose
-     * of expired Bonuses.
-     */
     public boolean isExpired() {
-        return (lifespan > 0) && (age >= lifespan);
+        return expirer.isExpired();
     }
 
-    /**
-     * Updates the position and age of this Bonus. Shall unconditionally be called
-     * in the game loop.
-     *
-     * @param timeSlice Game loop time slice duration in milliseconds.
-     */
     public void update(long timeSlice) {
-        super.update(timeSlice);
-        age += timeSlice;
+        collider.updatePosition(timeSlice);
+        expirer.update(timeSlice);
+    }
+
+    public boolean overlaps(Collidable that) {
+        return collider.overlaps(that);
+    }
+
+    public boolean collides(Collidable that) {
+        return solid && collider.collides(that);
+    }
+
+    public Vector2f collisionPoint(Collidable that) {
+        return collider.collisionPoint(that);
+    }
+
+    public Vector2f getSpeed() {
+        return collider.getSpeed();
+    }
+
+    public void setSpeed(Vector2f speed) {
+        collider.setSpeed(speed);
+    }
+
+    public float getRadius() {
+        return collider.getRadius();
+    }
+
+    public float getMass() {
+        return collider.getMass();
     }
 }

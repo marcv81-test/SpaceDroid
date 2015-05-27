@@ -54,8 +54,8 @@ public final class SpacedroidEngine extends GameEngine {
             updateBackground();
             updatePlayer(timeSlice);
             updateAsteroids(timeSlice);
-            updateParticles(timeSlice, smokes);
-            updateParticles(timeSlice, sparkles);
+            updateExpirable(timeSlice, smokes);
+            updateExpirable(timeSlice, sparkles);
             updateBonuses(timeSlice);
         }
     }
@@ -105,7 +105,7 @@ public final class SpacedroidEngine extends GameEngine {
         for (Asteroid asteroid : asteroids) {
 
             // Check player and asteroid for collision
-            if (player.overlaps(asteroid) && player.collide(asteroid)) {
+            if (player.collides(asteroid)) {
                 createImpact(player, asteroid);
                 vibrator.cancel(); // prevents the vibrator from getting stuck
                 vibrator.vibrate(IMPACT_VIBRATION_TIME);
@@ -116,7 +116,8 @@ public final class SpacedroidEngine extends GameEngine {
         for (Bonus bonus : bonuses) {
 
             // Check player and bonus for collision
-            if (!bonus.hasBeenCollected() && player.overlaps(bonus)) {
+            if (player.collides(bonus)) {
+                createImpact(player, bonus);
                 bonus.collect();
             }
         }
@@ -150,7 +151,7 @@ public final class SpacedroidEngine extends GameEngine {
                 Asteroid asteroid2 = asteroids.get(j);
 
                 // Check asteroids pairs for collision
-                if (asteroid1.overlaps(asteroid2) && asteroid1.collide(asteroid2)) {
+                if (asteroid1.collides(asteroid2)) {
                     createImpact(asteroid1, asteroid2);
                 }
             }
@@ -161,7 +162,7 @@ public final class SpacedroidEngine extends GameEngine {
             for (Bonus bonus : bonuses) {
 
                 // Check asteroid and bonus for collision
-                if (!bonus.hasBeenCollected() && asteroid.overlaps(bonus) && asteroid.collide(bonus)) {
+                if (asteroid.collides(bonus)) {
                     createImpact(asteroid, bonus);
                 }
             }
@@ -201,33 +202,32 @@ public final class SpacedroidEngine extends GameEngine {
                 Bonus bonus2 = bonuses.get(j);
 
                 // Check bonuses pair for collision
-                if (!bonus1.hasBeenCollected() && !bonus2.hasBeenCollected() &&
-                        bonus1.overlaps(bonus2) && bonus1.collide(bonus2)) {
-                    createImpact(bonus1, bonus2);
+                if (bonus1.collider.collides(bonus2.collider)) {
+                    createImpact(bonus1.collider, bonus2.collider);
                 }
             }
         }
     }
 
-    public <T extends Particle> void updateParticles(long timeSlice, List<T> sprites) {
+    public <T extends Updatable & Expirable> void updateExpirable(long timeSlice, List<T> expirables) {
 
         // Iterate over all the particles
-        Iterator<T> iterator = sprites.iterator();
+        Iterator<T> iterator = expirables.iterator();
         while (iterator.hasNext()) {
 
             // Update each particle
-            T particle = iterator.next();
-            particle.update(timeSlice);
+            T expirable = iterator.next();
+            expirable.update(timeSlice);
 
             // Remove the expired particles
-            if (particle.isExpired()) {
+            if (expirable.isExpired()) {
                 iterator.remove();
             }
         }
     }
 
-    private void createImpact(DriftingSprite sprite1, DriftingSprite sprite2) {
-        Vector2f impactPoint = sprite1.impactPoint(sprite2);
+    private void createImpact(Collidable sprite1, Collidable sprite2) {
+        Vector2f impactPoint = sprite1.collisionPoint(sprite2);
         for (int n = 0; n < SPARKLES_PER_IMPACT; n++) {
             sparkles.add(new Sparkle(impactPoint, random));
         }

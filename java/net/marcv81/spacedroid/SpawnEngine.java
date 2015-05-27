@@ -1,10 +1,9 @@
 package net.marcv81.spacedroid;
 
 import net.marcv81.gfx2d.GameView;
+import net.marcv81.gfx2d.Sprite;
 import net.marcv81.gfx2d.Vector2f;
-import net.marcv81.spacedroid.sprites.Asteroid;
-import net.marcv81.spacedroid.sprites.Bonus;
-import net.marcv81.spacedroid.sprites.DriftingSprite;
+import net.marcv81.spacedroid.sprites.*;
 
 import java.util.Iterator;
 import java.util.List;
@@ -39,7 +38,7 @@ public class SpawnEngine {
 
     /**
      * Number of attempts to create a DriftingSprites until we give up. Failures happen
-     * when the random position is already occupied by another DriftingSprite.
+     * when the random position is already occupied by another Drifter.
      */
     private static final int CREATE_MAX_RETRIES = 3;
 
@@ -48,9 +47,9 @@ public class SpawnEngine {
     private final Random random;
 
     /**
-     * Interface implemented by the DriftingSprite factories.
+     * Interface implemented by the Drifter factories.
      */
-    private interface DriftingSpriteFactory<T extends DriftingSprite> {
+    private interface DriftingSpriteFactory<T> {
         T create(Vector2f position, Vector2f speed);
     }
 
@@ -117,7 +116,7 @@ public class SpawnEngine {
      * instantiates the DriftingSprites objects. Their initial position is random a margin
      * away from the edges of the GameView. Their initial speed is bounded random.
      */
-    public <T extends DriftingSprite> void createDriftingSprites(
+    public <T extends Sprite & Collidable> void createDriftingSprites(
             List<T> list, DriftingSpriteFactory<T> factory,
             float minSpeed, float maxSpeed, int maxCount) {
 
@@ -156,14 +155,14 @@ public class SpawnEngine {
      * the edges of the GameView. The margin is included to avoid removing the sprites
      * too early.
      */
-    private <T extends DriftingSprite> void destroyDriftingSprites(List<T> list) {
+    private <T extends Sprite> void destroyDriftingSprites(List<T> list) {
 
         // Iterate over all the sprites
         Iterator<T> iterator = list.iterator();
         while (iterator.hasNext()) {
 
             // Remove the sprites which are out of scope
-            DriftingSprite sprite = iterator.next();
+            Sprite sprite = iterator.next();
             if (gameView.isOutOfScope(sprite, SPRITE_DESTROY_DISTANCE)) {
                 iterator.remove();
             }
@@ -235,22 +234,22 @@ public class SpawnEngine {
     }
 
     /**
-     * Checks that a new DriftingSprite does not overlap with one already part of the game engine.
+     * Checks that a new Drifter does not overlap with one already part of the game engine.
      * Only valid when attempting to create DriftingSprites at getRandomPosition(). In other cases
      * we may need to perform extra checks (i.e.: overlap with the Player).
      */
-    private boolean hasSpace(DriftingSprite sprite) {
+    private boolean hasSpace(Collidable collider) {
 
         // Check overlap with asteroids
         for (Asteroid a : engine.asteroids) {
-            if (a.overlaps(sprite)) {
+            if (a.overlaps(collider)) {
                 return false;
             }
         }
 
         // Check overlap with bonuses
         for (Bonus b : engine.bonuses) {
-            if (b.overlaps(sprite)) {
+            if (b.overlaps(collider)) {
                 return false;
             }
         }

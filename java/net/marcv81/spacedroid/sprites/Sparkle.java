@@ -1,5 +1,6 @@
 package net.marcv81.spacedroid.sprites;
 
+import net.marcv81.gfx2d.Sprite;
 import net.marcv81.gfx2d.Vector2f;
 
 import java.util.Random;
@@ -9,81 +10,71 @@ import java.util.Random;
  * creation position while fading out. Their drift speed reduces progressively to simulate
  * weightlessness. A few are created to provide a visual clue of impacts.
  */
-public final class Sparkle extends Particle {
+public final class Sparkle implements Sprite, Updatable, Driftable, Expirable {
 
-    /**
-     * Speed loss, in ratio of the original speed per second.
-     */
-    private static final float SPARKLE_SPEED_LOSS = 3.5f;
+    protected static final float TAU = 6.2831853071f;
 
+    private static final float SPARKLE_DRAG = 3.5f;
     private static final float SPARKLE_MIN_SPEED = 0.8f;
     private static final float SPARKLE_MAX_SPEED = 1.2f;
     private static final long SPARKLE_MIN_LIFESPAN = 200;
-    private static final long SPARKLE_MAX_LIFESPAN = 800;
+    private static final long SPARKLE_MAX_LIFESPAN = 600;
 
-    /**
-     * Speed vector in game units.
-     */
-    private final Vector2f speed;
-
-    /**
-     * Lifespan in milliseconds.
-     */
-    private final long lifespan;
+    private Drifter drifter;
+    private Expirer expirer;
 
     /**
      * Constructor
      */
     public Sparkle(Vector2f position, Random random) {
 
-        super(position);
-
-        // Bounded random initial speed
+        // Randomise everything
         float angle = TAU * random.nextFloat();
         float norm = SPARKLE_MIN_SPEED
                 + random.nextFloat() * (SPARKLE_MAX_SPEED - SPARKLE_MIN_SPEED);
-        this.speed = (new Vector2f(angle)).multiply(norm);
+        Vector2f speed = (new Vector2f(angle)).multiply(norm);
+        long lifespan = random.nextInt((int) SPARKLE_MAX_LIFESPAN);
 
-        // Bounded random lifespan
-        this.lifespan = SPARKLE_MIN_LIFESPAN
-                + random.nextInt((int) (SPARKLE_MAX_LIFESPAN - SPARKLE_MIN_LIFESPAN));
+        // Instantiate the drifter and the expirer
+        drifter = new Drifter(position, speed);
+        expirer = new Expirer(lifespan, SPARKLE_MIN_LIFESPAN + lifespan);
     }
 
-    @Override
-    public long getLifespan() {
-        return lifespan;
+    public Vector2f getPosition() {
+        return drifter.getPosition();
     }
 
-    @Override
+    public int getAnimationIndex() {
+        return 0;
+    }
+
     public float getTransparency() {
-
-        float ratio = getAgeRatio();
-
-        // Do not fade during the first half of the lifespan
-        if (ratio < 0.5f) {
-            return 1f;
-        }
-
-        // Fade off during the second half of the lifespan
-        else {
-            return 1f - 2f * (ratio - 0.5f);
-        }
+        return 1f - expirer.getDeclineRatio();
     }
 
-    /**
-     * Updates the age, speed and position of this Sparkle. Shall unconditionally be called
-     * in the game loop.
-     *
-     * @param timeSlice Game loop time slice duration in milliseconds.
-     */
+    public float getScale() {
+        return 1f;
+    }
+
+    public float getAngle() {
+        return 0f;
+    }
+
+    public boolean isExpired() {
+        return expirer.isExpired();
+    }
+
     public void update(long timeSlice) {
+        drifter.updateDrag(SPARKLE_DRAG, timeSlice);
+        drifter.updatePosition(timeSlice);
+        expirer.update(timeSlice);
+    }
 
-        super.update(timeSlice);
+    public Vector2f getSpeed() {
+        return drifter.getSpeed();
+    }
 
-        // Apply the speed loss
-        speed.multiply(1f - SPARKLE_SPEED_LOSS * timeSlice / 1000f);
-
-        // Update the position according to the speed
-        addToPosition((new Vector2f(speed)).multiply(timeSlice / 1000f));
+    public void setSpeed(Vector2f speed) {
+        drifter.setSpeed(speed);
     }
 }

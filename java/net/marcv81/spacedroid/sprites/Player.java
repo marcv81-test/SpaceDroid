@@ -1,24 +1,28 @@
 package net.marcv81.spacedroid.sprites;
 
+import net.marcv81.gfx2d.Sprite;
 import net.marcv81.gfx2d.Vector2f;
 
 /**
  * This class handles the player. It is a drifting sprite to which thrust can be applied.
- * The speed is limited, and friction prevents the sprite from drifting indefinitely to
- * improve the gameplay.
+ * The speed is limited, and a drag prevents it from drifting indefinitely to improve
+ * the gameplay.
  */
-public final class Player extends DriftingSprite {
+public final class Player implements Sprite, Updatable, Collidable {
 
-    private static final float PLAYER_DIAMETER = 0.18f;
+    protected static final float DEGREES_PER_RADIAN = 57.2957795f;
+
+    private static final float PLAYER_RADIUS = 0.09f;
     private static final float PLAYER_MASS = 1f;
-    private static final float PLAYER_FRICTION = 0.8f;
+
+    private static final float PLAYER_DRAG = 0.8f;
     private static final float PLAYER_MAX_SPEED = 1.2f;
 
     private static final float PLAYER_DRAWING_ANGLE = 90f;
     private static final float PLAYER_EXHAUST_DISTANCE = 0.15f;
 
     /**
-     * Thrust applied.
+     * Thrust vector applied in game units.
      */
     private Vector2f thrust = new Vector2f(0f, 0f);
 
@@ -27,11 +31,29 @@ public final class Player extends DriftingSprite {
      */
     private float angle = 90f;
 
+    public Collider collider;
+
     /**
      * Constructor.
      */
     public Player() {
-        super(new Vector2f(0f, 0f), new Vector2f(0f, 0f));
+        this.collider = new Collider(new Vector2f(0f, 0f), new Vector2f(0f, 0f), PLAYER_RADIUS, PLAYER_MASS);
+    }
+
+    public Vector2f getPosition() {
+        return collider.getPosition();
+    }
+
+    public int getAnimationIndex() {
+        return 0;
+    }
+
+    public float getTransparency() {
+        return 1f;
+    }
+
+    public float getScale() {
+        return 1f;
     }
 
     /**
@@ -62,40 +84,48 @@ public final class Player extends DriftingSprite {
         }
     }
 
-    @Override
     public float getAngle() {
         return angle + PLAYER_DRAWING_ANGLE;
     }
 
-    @Override
-    public float getMass() {
-        return PLAYER_MASS;
-    }
-
-    @Override
-    public float getDiameter() {
-        return PLAYER_DIAMETER;
-    }
-
-    /**
-     * Updates the position and speed of this Player. Shall unconditionally be called
-     * in the game loop.
-     *
-     * @param timeSlice Game loop time slice duration in milliseconds.
-     */
     public void update(long timeSlice) {
 
-        // Apply the external forces: thrust and friction
-        // There is no friction is space but it improves the gameplay
-        applyForce(thrust.minus(getSpeed().multiply(PLAYER_FRICTION)), timeSlice);
+        // Apply the external forces: thrust and drag
+        // There is no drag is space but it improves the gameplay
+        collider.updateSpeed(thrust, timeSlice);
+        collider.updateDrag(PLAYER_DRAG, timeSlice);
 
         // Limit the speed
-        Vector2f speed = getSpeed();
-        float normSpeed = speed.norm();
-        if (normSpeed > PLAYER_MAX_SPEED) {
-            setSpeed(speed.multiply(PLAYER_MAX_SPEED / normSpeed));
-        }
+        collider.limitSpeed(PLAYER_MAX_SPEED);
 
-        super.update(timeSlice);
+        collider.updatePosition(timeSlice);
+    }
+
+    public boolean overlaps(Collidable that) {
+        return collider.overlaps(that);
+    }
+
+    public boolean collides(Collidable that) {
+        return collider.collides(that);
+    }
+
+    public Vector2f collisionPoint(Collidable that) {
+        return collider.collisionPoint(that);
+    }
+
+    public Vector2f getSpeed() {
+        return collider.getSpeed();
+    }
+
+    public void setSpeed(Vector2f speed) {
+        collider.setSpeed(speed);
+    }
+
+    public float getRadius() {
+        return collider.getRadius();
+    }
+
+    public float getMass() {
+        return collider.getMass();
     }
 }
