@@ -40,10 +40,6 @@ public final class Sparkle implements Sprite, Updatable, Driftable, Expirable {
         expirer = new Expirer(lifespan, SPARKLE_MIN_LIFESPAN + lifespan);
     }
 
-    public Vector2f getPosition() {
-        return drifter.getPosition();
-    }
-
     public int getAnimationIndex() {
         return 0;
     }
@@ -68,6 +64,14 @@ public final class Sparkle implements Sprite, Updatable, Driftable, Expirable {
         drifter.updateDrag(SPARKLE_DRAG, timeSlice);
         drifter.updatePosition(timeSlice);
         expirer.update(timeSlice);
+    }
+
+    //
+    // Driftable implementation delegation
+    //
+
+    public Vector2f getPosition() {
+        return drifter.getPosition();
     }
 
     public Vector2f getSpeed() {

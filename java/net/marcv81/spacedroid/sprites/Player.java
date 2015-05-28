@@ -40,10 +40,6 @@ public final class Player implements Sprite, Updatable, Collidable {
         this.collider = new Collider(new Vector2f(0f, 0f), new Vector2f(0f, 0f), PLAYER_RADIUS, PLAYER_MASS);
     }
 
-    public Vector2f getPosition() {
-        return collider.getPosition();
-    }
-
     public int getAnimationIndex() {
         return 0;
     }
@@ -101,6 +97,22 @@ public final class Player implements Sprite, Updatable, Collidable {
         collider.updatePosition(timeSlice);
     }
 
+    //
+    // Collidable implementation delegation
+    //
+
+    public Vector2f getPosition() {
+        return collider.getPosition();
+    }
+
+    public Vector2f getSpeed() {
+        return collider.getSpeed();
+    }
+
+    public void setSpeed(Vector2f speed) {
+        collider.setSpeed(speed);
+    }
+
     public boolean overlaps(Collidable that) {
         return collider.overlaps(that);
     }
@@ -111,14 +123,6 @@ public final class Player implements Sprite, Updatable, Collidable {
 
     public Vector2f collisionPoint(Collidable that) {
         return collider.collisionPoint(that);
-    }
-
-    public Vector2f getSpeed() {
-        return collider.getSpeed();
-    }
-
-    public void setSpeed(Vector2f speed) {
-        collider.setSpeed(speed);
     }
 
     public float getRadius() {

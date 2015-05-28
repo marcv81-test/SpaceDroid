@@ -24,10 +24,6 @@ public final class Bonus implements Sprite, Updatable, Collidable, Expirable {
         this.expirer = new Expirer();
     }
 
-    public Vector2f getPosition() {
-        return collider.getPosition();
-    }
-
     public int getAnimationIndex() {
         return 0;
     }
@@ -64,6 +60,22 @@ public final class Bonus implements Sprite, Updatable, Collidable, Expirable {
         expirer.update(timeSlice);
     }
 
+    //
+    // Collidable implementation delegation
+    //
+
+    public Vector2f getPosition() {
+        return collider.getPosition();
+    }
+
+    public Vector2f getSpeed() {
+        return collider.getSpeed();
+    }
+
+    public void setSpeed(Vector2f speed) {
+        collider.setSpeed(speed);
+    }
+
     public boolean overlaps(Collidable that) {
         return collider.overlaps(that);
     }
@@ -74,14 +86,6 @@ public final class Bonus implements Sprite, Updatable, Collidable, Expirable {
 
     public Vector2f collisionPoint(Collidable that) {
         return collider.collisionPoint(that);
-    }
-
-    public Vector2f getSpeed() {
-        return collider.getSpeed();
-    }
-
-    public void setSpeed(Vector2f speed) {
-        collider.setSpeed(speed);
     }
 
     public float getRadius() {

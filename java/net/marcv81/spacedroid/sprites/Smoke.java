@@ -54,10 +54,6 @@ public final class Smoke implements Sprite, Updatable, Driftable, Expirable {
         expirer = new Expirer(SMOKE_DURATION);
     }
 
-    public Vector2f getPosition() {
-        return drifter.getPosition();
-    }
-
     public int getAnimationIndex() {
         return animationIndex;
     }
@@ -85,6 +81,14 @@ public final class Smoke implements Sprite, Updatable, Driftable, Expirable {
 
         // Update the angle according to the angular rate
         angle += angularRate * timeSlice / 1000;
+    }
+
+    //
+    // Driftable implementation delegation
+    //
+
+    public Vector2f getPosition() {
+        return drifter.getPosition();
     }
 
     public Vector2f getSpeed() {
