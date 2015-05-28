@@ -10,7 +10,7 @@ import java.util.Random;
  * themselves, and they expand and disappear relatively quickly. Enough of them can simulate
  * a cloud of smoke.
  */
-public final class Smoke implements Sprite, Updatable, Driftable, Expirable {
+public final class Smoke implements Sprite, Updatable, Expirable {
 
     protected static final float TAU = 6.2831853071f;
 
@@ -34,7 +34,7 @@ public final class Smoke implements Sprite, Updatable, Driftable, Expirable {
     private float angle;
 
     private Drifter drifter;
-    private Expirer expirer;
+    private Decliner decliner;
 
     /**
      * Constructor.
@@ -49,9 +49,17 @@ public final class Smoke implements Sprite, Updatable, Driftable, Expirable {
         this.angularRate = SMOKE_MAX_ANGULAR_RATE * 2f * (random.nextFloat() - 0.5f);
         this.animationIndex = random.nextInt(SMOKE_ANIMATIONS);
 
-        // Instantiate the drifter and the expirer
+        // Instantiate the drifter and the decliner
         drifter = new Drifter(position, speed);
-        expirer = new Expirer(SMOKE_DURATION);
+        decliner = new Decliner(SMOKE_DURATION);
+    }
+
+    //
+    // Sprite implementation
+    //
+
+    public Vector2f getPosition() {
+        return drifter.getPosition();
     }
 
     public int getAnimationIndex() {
@@ -63,39 +71,31 @@ public final class Smoke implements Sprite, Updatable, Driftable, Expirable {
     }
 
     public float getTransparency() {
-        return 1f - expirer.getDeclineRatio();
+        return 1f - decliner.getDeclineRatio();
     }
 
     public float getScale() {
-        return 1f + (SMOKE_MAX_SCALE - 1f) * expirer.getDeclineRatio();
+        return 1f + (SMOKE_MAX_SCALE - 1f) * decliner.getDeclineRatio();
     }
 
-    public boolean isExpired() {
-        return expirer.isExpired();
-    }
+    //
+    // Updatable implementation
+    //
 
     public void update(long timeSlice) {
 
-        drifter.updatePosition(timeSlice);
-        expirer.update(timeSlice);
+        drifter.update(timeSlice);
+        decliner.update(timeSlice);
 
         // Update the angle according to the angular rate
         angle += angularRate * timeSlice / 1000;
     }
 
     //
-    // Driftable implementation delegation
+    // Expirable implementation delegation
     //
 
-    public Vector2f getPosition() {
-        return drifter.getPosition();
-    }
-
-    public Vector2f getSpeed() {
-        return drifter.getSpeed();
-    }
-
-    public void setSpeed(Vector2f speed) {
-        drifter.setSpeed(speed);
+    public boolean isExpired() {
+        return decliner.isExpired();
     }
 }

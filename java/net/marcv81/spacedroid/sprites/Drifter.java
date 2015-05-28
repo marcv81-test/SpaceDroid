@@ -3,10 +3,11 @@ package net.marcv81.spacedroid.sprites;
 import net.marcv81.gfx2d.Vector2f;
 
 /**
- * This class provides a basic implementation of Driftable with additional functions
- * to facilitate the implementation of Updatable.
+ * Instances of this class drift according to Newton's laws of motion in 2D,
+ * providing the bases of a physics engine for the game. Additional functions
+ * facilitate the implementation of Updatable.
  */
-public class Drifter implements Driftable {
+public class Drifter {
 
     /**
      * Position in game world coordinates.
@@ -34,8 +35,8 @@ public class Drifter implements Driftable {
         return new Vector2f(speed);
     }
 
-    public void setSpeed(Vector2f speed) {
-        this.speed.set(speed);
+    public void deviate(Vector2f speed) {
+        this.speed.plus(speed);
     }
 
     /**
@@ -43,7 +44,7 @@ public class Drifter implements Driftable {
      *
      * @param timeSlice Time slice duration in milliseconds.
      */
-    public void updatePosition(long timeSlice) {
+    public void update(long timeSlice) {
         position.plus(getSpeed().multiply(timeSlice / 1000f));
     }
 
@@ -53,7 +54,7 @@ public class Drifter implements Driftable {
      * @param acceleration Acceleration vector in game units.
      * @param timeSlice    Time slice duration in milliseconds.
      */
-    public void updateSpeed(Vector2f acceleration, long timeSlice) {
+    public void addAcceleration(Vector2f acceleration, long timeSlice) {
         speed.plus(new Vector2f(acceleration).multiply(timeSlice / 1000f));
     }
 
@@ -63,8 +64,8 @@ public class Drifter implements Driftable {
      * @param drag      Drag coefficient in game units.
      * @param timeSlice Time slice duration in milliseconds.
      */
-    public void updateDrag(float drag, long timeSlice) {
-        updateSpeed(getSpeed().multiply(-drag), timeSlice);
+    public void addDrag(float drag, long timeSlice) {
+        addAcceleration(getSpeed().multiply(-drag), timeSlice);
     }
 
     /**

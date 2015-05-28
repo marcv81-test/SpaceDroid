@@ -11,6 +11,10 @@ public final class Background implements Sprite {
         this.position = new Vector2f(position);
     }
 
+    //
+    // Sprite implementation
+    //
+
     public Vector2f getPosition() {
         return new Vector2f(position);
     }

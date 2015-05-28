@@ -31,25 +31,13 @@ public final class Player implements Sprite, Updatable, Collidable {
      */
     private float angle = 90f;
 
-    public Collider collider;
+    private Collider collider;
 
     /**
      * Constructor.
      */
     public Player() {
         this.collider = new Collider(new Vector2f(0f, 0f), new Vector2f(0f, 0f), PLAYER_RADIUS, PLAYER_MASS);
-    }
-
-    public int getAnimationIndex() {
-        return 0;
-    }
-
-    public float getTransparency() {
-        return 1f;
-    }
-
-    public float getScale() {
-        return 1f;
     }
 
     /**
@@ -80,21 +68,40 @@ public final class Player implements Sprite, Updatable, Collidable {
         }
     }
 
+    //
+    // Sprite implementation
+    //
+
+    public int getAnimationIndex() {
+        return 0;
+    }
+
+    public float getTransparency() {
+        return 1f;
+    }
+
     public float getAngle() {
         return angle + PLAYER_DRAWING_ANGLE;
     }
 
+    public float getScale() {
+        return 1f;
+    }
+
+    //
+    // Updatable implementation
+    //
+
     public void update(long timeSlice) {
 
-        // Apply the external forces: thrust and drag
         // There is no drag is space but it improves the gameplay
-        collider.updateSpeed(thrust, timeSlice);
-        collider.updateDrag(PLAYER_DRAG, timeSlice);
+        collider.addDrag(PLAYER_DRAG, timeSlice);
 
-        // Limit the speed
+        // Add acceleration up to a speed limit
+        collider.addAcceleration(thrust, timeSlice);
         collider.limitSpeed(PLAYER_MAX_SPEED);
 
-        collider.updatePosition(timeSlice);
+        collider.update(timeSlice);
     }
 
     //
@@ -109,27 +116,19 @@ public final class Player implements Sprite, Updatable, Collidable {
         return collider.getSpeed();
     }
 
-    public void setSpeed(Vector2f speed) {
-        collider.setSpeed(speed);
-    }
-
-    public boolean overlaps(Collidable that) {
-        return collider.overlaps(that);
-    }
-
-    public boolean collides(Collidable that) {
-        return collider.collides(that);
-    }
-
-    public Vector2f collisionPoint(Collidable that) {
-        return collider.collisionPoint(that);
-    }
-
     public float getRadius() {
         return collider.getRadius();
     }
 
     public float getMass() {
         return collider.getMass();
+    }
+
+    public boolean isSolid() {
+        return true;
+    }
+
+    public void deviate(Vector2f speed) {
+        collider.deviate(speed);
     }
 }

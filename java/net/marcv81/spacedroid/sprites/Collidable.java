@@ -3,10 +3,20 @@ package net.marcv81.spacedroid.sprites;
 import net.marcv81.gfx2d.Vector2f;
 
 /**
- * Implementations of this interface can collide with each other according to the
- * equations of elastic collisions in 2D.
+ * Implementations of this interface may collide with each other according to
+ * the equations of elastic collisions in 2D implemented in CollisionUtils.
  */
-public interface Collidable extends Driftable {
+public interface Collidable {
+
+    /**
+     * @return Position in game world coordinates.
+     */
+    Vector2f getPosition();
+
+    /**
+     * @return Speed in game units.
+     */
+    Vector2f getSpeed();
 
     /**
      * @return Radius in game units.
@@ -19,28 +29,12 @@ public interface Collidable extends Driftable {
     float getMass();
 
     /**
-     * Checks whether two Collidables overlap or not.
-     *
-     * @param that Other Collidable.
-     * @return Whether the Collidables overlap or not.
+     * @return Whether this Collidable is able to collide or not.
      */
-    boolean overlaps(Collidable that);
+    boolean isSolid();
 
     /**
-     * Checks whether two Collidables shall collide or not. If this is the case then
-     * deviates their trajectories accordingly.
-     *
-     * @param that Other Collidable.
-     * @return Whether a collision occurred or not.
+     * Add a vector to the speed to deviate the trajectory.
      */
-    boolean collides(Collidable that);
-
-    /**
-     * Returns the collision point between two Collidables. Only meaningful when the
-     * two Collidables just collided.
-     *
-     * @param that Other Collidable.
-     * @return Collision point in game world coordinates.
-     */
-    Vector2f collisionPoint(Collidable that);
+    void deviate(Vector2f speed);
 }

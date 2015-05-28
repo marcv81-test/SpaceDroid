@@ -105,7 +105,7 @@ public final class SpacedroidEngine extends GameEngine {
         for (Asteroid asteroid : asteroids) {
 
             // Check player and asteroid for collision
-            if (player.collides(asteroid)) {
+            if (CollisionUtils.collide(player, asteroid)) {
                 createImpact(player, asteroid);
                 vibrator.cancel(); // prevents the vibrator from getting stuck
                 vibrator.vibrate(IMPACT_VIBRATION_TIME);
@@ -116,8 +116,7 @@ public final class SpacedroidEngine extends GameEngine {
         for (Bonus bonus : bonuses) {
 
             // Check player and bonus for collision
-            if (player.collides(bonus)) {
-                createImpact(player, bonus);
+            if (CollisionUtils.overlap(player, bonus)) {
                 bonus.collect();
             }
         }
@@ -151,7 +150,7 @@ public final class SpacedroidEngine extends GameEngine {
                 Asteroid asteroid2 = asteroids.get(j);
 
                 // Check asteroids pairs for collision
-                if (asteroid1.collides(asteroid2)) {
+                if (CollisionUtils.collide(asteroid1, asteroid2)) {
                     createImpact(asteroid1, asteroid2);
                 }
             }
@@ -162,7 +161,7 @@ public final class SpacedroidEngine extends GameEngine {
             for (Bonus bonus : bonuses) {
 
                 // Check asteroid and bonus for collision
-                if (asteroid.collides(bonus)) {
+                if (CollisionUtils.collide(asteroid, bonus)) {
                     createImpact(asteroid, bonus);
                 }
             }
@@ -202,8 +201,8 @@ public final class SpacedroidEngine extends GameEngine {
                 Bonus bonus2 = bonuses.get(j);
 
                 // Check bonuses pair for collision
-                if (bonus1.collider.collides(bonus2.collider)) {
-                    createImpact(bonus1.collider, bonus2.collider);
+                if (CollisionUtils.collide(bonus1, bonus2)) {
+                    createImpact(bonus1, bonus2);
                 }
             }
         }
@@ -226,8 +225,8 @@ public final class SpacedroidEngine extends GameEngine {
         }
     }
 
-    private void createImpact(Collidable sprite1, Collidable sprite2) {
-        Vector2f impactPoint = sprite1.collisionPoint(sprite2);
+    private void createImpact(Collidable c1, Collidable c2) {
+        Vector2f impactPoint = CollisionUtils.impactPoint(c1, c2);
         for (int n = 0; n < SPARKLES_PER_IMPACT; n++) {
             sparkles.add(new Sparkle(impactPoint, random));
         }

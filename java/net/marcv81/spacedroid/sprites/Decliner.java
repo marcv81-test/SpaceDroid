@@ -1,15 +1,9 @@
 package net.marcv81.spacedroid.sprites;
 
 /**
- * Instances of this class age and eventually expire. Additional functions help
- * handle the decline toward expiry.
+ * Instances of this class age, decline, and expire eventually.
  */
-public final class Expirer implements Expirable {
-
-    /**
-     * Age in milliseconds.
-     */
-    private long age = 0;
+public final class Decliner extends Ager {
 
     /**
      * Age of decline.
@@ -22,28 +16,24 @@ public final class Expirer implements Expirable {
     private long expiryAge = 0;
 
     /**
-     * Constructor with unknown decline and expiry ages.
+     * Constructor with undetermined decline and expiry ages.
      */
-    public Expirer() {
+    public Decliner() {
     }
 
     /**
-     * Constructor with immediate decline and known expiry age.
+     * Constructor with immediate decline and set expiry age.
      */
-    public Expirer(long expiryAge) {
+    public Decliner(long expiryAge) {
         this.expiryAge = expiryAge;
     }
 
     /**
-     * Constructor with known decline and expiry ages.
+     * Constructor with set decline and expiry ages.
      */
-    public Expirer(long declineAge, long expiryAge) {
+    public Decliner(long declineAge, long expiryAge) {
         this.declineAge = declineAge;
         this.expiryAge = expiryAge;
-    }
-
-    public long getAge() {
-        return age;
     }
 
     /**
@@ -56,17 +46,17 @@ public final class Expirer implements Expirable {
 
         // Ignore when expiry is already scheduled
         if (expiryAge == 0) {
-            this.declineAge = age;
-            this.expiryAge = age + duration;
+            this.declineAge = this.getAge();
+            this.expiryAge = this.getAge() + duration;
         }
     }
 
     public boolean isDeclining() {
-        return (expiryAge > 0) && (age >= declineAge) && (age < expiryAge);
+        return (expiryAge > 0) && (this.getAge() >= declineAge) && (this.getAge() < expiryAge);
     }
 
     public boolean isExpired() {
-        return (expiryAge > 0) && (age >= expiryAge);
+        return (expiryAge > 0) && (this.getAge() >= expiryAge);
     }
 
     /**
@@ -76,20 +66,11 @@ public final class Expirer implements Expirable {
         if (isExpired()) {
             return 1f;
         } else if (isDeclining()) {
-            float x = age - declineAge;
+            float x = this.getAge() - declineAge;
             float y = expiryAge - declineAge;
             return x / y;
         } else {
             return 0f;
         }
-    }
-
-    /**
-     * Updates the age.
-     *
-     * @param timeSlice Time slice duration in milliseconds.
-     */
-    public void update(long timeSlice) {
-        age += timeSlice;
     }
 }

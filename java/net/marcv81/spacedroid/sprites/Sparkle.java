@@ -10,7 +10,7 @@ import java.util.Random;
  * creation position while fading out. Their drift speed reduces progressively to simulate
  * weightlessness. A few are created to provide a visual clue of impacts.
  */
-public final class Sparkle implements Sprite, Updatable, Driftable, Expirable {
+public final class Sparkle implements Sprite, Updatable, Expirable {
 
     protected static final float TAU = 6.2831853071f;
 
@@ -21,7 +21,7 @@ public final class Sparkle implements Sprite, Updatable, Driftable, Expirable {
     private static final long SPARKLE_MAX_LIFESPAN = 600;
 
     private Drifter drifter;
-    private Expirer expirer;
+    private Decliner decliner;
 
     /**
      * Constructor
@@ -35,9 +35,17 @@ public final class Sparkle implements Sprite, Updatable, Driftable, Expirable {
         Vector2f speed = (new Vector2f(angle)).multiply(norm);
         long lifespan = random.nextInt((int) SPARKLE_MAX_LIFESPAN);
 
-        // Instantiate the drifter and the expirer
+        // Instantiate the drifter and the decliner
         drifter = new Drifter(position, speed);
-        expirer = new Expirer(lifespan, SPARKLE_MIN_LIFESPAN + lifespan);
+        decliner = new Decliner(lifespan, SPARKLE_MIN_LIFESPAN + lifespan);
+    }
+
+    //
+    // Sprite implementation
+    //
+
+    public Vector2f getPosition() {
+        return drifter.getPosition();
     }
 
     public int getAnimationIndex() {
@@ -45,7 +53,7 @@ public final class Sparkle implements Sprite, Updatable, Driftable, Expirable {
     }
 
     public float getTransparency() {
-        return 1f - expirer.getDeclineRatio();
+        return 1f - decliner.getDeclineRatio();
     }
 
     public float getScale() {
@@ -56,29 +64,23 @@ public final class Sparkle implements Sprite, Updatable, Driftable, Expirable {
         return 0f;
     }
 
-    public boolean isExpired() {
-        return expirer.isExpired();
-    }
+    //
+    // Updatable implementation
+    //
 
     public void update(long timeSlice) {
-        drifter.updateDrag(SPARKLE_DRAG, timeSlice);
-        drifter.updatePosition(timeSlice);
-        expirer.update(timeSlice);
+
+        drifter.addDrag(SPARKLE_DRAG, timeSlice);
+
+        drifter.update(timeSlice);
+        decliner.update(timeSlice);
     }
 
     //
-    // Driftable implementation delegation
+    // Expirable implementation delegation
     //
 
-    public Vector2f getPosition() {
-        return drifter.getPosition();
-    }
-
-    public Vector2f getSpeed() {
-        return drifter.getSpeed();
-    }
-
-    public void setSpeed(Vector2f speed) {
-        drifter.setSpeed(speed);
+    public boolean isExpired() {
+        return decliner.isExpired();
     }
 }

@@ -58,8 +58,8 @@ public final class Asteroid implements Sprite, Updatable, Collidable {
 
     private final boolean animationBackward;
 
-    public final Collider collider;
-    private final Expirer expirer;
+    private final Collider collider;
+    private final Ager ager;
 
     /**
      * Constructor.
@@ -81,24 +81,28 @@ public final class Asteroid implements Sprite, Updatable, Collidable {
         float mass = ASTEROID_MASS * scale * scale;
         float radius = ASTEROID_RADIUS * scale;
 
-        // Instantiate the collider and the expirer
+        // Instantiate the collider and the ager
         this.collider = new Collider(position, speed, radius, mass);
-        this.expirer = new Expirer();
+        this.ager = new Decliner();
     }
 
-    public float getTransparency() {
-        return 1f;
-    }
+    //
+    // Sprite implementation
+    //
 
     /**
      * Calculates the animation index from the age of this Asteroid.
      */
     public int getAnimationIndex() {
-        int animationIndex = (int) (animationSpeed * expirer.getAge() / 1000 % ASTEROID_ANIMATION_FRAMES);
+        int animationIndex = (int) (animationSpeed * ager.getAge() / 1000 % ASTEROID_ANIMATION_FRAMES);
         if (animationBackward) {
             animationIndex = ASTEROID_ANIMATION_FRAMES - animationIndex - 1;
         }
         return animationIndex + animationIndexOffset;
+    }
+
+    public float getTransparency() {
+        return 1f;
     }
 
     public float getAngle() {
@@ -109,9 +113,13 @@ public final class Asteroid implements Sprite, Updatable, Collidable {
         return scale;
     }
 
+    //
+    // Updatable implementation
+    //
+
     public void update(long timeSlice) {
-        collider.updatePosition(timeSlice);
-        expirer.update(timeSlice);
+        collider.update(timeSlice);
+        ager.update(timeSlice);
     }
 
     //
@@ -126,27 +134,19 @@ public final class Asteroid implements Sprite, Updatable, Collidable {
         return collider.getSpeed();
     }
 
-    public void setSpeed(Vector2f speed) {
-        collider.setSpeed(speed);
-    }
-
-    public boolean overlaps(Collidable that) {
-        return collider.overlaps(that);
-    }
-
-    public boolean collides(Collidable that) {
-        return collider.collides(that);
-    }
-
-    public Vector2f collisionPoint(Collidable that) {
-        return collider.collisionPoint(that);
-    }
-
     public float getRadius() {
         return collider.getRadius();
     }
 
     public float getMass() {
         return collider.getMass();
+    }
+
+    public boolean isSolid() {
+        return true;
+    }
+
+    public void deviate(Vector2f speed) {
+        collider.deviate(speed);
     }
 }

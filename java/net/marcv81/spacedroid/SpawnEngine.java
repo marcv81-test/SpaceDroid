@@ -242,14 +242,14 @@ public class SpawnEngine {
 
         // Check overlap with asteroids
         for (Asteroid a : engine.asteroids) {
-            if (a.overlaps(collider)) {
+            if (CollisionUtils.overlap(a, collider)) {
                 return false;
             }
         }
 
         // Check overlap with bonuses
         for (Bonus b : engine.bonuses) {
-            if (b.overlaps(collider)) {
+            if (CollisionUtils.overlap(b, collider)) {
                 return false;
             }
         }
