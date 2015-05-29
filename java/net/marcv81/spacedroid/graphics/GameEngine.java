@@ -1,4 +1,4 @@
-package net.marcv81.gfx2d;
+package net.marcv81.spacedroid.graphics;
 
 /**
  * This class handles the game loop. It manages framerate variations and provides

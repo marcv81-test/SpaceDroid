@@ -1,4 +1,4 @@
-package net.marcv81.gfx2d;
+package net.marcv81.spacedroid.graphics;
 
 import android.content.Context;
 import android.graphics.Bitmap;

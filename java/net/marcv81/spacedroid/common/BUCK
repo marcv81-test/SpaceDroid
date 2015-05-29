@@ -5,5 +5,5 @@ android_library(
 )
 
 project_config(
-  src_target = '//java/net/marcv81/gfx2d:lib',
+  src_target = '//java/net/marcv81/spacedroid/common:lib',
 )

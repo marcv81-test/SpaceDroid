@@ -1,4 +1,4 @@
-package net.marcv81.spacedroid.sprites;
+package net.marcv81.spacedroid.physics;
 
 /**
  * Implementations of this interface may be updated during the game loop.

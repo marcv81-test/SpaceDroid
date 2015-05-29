@@ -3,7 +3,7 @@ android_binary(
   manifest = 'AndroidManifest.xml',
   keystore = ':debug_keystore',
   deps = [
-    '//java/net/marcv81/spacedroid:lib',
+    '//java/net/marcv81/spacedroid/game:lib',
     '//spacedroid:res',
   ],
 )

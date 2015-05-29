@@ -1,7 +1,8 @@
-package net.marcv81.spacedroid;
+package net.marcv81.spacedroid.game;
 
-import net.marcv81.gfx2d.*;
 import android.os.Bundle;
+import net.marcv81.spacedroid.graphics.GameView;
+import net.marcv81.spacedroid.graphics.SpriteRenderer;
 
 import java.util.LinkedList;
 import java.util.List;

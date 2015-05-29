@@ -1,0 +1,12 @@
+android_library(
+  name = 'lib',
+  srcs = glob(['*.java']),
+  visibility = [ 'PUBLIC' ],
+  deps = [
+    '//java/net/marcv81/spacedroid/common:lib',
+  ],
+)
+
+project_config(
+  src_target = '//java/net/marcv81/spacedroid/physics:lib',
+)

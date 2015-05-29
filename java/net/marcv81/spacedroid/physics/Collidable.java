@@ -1,6 +1,6 @@
-package net.marcv81.spacedroid.sprites;
+package net.marcv81.spacedroid.physics;
 
-import net.marcv81.gfx2d.Vector2f;
+import net.marcv81.spacedroid.common.Vector2f;
 
 /**
  * Implementations of this interface may collide with each other according to

@@ -1,4 +1,4 @@
-package net.marcv81.gfx2d;
+package net.marcv81.spacedroid.common;
 
 /**
  * This class handles 2D vectors.

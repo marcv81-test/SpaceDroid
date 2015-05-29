@@ -1,6 +1,6 @@
-package net.marcv81.spacedroid.sprites;
+package net.marcv81.spacedroid.physics;
 
-import net.marcv81.gfx2d.Vector2f;
+import net.marcv81.spacedroid.common.Vector2f;
 
 /**
  * Instances of this class drift according to Newton's laws of motion in 2D,

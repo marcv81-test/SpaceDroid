@@ -1,9 +1,10 @@
-package net.marcv81.gfx2d;
+package net.marcv81.spacedroid.graphics;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.view.MotionEvent;
+import net.marcv81.spacedroid.common.Vector2f;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;

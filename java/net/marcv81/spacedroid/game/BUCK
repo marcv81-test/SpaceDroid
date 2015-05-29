@@ -1,0 +1,15 @@
+android_library(
+  name = 'lib',
+  srcs = glob(['*.java']),
+  visibility = [ '//spacedroid:bin' ],
+  deps = [
+    '//java/net/marcv81/spacedroid/common:lib',
+    '//java/net/marcv81/spacedroid/graphics:lib',
+    '//java/net/marcv81/spacedroid/physics:lib',
+    '//res/net/marcv81/spacedroid/game:res',
+  ],
+)
+
+project_config(
+  src_target = '//java/net/marcv81/spacedroid/game:lib',
+)

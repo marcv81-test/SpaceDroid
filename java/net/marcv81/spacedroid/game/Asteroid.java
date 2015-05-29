@@ -1,7 +1,11 @@
-package net.marcv81.spacedroid.sprites;
+package net.marcv81.spacedroid.game;
 
-import net.marcv81.gfx2d.Sprite;
-import net.marcv81.gfx2d.Vector2f;
+import net.marcv81.spacedroid.common.Vector2f;
+import net.marcv81.spacedroid.graphics.Sprite;
+import net.marcv81.spacedroid.physics.Ager;
+import net.marcv81.spacedroid.physics.Collidable;
+import net.marcv81.spacedroid.physics.Collider;
+import net.marcv81.spacedroid.physics.Updatable;
 
 import java.util.Random;
 
@@ -83,7 +87,7 @@ public final class Asteroid implements Sprite, Updatable, Collidable {
 
         // Instantiate the collider and the ager
         this.collider = new Collider(position, speed, radius, mass);
-        this.ager = new Decliner();
+        this.ager = new Ager();
     }
 
     //

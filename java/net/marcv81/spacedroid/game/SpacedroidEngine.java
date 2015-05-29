@@ -1,11 +1,14 @@
-package net.marcv81.spacedroid;
+package net.marcv81.spacedroid.game;
 
 import android.content.Context;
 import android.os.Vibrator;
-import net.marcv81.spacedroid.sprites.*;
-import net.marcv81.gfx2d.GameEngine;
-import net.marcv81.gfx2d.GameView;
-import net.marcv81.gfx2d.Vector2f;
+import net.marcv81.spacedroid.common.Vector2f;
+import net.marcv81.spacedroid.graphics.GameEngine;
+import net.marcv81.spacedroid.graphics.GameView;
+import net.marcv81.spacedroid.physics.Collidable;
+import net.marcv81.spacedroid.physics.CollisionUtils;
+import net.marcv81.spacedroid.physics.Expirable;
+import net.marcv81.spacedroid.physics.Updatable;
 
 import java.util.*;
 

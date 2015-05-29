@@ -1,4 +1,6 @@
-package net.marcv81.gfx2d;
+package net.marcv81.spacedroid.graphics;
+
+import net.marcv81.spacedroid.common.Vector2f;
 
 /**
  * This interface handles sprites which can be rendered.

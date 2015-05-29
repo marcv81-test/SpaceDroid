@@ -1,4 +1,4 @@
-package net.marcv81.spacedroid.sprites;
+package net.marcv81.spacedroid.physics;
 
 /**
  * Instances of this class age.

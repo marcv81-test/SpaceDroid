@@ -1,7 +1,10 @@
-package net.marcv81.spacedroid.sprites;
+package net.marcv81.spacedroid.game;
 
-import net.marcv81.gfx2d.Sprite;
-import net.marcv81.gfx2d.Vector2f;
+import net.marcv81.spacedroid.common.Vector2f;
+import net.marcv81.spacedroid.graphics.Sprite;
+import net.marcv81.spacedroid.physics.Collidable;
+import net.marcv81.spacedroid.physics.Collider;
+import net.marcv81.spacedroid.physics.Updatable;
 
 /**
  * This class handles the player. It is a drifting sprite to which thrust can be applied.

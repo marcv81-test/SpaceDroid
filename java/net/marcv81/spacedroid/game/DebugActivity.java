@@ -1,4 +1,4 @@
-package net.marcv81.spacedroid;
+package net.marcv81.spacedroid.game;
 
 import android.app.Activity;
 import android.os.Bundle;
