@@ -7,7 +7,7 @@ package net.marcv81.spacedroid.physics;
 public interface Expirable {
 
     /**
-     * @return Whether this Expirable has expired aleady or not.
+     * @return Whether this Expirable has expired or not.
      */
     boolean isExpired();
 }

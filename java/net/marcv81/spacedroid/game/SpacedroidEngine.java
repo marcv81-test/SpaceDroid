@@ -6,7 +6,6 @@ import net.marcv81.spacedroid.common.Vector2f;
 import net.marcv81.spacedroid.graphics.GameEngine;
 import net.marcv81.spacedroid.graphics.GameView;
 import net.marcv81.spacedroid.physics.Collidable;
-import net.marcv81.spacedroid.physics.CollisionUtils;
 import net.marcv81.spacedroid.physics.Expirable;
 import net.marcv81.spacedroid.physics.Updatable;
 
@@ -17,7 +16,6 @@ public final class SpacedroidEngine extends GameEngine {
     private static final float PLAYER_THRUST_MULTIPLIER = 3f;
     private static final float BACKGROUND_SIZE = 4f;
     private static final int SPARKLES_PER_IMPACT = 5;
-    private static final int IMPACT_VIBRATION_TIME = 25;
 
     Player player = new Player();
 
@@ -34,11 +32,7 @@ public final class SpacedroidEngine extends GameEngine {
     private boolean paused = false;
 
     private final Random random = new Random();
-    private final Vibrator vibrator;
 
-    public SpacedroidEngine(Context context) {
-        vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-    }
 
     @Override
     public void setGameView(GameView gameView) {
@@ -110,8 +104,6 @@ public final class SpacedroidEngine extends GameEngine {
             // Check player and asteroid for collision
             if (CollisionUtils.collide(player, asteroid)) {
                 createImpact(player, asteroid);
-                vibrator.cancel(); // prevents the vibrator from getting stuck
-                vibrator.vibrate(IMPACT_VIBRATION_TIME);
             }
         }
 

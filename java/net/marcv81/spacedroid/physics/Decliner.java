@@ -1,9 +1,9 @@
 package net.marcv81.spacedroid.physics;
 
 /**
- * Instances of this class age, decline, and expire eventually.
+ * Instances of this class age, decline, and expire.
  */
-public final class Decliner extends Ager {
+public final class Decliner extends Ager implements Expirable {
 
     /**
      * Age of decline.
@@ -43,8 +43,6 @@ public final class Decliner extends Ager {
      * @param duration Decline duration in milliseconds.
      */
     public void decline(long duration) {
-
-        // Ignore when expiry is already scheduled
         if (expiryAge == 0) {
             this.declineAge = this.getAge();
             this.expiryAge = this.getAge() + duration;

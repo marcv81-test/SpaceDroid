@@ -2,10 +2,7 @@ package net.marcv81.spacedroid.game;
 
 import net.marcv81.spacedroid.common.Vector2f;
 import net.marcv81.spacedroid.graphics.Sprite;
-import net.marcv81.spacedroid.physics.Decliner;
-import net.marcv81.spacedroid.physics.Drifter;
-import net.marcv81.spacedroid.physics.Expirable;
-import net.marcv81.spacedroid.physics.Updatable;
+import net.marcv81.spacedroid.physics.*;
 
 import java.util.Random;
 
@@ -14,31 +11,17 @@ import java.util.Random;
  * themselves, and they expand and disappear relatively quickly. Enough of them can simulate
  * a cloud of smoke.
  */
-public final class Smoke implements Sprite, Updatable, Expirable {
+public final class Smoke implements Sprite, Updatable, Driftable, Expirable {
 
     protected static final float TAU = 6.2831853071f;
 
     private static final long SMOKE_DURATION = 650; // 0.65 second
     private static final float SMOKE_MAX_SCALE = 3f;
     private static final float SMOKE_MAX_SPEED = 0.2f;
-    private static final float SMOKE_MAX_ANGULAR_RATE = 180f;
 
-    private static final int SMOKE_ANIMATIONS = 4;
-
-    /**
-     * Rate at which this Smoke revolves around itself in degrees per second.
-     */
-    private final float angularRate;
-
-    private final int animationIndex;
-
-    /**
-     * Orientation in degrees.
-     */
-    private float angle;
-
-    private Drifter drifter;
-    private Decliner decliner;
+    private final Drifter drifter;
+    private final Decliner decliner;
+    private final SmokeSprite sprite;
 
     /**
      * Constructor.
@@ -49,29 +32,23 @@ public final class Smoke implements Sprite, Updatable, Expirable {
         float angle = TAU * random.nextFloat();
         float norm = SMOKE_MAX_SPEED * random.nextFloat();
         Vector2f speed = (new Vector2f(angle)).multiply(norm);
-        this.angle = 360f * random.nextFloat();
-        this.angularRate = SMOKE_MAX_ANGULAR_RATE * 2f * (random.nextFloat() - 0.5f);
-        this.animationIndex = random.nextInt(SMOKE_ANIMATIONS);
 
         // Instantiate the drifter and the decliner
         drifter = new Drifter(position, speed);
         decliner = new Decliner(SMOKE_DURATION);
+        sprite = new SmokeSprite(random);
     }
 
     //
     // Sprite implementation
     //
 
-    public Vector2f getPosition() {
-        return drifter.getPosition();
-    }
-
     public int getAnimationIndex() {
-        return animationIndex;
+        return sprite.getAnimationIndex();
     }
 
     public float getAngle() {
-        return angle;
+        return sprite.getAngle();
     }
 
     public float getTransparency() {
@@ -88,11 +65,10 @@ public final class Smoke implements Sprite, Updatable, Expirable {
 
     public void update(long timeSlice) {
 
-        drifter.update(timeSlice);
+        drifter.drift(timeSlice);
         decliner.update(timeSlice);
 
-        // Update the angle according to the angular rate
-        angle += angularRate * timeSlice / 1000;
+        sprite.update(timeSlice);
     }
 
     //
@@ -101,5 +77,17 @@ public final class Smoke implements Sprite, Updatable, Expirable {
 
     public boolean isExpired() {
         return decliner.isExpired();
+    }
+
+    //
+    // Driftable implementation
+    //
+
+    public Vector2f getPosition() {
+        return drifter.getPosition();
+    }
+
+    public Vector2f getSpeed() {
+        return drifter.getSpeed();
     }
 }

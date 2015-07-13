@@ -1,9 +1,11 @@
 package net.marcv81.spacedroid.game;
 
+import android.content.Context;
+import android.os.Vibrator;
 import net.marcv81.spacedroid.common.Vector2f;
 import net.marcv81.spacedroid.graphics.Sprite;
 import net.marcv81.spacedroid.physics.Collidable;
-import net.marcv81.spacedroid.physics.Collider;
+import net.marcv81.spacedroid.physics.Drifter;
 import net.marcv81.spacedroid.physics.Updatable;
 
 /**
@@ -15,6 +17,8 @@ public final class Player implements Sprite, Updatable, Collidable {
 
     protected static final float DEGREES_PER_RADIAN = 57.2957795f;
 
+    private static final int PLAYER_IMPACT_VIBRATION_TIME = 25;
+
     private static final float PLAYER_RADIUS = 0.09f;
     private static final float PLAYER_MASS = 1f;
 
@@ -23,6 +27,8 @@ public final class Player implements Sprite, Updatable, Collidable {
 
     private static final float PLAYER_DRAWING_ANGLE = 90f;
     private static final float PLAYER_EXHAUST_DISTANCE = 0.15f;
+
+    private final Vibrator vibrator;
 
     /**
      * Thrust vector applied in game units.
@@ -34,13 +40,21 @@ public final class Player implements Sprite, Updatable, Collidable {
      */
     private float angle = 90f;
 
-    private Collider collider;
+    private final Drifter drifter;
+
+    private final float radius;
+    private final float mass;
 
     /**
      * Constructor.
      */
-    public Player() {
-        this.collider = new Collider(new Vector2f(0f, 0f), new Vector2f(0f, 0f), PLAYER_RADIUS, PLAYER_MASS);
+    public Player(Context context) {
+
+        drifter = new Drifter(new Vector2f(0f, 0f), new Vector2f(0f, 0f));
+        this.radius = PLAYER_RADIUS;
+        this.mass = PLAYER_MASS;
+
+        vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     /**
@@ -98,40 +112,48 @@ public final class Player implements Sprite, Updatable, Collidable {
     public void update(long timeSlice) {
 
         // There is no drag is space but it improves the gameplay
-        collider.addDrag(PLAYER_DRAG, timeSlice);
+        drifter.drag(PLAYER_DRAG, timeSlice);
 
-        // Add acceleration up to a speed limit
-        collider.addAcceleration(thrust, timeSlice);
-        collider.limitSpeed(PLAYER_MAX_SPEED);
-
-        collider.update(timeSlice);
+        drifter.accelerate(thrust, timeSlice);
+        drifter.limitSpeed(PLAYER_MAX_SPEED);
+        drifter.drift(timeSlice);
     }
 
     //
-    // Collidable implementation delegation
+    // Collidable implementation
     //
 
     public Vector2f getPosition() {
-        return collider.getPosition();
+        return drifter.getPosition();
     }
 
     public Vector2f getSpeed() {
-        return collider.getSpeed();
+        return drifter.getSpeed();
     }
 
     public float getRadius() {
-        return collider.getRadius();
+        return radius;
     }
 
     public float getMass() {
-        return collider.getMass();
+        return mass;
     }
 
     public boolean isSolid() {
         return true;
     }
 
-    public void deviate(Vector2f speed) {
-        collider.deviate(speed);
+    /**
+     * Do not collide with Bonuses.
+     */
+    public void collide(Class c, Vector2f v) {
+        if(c == Bonus.class) {
+            // TODO (score management, etc.)
+        }
+        else {
+            drifter.collide(v);
+            vibrator.cancel(); // prevents the vibrator from getting stuck?
+            vibrator.vibrate(PLAYER_IMPACT_VIBRATION_TIME);
+        }
     }
 }

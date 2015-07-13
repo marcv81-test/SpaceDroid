@@ -3,25 +3,14 @@ package net.marcv81.spacedroid.physics;
 import net.marcv81.spacedroid.common.Vector2f;
 
 /**
- * Instances of this class drift according to Newton's laws of motion in 2D,
- * providing the bases of a physics engine for the game. Additional functions
- * facilitate the implementation of Updatable.
+ * Basic implementation of Driftable. Children and containing classes may implement
+ * Updatable using a combination of drift(), accelerate(), and drag().
  */
-public class Drifter {
+public class Drifter implements Driftable {
 
-    /**
-     * Position in game world coordinates.
-     */
     private final Vector2f position;
-
-    /**
-     * Speed vector in game units.
-     */
     private final Vector2f speed;
 
-    /**
-     * Constructor.
-     */
     public Drifter(Vector2f position, Vector2f speed) {
         this.position = new Vector2f(position);
         this.speed = new Vector2f(speed);
@@ -35,48 +24,41 @@ public class Drifter {
         return new Vector2f(speed);
     }
 
-    public void deviate(Vector2f speed) {
-        this.speed.plus(speed);
+    public void collide(Vector2f v) {
+        speed.plus(v);
     }
 
     /**
      * Updates the position according to the speed.
-     *
-     * @param timeSlice Time slice duration in milliseconds.
      */
-    public void update(long timeSlice) {
-        position.plus(getSpeed().multiply(timeSlice / 1000f));
+    public void drift(long timeSlice) {
+        this.position.plus(getSpeed().multiply(timeSlice / 1000f));
     }
 
     /**
      * Updates the speed according to an acceleration.
      *
-     * @param acceleration Acceleration vector in game units.
+     * @param acceleration Acceleration in game units.
      * @param timeSlice    Time slice duration in milliseconds.
      */
-    public void addAcceleration(Vector2f acceleration, long timeSlice) {
-        speed.plus(new Vector2f(acceleration).multiply(timeSlice / 1000f));
+    public void accelerate(Vector2f acceleration, long timeSlice) {
+        this.speed.plus(new Vector2f(acceleration).multiply(timeSlice / 1000f));
     }
 
     /**
-     * Updates the speed according to a drag proportional to the speed.
+     * Reduce the speed according to a drag.
      *
      * @param drag      Drag coefficient in game units.
      * @param timeSlice Time slice duration in milliseconds.
      */
-    public void addDrag(float drag, long timeSlice) {
-        addAcceleration(getSpeed().multiply(-drag), timeSlice);
+    public void drag(float drag, long timeSlice) {
+        this.accelerate(getSpeed().multiply(-drag), timeSlice);
     }
 
-    /**
-     * Limits the norm of the speed.
-     *
-     * @param maxSpeedNorm Maximum norm of the speed.
-     */
     public void limitSpeed(float maxSpeedNorm) {
-        float speedNorm = speed.norm();
+        float speedNorm = this.speed.norm();
         if (speedNorm > maxSpeedNorm) {
-            speed.multiply(maxSpeedNorm / speedNorm);
+            this.speed.multiply(maxSpeedNorm / speedNorm);
         }
     }
 }

@@ -2,10 +2,7 @@ package net.marcv81.spacedroid.game;
 
 import net.marcv81.spacedroid.common.Vector2f;
 import net.marcv81.spacedroid.graphics.Sprite;
-import net.marcv81.spacedroid.physics.Decliner;
-import net.marcv81.spacedroid.physics.Drifter;
-import net.marcv81.spacedroid.physics.Expirable;
-import net.marcv81.spacedroid.physics.Updatable;
+import net.marcv81.spacedroid.physics.*;
 
 import java.util.Random;
 
@@ -14,7 +11,7 @@ import java.util.Random;
  * creation position while fading out. Their drift speed reduces progressively to simulate
  * weightlessness. A few are created to provide a visual clue of impacts.
  */
-public final class Sparkle implements Sprite, Updatable, Expirable {
+public final class Sparkle implements Sprite, Updatable, Driftable, Expirable {
 
     protected static final float TAU = 6.2831853071f;
 
@@ -24,8 +21,8 @@ public final class Sparkle implements Sprite, Updatable, Expirable {
     private static final long SPARKLE_MIN_LIFESPAN = 200;
     private static final long SPARKLE_MAX_LIFESPAN = 600;
 
-    private Drifter drifter;
-    private Decliner decliner;
+    private final Drifter drifter;
+    private final Decliner decliner;
 
     /**
      * Constructor
@@ -47,10 +44,6 @@ public final class Sparkle implements Sprite, Updatable, Expirable {
     //
     // Sprite implementation
     //
-
-    public Vector2f getPosition() {
-        return drifter.getPosition();
-    }
 
     public int getAnimationIndex() {
         return 0;
@@ -74,9 +67,9 @@ public final class Sparkle implements Sprite, Updatable, Expirable {
 
     public void update(long timeSlice) {
 
-        drifter.addDrag(SPARKLE_DRAG, timeSlice);
+        drifter.drag(SPARKLE_DRAG, timeSlice);
+        drifter.drift(timeSlice);
 
-        drifter.update(timeSlice);
         decliner.update(timeSlice);
     }
 
@@ -86,5 +79,17 @@ public final class Sparkle implements Sprite, Updatable, Expirable {
 
     public boolean isExpired() {
         return decliner.isExpired();
+    }
+
+    //
+    // Driftable implementation
+    //
+
+    public Vector2f getPosition() {
+        return drifter.getPosition();
+    }
+
+    public Vector2f getSpeed() {
+        return drifter.getSpeed();
     }
 }

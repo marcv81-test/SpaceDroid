@@ -4,19 +4,9 @@ import net.marcv81.spacedroid.common.Vector2f;
 
 /**
  * Implementations of this interface may collide with each other according to
- * the equations of elastic collisions in 2D implemented in CollisionUtils.
+ * the equations of elastic collisions in 2D.
  */
-public interface Collidable {
-
-    /**
-     * @return Position in game world coordinates.
-     */
-    Vector2f getPosition();
-
-    /**
-     * @return Speed in game units.
-     */
-    Vector2f getSpeed();
+public interface Collidable extends Driftable {
 
     /**
      * @return Radius in game units.
@@ -29,12 +19,10 @@ public interface Collidable {
     float getMass();
 
     /**
-     * @return Whether this Collidable is able to collide or not.
+     * @return Whether this Collidable is solid or not. Only solid Collidables
+     * may collide.
      */
     boolean isSolid();
 
-    /**
-     * Add a vector to the speed to deviate the trajectory.
-     */
-    void deviate(Vector2f speed);
+    void collide(Class c, Vector2f v);
 }

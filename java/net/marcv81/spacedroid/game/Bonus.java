@@ -1,6 +1,5 @@
 package net.marcv81.spacedroid.game;
 
-
 import net.marcv81.spacedroid.common.Vector2f;
 import net.marcv81.spacedroid.graphics.Sprite;
 import net.marcv81.spacedroid.physics.*;
@@ -16,14 +15,19 @@ public final class Bonus implements Sprite, Updatable, Expirable, Collidable {
     private static final long BONUS_EXPIRATION_DURATION = 500;
     private static final float BONUS_EXPIRATION_SCALE = 4f;
 
-    private Decliner decliner;
-    private Collider collider;
+    private final Drifter drifter;
+    private final Decliner decliner;
+
+    private final float radius;
+    private final float mass;
 
     /**
      * Constructor.
      */
     public Bonus(Vector2f position, Vector2f speed) {
-        this.collider = new Collider(position, speed, BONUS_RADIUS, BONUS_MASS);
+        drifter = new Drifter(position, speed);
+        this.radius = BONUS_RADIUS;
+        this.mass = BONUS_MASS;
         this.decliner = new Decliner();
     }
 
@@ -65,7 +69,7 @@ public final class Bonus implements Sprite, Updatable, Expirable, Collidable {
     //
 
     public void update(long timeSlice) {
-        collider.update(timeSlice);
+        drifter.drift(timeSlice);
         decliner.update(timeSlice);
     }
 
@@ -78,30 +82,34 @@ public final class Bonus implements Sprite, Updatable, Expirable, Collidable {
     }
 
     //
-    // Collidable implementation delegation
+    // Collidable implementation
     //
 
     public Vector2f getPosition() {
-        return collider.getPosition();
+        return drifter.getPosition();
     }
 
     public Vector2f getSpeed() {
-        return collider.getSpeed();
+        return drifter.getSpeed();
     }
 
     public float getRadius() {
-        return collider.getRadius();
+        return radius;
     }
 
     public float getMass() {
-        return collider.getMass();
+        return mass;
     }
 
     public boolean isSolid() {
         return !decliner.isDeclining() && !decliner.isExpired();
     }
 
-    public void deviate(Vector2f speed) {
-        collider.deviate(speed);
+    public void collide(Class c, Vector2f v) {
+        if (c == Player.class) {
+            this.collect();
+        } else {
+            drifter.collide(v);
+        }
     }
 }
